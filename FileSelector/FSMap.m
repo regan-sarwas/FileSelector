@@ -8,20 +8,16 @@
 
 #import "FSMap.h"
 
-@interface FSMap() {
-NSString * _maptitle;
-}
-@end
 @implementation FSMap
 
-
+// FIXME - This is kinda lame.  will be better when we implement a new class without inheritance
 -(NSString *)title
 {
     static int counter;
-    if (!_maptitle) {
-        _maptitle = [NSString stringWithFormat:@"Map %i", ++counter];
+    if ([super.title hasPrefix:@"Survey"]) {
+        super.title = [NSString stringWithFormat:@"Map %i", ++counter];
     }
-    return _maptitle;
+    return super.title;
 }
 
 @end
