@@ -7,10 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FSTableViewItemCollection.h"
 
 @interface FSDetailViewController : UIViewController <UISplitViewControllerDelegate>
 
-@property (strong, nonatomic) id detailItem;
+@property (strong, nonatomic) id<FSTableViewItem> detailItem;
 
-@property (weak, nonatomic) IBOutlet UILabel *detailDescriptionLabel;
 @end

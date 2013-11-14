@@ -10,6 +10,7 @@
 
 @interface FSDetailViewController ()
 @property (strong, nonatomic) UIPopoverController *masterPopoverController;
+@property (weak, nonatomic) IBOutlet UILabel *detailDescriptionLabel;
 - (void)configureView;
 @end
 
@@ -36,6 +37,7 @@
     // Update the user interface for the detail item.
 
     if (self.detailItem) {
+        self.title = self.detailItem.title;
         self.detailDescriptionLabel.text = [self.detailItem description];
     }
 }
@@ -57,6 +59,7 @@
 
 - (void)splitViewController:(UISplitViewController *)splitController willHideViewController:(UIViewController *)viewController withBarButtonItem:(UIBarButtonItem *)barButtonItem forPopoverController:(UIPopoverController *)popoverController
 {
+    //NSLog (@"svc changed orientation to portrait");
     barButtonItem.title = NSLocalizedString(@"Master", @"Master");
     [self.navigationItem setLeftBarButtonItem:barButtonItem animated:YES];
     self.masterPopoverController = popoverController;
@@ -64,7 +67,7 @@
 
 - (void)splitViewController:(UISplitViewController *)splitController willShowViewController:(UIViewController *)viewController invalidatingBarButtonItem:(UIBarButtonItem *)barButtonItem
 {
-    // Called when the view is shown again in the split view, invalidating the button and popover controller.
+    //NSLog (@"svc changed orientation to landscape");
     [self.navigationItem setLeftBarButtonItem:nil animated:YES];
     self.masterPopoverController = nil;
 }
