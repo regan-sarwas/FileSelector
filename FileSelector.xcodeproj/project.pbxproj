@@ -30,6 +30,7 @@
 		3903C79618356A0500D82038 /* FSMainIpadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3903C79518356A0500D82038 /* FSMainIpadViewController.m */; };
 		3903C79918358E9800D82038 /* FSMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 3903C79818358E9800D82038 /* FSMap.m */; };
 		3903C79C18358FDA00D82038 /* FSMapCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = 3903C79B18358FDA00D82038 /* FSMapCollection.m */; };
+		3903C79F18359D0000D82038 /* FSEntryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3903C79E18359D0000D82038 /* FSEntryCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -79,6 +80,8 @@
 		3903C79818358E9800D82038 /* FSMap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSMap.m; sourceTree = "<group>"; };
 		3903C79A18358FDA00D82038 /* FSMapCollection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSMapCollection.h; sourceTree = "<group>"; };
 		3903C79B18358FDA00D82038 /* FSMapCollection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSMapCollection.m; sourceTree = "<group>"; };
+		3903C79D18359D0000D82038 /* FSEntryCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSEntryCell.h; sourceTree = "<group>"; };
+		3903C79E18359D0000D82038 /* FSEntryCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSEntryCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -158,6 +161,8 @@
 				3903C78D18353FCF00D82038 /* FSSurvey.m */,
 				3903C78F18353FE900D82038 /* FSSurveyCollection.h */,
 				3903C79018353FE900D82038 /* FSSurveyCollection.m */,
+				3903C79D18359D0000D82038 /* FSEntryCell.h */,
+				3903C79E18359D0000D82038 /* FSEntryCell.m */,
 				3903C79718358E9800D82038 /* FSMap.h */,
 				3903C79818358E9800D82038 /* FSMap.m */,
 				3903C79A18358FDA00D82038 /* FSMapCollection.h */,
@@ -300,6 +305,7 @@
 				3903C76718344ED000D82038 /* FSMasterViewController.m in Sources */,
 				3903C79918358E9800D82038 /* FSMap.m in Sources */,
 				3903C75A18344ED000D82038 /* main.m in Sources */,
+				3903C79F18359D0000D82038 /* FSEntryCell.m in Sources */,
 				3903C79C18358FDA00D82038 /* FSMapCollection.m in Sources */,
 				3903C79118353FE900D82038 /* FSSurveyCollection.m in Sources */,
 				3903C76A18344ED000D82038 /* FSDetailViewController.m in Sources */,

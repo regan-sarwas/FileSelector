@@ -8,6 +8,7 @@
 
 #import "FSMasterViewController.h"
 #import "FSDetailViewController.h"
+#import "FSEntryCell.h"
 
 @interface FSMasterViewController ()
 @end
@@ -76,11 +77,11 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+    FSEntryCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
     id<FSTableViewItem> item = [self.items itemAtIndexPath:indexPath];
-    cell.textLabel.text = item.title;
-    cell.detailTextLabel.text = item.description;
-    cell.imageView.image = item.thumbnail;
+    cell.titleTextField.text = item.title;
+    cell.detailsLabel.text = item.description;
+    cell.thumbnailImageView.image = item.thumbnail;
     return cell;
 }
 

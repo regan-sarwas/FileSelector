@@ -8,36 +8,55 @@
         <scene sceneID="VgW-fR-Quf">
             <objects>
                 <tableViewController title="Master" id="pGg-6v-bdr" customClass="FSMasterViewController" sceneMemberID="viewController">
-                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="mLL-gJ-YKr">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="88" sectionHeaderHeight="22" sectionFooterHeight="22" id="mLL-gJ-YKr">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="detailButton" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" textLabel="2pz-XF-uhl" detailTextLabel="CfU-A7-HC5" style="IBUITableViewCellStyleSubtitle" id="m0d-ak-lc9">
-                                <rect key="frame" x="0.0" y="86" width="320" height="44"/>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="detailButton" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" rowHeight="88" id="m0d-ak-lc9" customClass="FSEntryCell">
+                                <rect key="frame" x="0.0" y="86" width="320" height="88"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="m0d-ak-lc9" id="kU0-a1-wdG">
-                                    <rect key="frame" x="0.0" y="0.0" width="273" height="43"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="273" height="87"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="2pz-XF-uhl">
-                                            <rect key="frame" x="15" y="3" width="34" height="22"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Subtitle" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="CfU-A7-HC5">
-                                            <rect key="frame" x="15" y="25" width="43" height="15"/>
-                                            <autoresizingMask key="autoresizingMask"/>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="169" translatesAutoresizingMaskIntoConstraints="NO" id="kp5-V2-w4a">
+                                            <rect key="frame" x="96" y="44" width="169" height="15"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
+                                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Zuc-tv-iUr">
+                                            <rect key="frame" x="96" y="11" width="169" height="30"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                            <textInputTraits key="textInputTraits"/>
+                                        </textField>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="OZc-4C-aNe">
+                                            <rect key="frame" x="8" y="4" width="80" height="80"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="80" id="G48-8o-nME"/>
+                                                <constraint firstAttribute="width" constant="80" id="keR-sG-KdZ"/>
+                                            </constraints>
+                                        </imageView>
                                     </subviews>
+                                    <constraints>
+                                        <constraint firstItem="OZc-4C-aNe" firstAttribute="top" secondItem="kU0-a1-wdG" secondAttribute="top" constant="4" id="2vL-e8-TgC"/>
+                                        <constraint firstAttribute="trailing" secondItem="Zuc-tv-iUr" secondAttribute="trailing" constant="8" id="C30-KC-nMz"/>
+                                        <constraint firstItem="kp5-V2-w4a" firstAttribute="top" secondItem="Zuc-tv-iUr" secondAttribute="bottom" constant="3" id="CbR-Jj-MqM"/>
+                                        <constraint firstItem="Zuc-tv-iUr" firstAttribute="top" secondItem="kU0-a1-wdG" secondAttribute="top" constant="11" id="ES2-sY-YTn"/>
+                                        <constraint firstItem="OZc-4C-aNe" firstAttribute="leading" secondItem="kU0-a1-wdG" secondAttribute="leading" constant="8" id="Nr0-2n-sQh"/>
+                                        <constraint firstItem="Zuc-tv-iUr" firstAttribute="trailing" secondItem="kp5-V2-w4a" secondAttribute="trailing" id="aJq-tX-AsE"/>
+                                        <constraint firstItem="Zuc-tv-iUr" firstAttribute="leading" secondItem="kp5-V2-w4a" secondAttribute="leading" id="w68-Us-U8i"/>
+                                        <constraint firstItem="Zuc-tv-iUr" firstAttribute="leading" secondItem="kU0-a1-wdG" secondAttribute="leading" constant="96" id="wwy-V3-Fz5"/>
+                                    </constraints>
                                 </tableViewCellContentView>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
+                                    <outlet property="detailsLabel" destination="kp5-V2-w4a" id="Rg6-EY-Wa6"/>
+                                    <outlet property="thumbnailImageView" destination="OZc-4C-aNe" id="fSz-lt-OTM"/>
+                                    <outlet property="titleTextField" destination="Zuc-tv-iUr" id="tmk-hF-Zxo"/>
                                     <segue destination="Ah7-4n-0Wa" kind="push" identifier="showDetail" trigger="accessoryAction" id="OWV-7Q-Ew0"/>
                                 </connections>
                             </tableViewCell>
