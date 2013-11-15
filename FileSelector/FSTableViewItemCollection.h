@@ -18,6 +18,7 @@
 - (NSIndexPath *) addNewItem;
 - (int) itemCount;
 - (void) removeItemAtIndexPath:(NSIndexPath *)indexPath;
+- (void) moveItemAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath;
 - (id<FSTableViewItem>) itemAtIndexPath:(NSIndexPath *)indexPath;
 @property (nonatomic, strong) NSIndexPath * selectedIndex;
 - (id<FSTableViewItem>) selectedItem;

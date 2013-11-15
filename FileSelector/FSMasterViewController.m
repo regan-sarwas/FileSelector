@@ -100,12 +100,12 @@
     }
 }
 
-/*
+
 // Override to support rearranging the table view.
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
 {
+    [self.items moveItemAtIndexPath:fromIndexPath toIndexPath:toIndexPath];
 }
-*/
 
 /*
 // Override to support conditional rearranging of the table view.

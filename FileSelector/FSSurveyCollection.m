@@ -61,4 +61,28 @@
     return [self itemAtIndexPath:[self selectedIndex]];
 }
 
+- (void) moveItemAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
+{
+    NSUInteger fromIndex = fromIndexPath.row;
+    NSUInteger toIndex = toIndexPath.row;
+    NSUInteger selected = self.selectedIndex.row;
+    if (fromIndex == toIndex)
+        return;
+    if (self.items.count <= fromIndex || self.items.count <= toIndex)
+        return;
+    //adjust the selected Index
+    if (fromIndex < selected && selected <= toIndex) {
+        self.selectedIndex = [NSIndexPath indexPathForRow:(self.selectedIndex.row - 1)
+                                                inSection:self.selectedIndex.section];
+    }
+    if (toIndex <= selected && selected < fromIndex) {
+        self.selectedIndex = [NSIndexPath indexPathForRow:(self.selectedIndex.row + 1)
+                                                inSection:self.selectedIndex.section];
+    }
+    //move the item
+    id temp = self.items[fromIndex];
+    [self.items removeObjectAtIndex:fromIndex];
+    [self.items insertObject:temp atIndex:toIndex];
+}
+
 @end
