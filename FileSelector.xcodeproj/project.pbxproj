@@ -31,6 +31,8 @@
 		3903C79918358E9800D82038 /* FSMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 3903C79818358E9800D82038 /* FSMap.m */; };
 		3903C79C18358FDA00D82038 /* FSMapCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = 3903C79B18358FDA00D82038 /* FSMapCollection.m */; };
 		3903C79F18359D0000D82038 /* FSEntryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3903C79E18359D0000D82038 /* FSEntryCell.m */; };
+		39278325183A96680049B71B /* observations.png in Resources */ = {isa = PBXBuildFile; fileRef = 39278324183A96680049B71B /* observations.png */; };
+		39278327183AA7490049B71B /* tilepackageIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 39278326183AA7490049B71B /* tilepackageIcon.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -82,6 +84,8 @@
 		3903C79B18358FDA00D82038 /* FSMapCollection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSMapCollection.m; sourceTree = "<group>"; };
 		3903C79D18359D0000D82038 /* FSEntryCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSEntryCell.h; sourceTree = "<group>"; };
 		3903C79E18359D0000D82038 /* FSEntryCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSEntryCell.m; sourceTree = "<group>"; };
+		39278324183A96680049B71B /* observations.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = observations.png; sourceTree = "<group>"; };
+		39278326183AA7490049B71B /* tilepackageIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tilepackageIcon.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,6 +115,8 @@
 		3903C74118344ED000D82038 = {
 			isa = PBXGroup;
 			children = (
+				39278326183AA7490049B71B /* tilepackageIcon.png */,
+				39278324183A96680049B71B /* observations.png */,
 				3903C75318344ED000D82038 /* FileSelector */,
 				3903C77818344ED000D82038 /* FileSelectorTests */,
 				3903C74C18344ED000D82038 /* Frameworks */,
@@ -278,8 +284,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				3903C76418344ED000D82038 /* Main_iPad.storyboard in Resources */,
+				39278327183AA7490049B71B /* tilepackageIcon.png in Resources */,
 				3903C76C18344ED000D82038 /* Images.xcassets in Resources */,
 				3903C76118344ED000D82038 /* Main_iPhone.storyboard in Resources */,
+				39278325183A96680049B71B /* observations.png in Resources */,
 				3903C75818344ED000D82038 /* InfoPlist.strings in Resources */,
 				3903C7931835665E00D82038 /* Lets_Try_Popovers.storyboard in Resources */,
 			);
@@ -529,6 +537,7 @@
 				3903C78418344ED000D82038 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		3903C78518344ED000D82038 /* Build configuration list for PBXNativeTarget "FileSelectorTests" */ = {
 			isa = XCConfigurationList;
@@ -537,6 +546,7 @@
 				3903C78718344ED000D82038 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
