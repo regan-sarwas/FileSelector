@@ -7,6 +7,8 @@
 //
 
 #import "FSAppDelegate.h"
+#import "FSMainViewController.h"
+#import "FSMainIpadViewController.h"
 
 @implementation FSAppDelegate
 
@@ -53,7 +55,14 @@
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
 {
     NSLog(@"%@ asked me to open %@", sourceApplication, url);
-    return YES;
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        FSMainIpadViewController *vc = (FSMainIpadViewController *)self.window.rootViewController;
+        return [vc openURL:url sourceApplication:sourceApplication annotation:annotation];
+    } else {
+        UINavigationController *nav = (UINavigationController *)self.window.rootViewController;
+        FSMainViewController *vc = (FSMainViewController *)nav.viewControllers[0];
+        return [vc openURL:url sourceApplication:sourceApplication annotation:annotation];
+    }
 }
 
 @end

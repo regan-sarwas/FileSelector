@@ -1,8 +1,8 @@
 //
-//  FSMasterViewController.h
+//  MapSelectViewController.h
 //  FileSelector
 //
-//  Created by Regan Sarwas on 11/13/13.
+//  Created by Regan Sarwas on 11/26/13.
 //  Copyright (c) 2013 GIS Team. All rights reserved.
 //
 
@@ -11,10 +11,11 @@
 
 @class FSDetailViewController;
 
-@interface FSMasterViewController : UITableViewController
+@interface MapSelectViewController : UITableViewController
 
 @property (strong, nonatomic) FSDetailViewController *detailViewController;
 @property (nonatomic, weak) id<FSTableViewItemCollection> items;
+@property (nonatomic, weak) ProtocolCollection *protocols;
 @property (nonatomic, weak) UIPopoverController *popover;
 @property (copy) void (^popoverDismissedCallback)(void);
 

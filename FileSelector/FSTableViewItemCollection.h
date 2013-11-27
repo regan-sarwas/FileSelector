@@ -9,18 +9,21 @@
 #import <Foundation/Foundation.h>
 
 @protocol FSTableViewItem <NSObject>
-@property (nonatomic, strong) NSString *title;
-- (NSString *) description;
+- (NSString *) title;
+- (NSString *) subtitle;
 - (UIImage *) thumbnail;
+@optional
+- (void) setTitle:(NSString *)title;
 @end
 
 @protocol FSTableViewItemCollection <NSObject>
-- (NSIndexPath *) addNewItem;
-- (int) itemCount;
-- (void) removeItemAtIndexPath:(NSIndexPath *)indexPath;
-- (void) moveItemAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath;
-- (id<FSTableViewItem>) itemAtIndexPath:(NSIndexPath *)indexPath;
 @property (nonatomic, strong) NSIndexPath * selectedIndex;
+- (id<FSTableViewItem>) itemAtIndexPath:(NSIndexPath *)indexPath;
 - (id<FSTableViewItem>) selectedItem;
+- (int) itemCount;
+- (NSIndexPath *) addNewItem;
+- (void) moveItemAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath;
+- (void) removeItemAtIndexPath:(NSIndexPath *)indexPath;
+- (void) refreshWithCompletionHandler:(void (^)(BOOL success))completionHandler;
 @end
 

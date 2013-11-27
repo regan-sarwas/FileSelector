@@ -7,15 +7,19 @@
 //
 
 #import "FSMainIpadViewController.h"
-#import "FSMasterViewController.h"
+#import "ProtocolSelectViewController.h"
+#import "SurveySelectViewController.h"
+#import "MapSelectViewController.h"
 #import "FSSurveyCollection.h"
 #import "FSMapCollection.h"
+#import "ProtocolCollection.h"
 
 @interface FSMainIpadViewController ()
 
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *barTitle;
 @property (strong, nonatomic) FSSurveyCollection* surveys;
 @property (strong, nonatomic) FSMapCollection* maps;
+@property (strong, nonatomic) ProtocolCollection* protocols;
 
 @end
 
@@ -39,15 +43,29 @@
 
 - (void) configureView
 {
-    //FIXME, get initial selection from NSDefaults
     self.surveys = [[FSSurveyCollection alloc] init];
+    [self.surveys openWithCompletionHandler:^(BOOL success) {
+        //do any other background work;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self updateTitle];
+        });
+    }];
     self.maps = [[FSMapCollection alloc] init];
+    [self.maps openWithCompletionHandler:^(BOOL success) {
+        //do any other background work;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self updateTitle];
+        });
+    }];
+    self.protocols = [[ProtocolCollection alloc] init];
+    [self.protocols openWithCompletionHandler:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [self updateTitle];
 }
+
 
 -(void) updateTitle
 {
@@ -65,19 +83,41 @@
 -(void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     UINavigationController *nav = (UINavigationController *)segue.destinationViewController;
-    FSMasterViewController *vc = (FSMasterViewController *)nav.childViewControllers[0];
-    vc.title = segue.identifier;
-    if ([segue isKindOfClass:[UIStoryboardPopoverSegue class]]) {
-        vc.popover = ((UIStoryboardPopoverSegue *)segue).popoverController;
-        vc.popover.delegate = self;
-        vc.popoverDismissedCallback = ^{[self updateTitle];};
-    }
-    if ([segue.identifier isEqualToString:@"Select Survey"])
-    {
+    
+    if ([segue.identifier isEqualToString:@"Select Survey"]){
+        SurveySelectViewController *vc = (SurveySelectViewController *)nav.childViewControllers[0];
+        vc.title = segue.identifier;
         vc.items = self.surveys;
-    } else {
-        vc.items = self.maps;
+        vc.protocols = (id<FSTableViewItemCollection>)self.protocols;
+        if ([segue isKindOfClass:[UIStoryboardPopoverSegue class]]) {
+            vc.popover = ((UIStoryboardPopoverSegue *)segue).popoverController;
+            vc.popover.delegate = self;
+            vc.popoverDismissedCallback = ^{[self updateTitle];};
+        }
+        return;
     }
+    if ([segue.identifier isEqualToString:@"Select Map"]) {
+        MapSelectViewController *vc = (MapSelectViewController *)nav.childViewControllers[0];
+        vc.title = segue.identifier;
+        vc.items = self.maps;
+        if ([segue isKindOfClass:[UIStoryboardPopoverSegue class]]) {
+            vc.popover = ((UIStoryboardPopoverSegue *)segue).popoverController;
+            vc.popover.delegate = self;
+            vc.popoverDismissedCallback = ^{[self updateTitle];};
+        }
+        return;
+    }
+//    if ([segue.identifier isEqualToString:@"Select Protocol"]) {
+//        //ProtocolSelectViewController *vc = (ProtocolSelectViewController *)segue.destinationViewController;
+//        ProtocolSelectViewController *vc = (ProtocolSelectViewController *)nav.childViewControllers[0];
+//        vc.title = segue.identifier;
+//        vc.items = (id<FSTableViewItemCollection>)self.protocols;
+//        if ([segue isKindOfClass:[UIStoryboardPopoverSegue class]]) {
+//            vc.popover = ((UIStoryboardPopoverSegue *)segue).popoverController;
+//            vc.popover.delegate = self;
+//            vc.rowSelectedCallback = ^(NSIndexPath *i){[self updateTitle];};
+//        }
+//    }
 }
 
 // not called when popover is dismissed programatically
@@ -85,5 +125,24 @@
 {
     [self updateTitle];
 }
+
+
+- (BOOL) openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+{
+    BOOL success = NO;
+    if ([FSSurveyCollection collectsURL:url])
+        success = [self.surveys openURL:url];
+    if ([FSMapCollection collectsURL:url])
+        success = [self.maps openURL:url];
+    if ([ProtocolCollection collectsURL:url])
+        success = [self.protocols openURL:url];
+    if (!success) {
+        [[[UIAlertView alloc] initWithTitle:@"Error" message:@"Can't open file" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+    } else {
+        [[[UIAlertView alloc] initWithTitle:@"Thanks" message:@"I should do something now." delegate:nil cancelButtonTitle:@"Do it later" otherButtonTitles:nil] show];
+    }
+    return success;
+}
+
 
 @end

@@ -10,4 +10,6 @@
 
 @interface FSMainViewController : UIViewController
 
+- (BOOL) openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation;
+
 @end

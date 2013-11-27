@@ -10,4 +10,6 @@
 
 @interface FSMainIpadViewController : UIViewController <UIPopoverControllerDelegate>
 
+- (BOOL) openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation;
+
 @end

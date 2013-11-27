@@ -36,7 +36,7 @@
     return _title;
 }
 
--(NSString *)description
+-(NSString *)subtitle
 {
     return self.creationDate.description;
 }

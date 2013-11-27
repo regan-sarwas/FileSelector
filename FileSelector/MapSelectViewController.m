@@ -1,19 +1,30 @@
 //
-//  FSMasterViewController.m
+//  MapSelectViewController.m
 //  FileSelector
 //
-//  Created by Regan Sarwas on 11/13/13.
+//  Created by Regan Sarwas on 11/26/13.
 //  Copyright (c) 2013 GIS Team. All rights reserved.
 //
 
-#import "FSMasterViewController.h"
 #import "FSDetailViewController.h"
 #import "FSEntryCell.h"
+#import "ProtocolSelectViewController.h"
+#import "MapSelectViewController.h"
 
-@interface FSMasterViewController ()
+@interface MapSelectViewController ()
+
 @end
 
-@implementation FSMasterViewController
+@implementation MapSelectViewController
+
+- (id)initWithStyle:(UITableViewStyle)style
+{
+    self = [super initWithStyle:style];
+    if (self) {
+        // Custom initialization
+    }
+    return self;
+}
 
 - (void)awakeFromNib
 {
@@ -36,6 +47,10 @@
     //self.navigationItem.leftBarButtonItem = self.editButtonItem;
     //self.navigationItem.rightBarButtonItem = addButton;
     self.detailViewController = (FSDetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
+
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
+
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -59,10 +74,17 @@
     if (!self.items) {
         return;
     }
-    NSIndexPath *indexPath = [self.items addNewItem];
-    [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    [self insertNewObject];
+    //[self performSegueWithIdentifier:@"Associate" sender:sender];
 }
 
+- (void)insertNewObject
+{
+    NSIndexPath *indexPath = [self.items addNewItem];
+    if (indexPath) {
+        [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+}
 #pragma mark - Table View
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -80,7 +102,7 @@
     FSEntryCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
     id<FSTableViewItem> item = [self.items itemAtIndexPath:indexPath];
     cell.titleTextField.text = item.title;
-    cell.detailsLabel.text = item.description;
+    cell.detailsLabel.text = item.subtitle;
     cell.thumbnailImageView.image = item.thumbnail;
     return cell;
 }
@@ -109,13 +131,13 @@
 }
 
 /*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
+ // Override to support conditional rearranging of the table view.
+ - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
+ {
+ // Return NO if you do not want the item to be re-orderable.
+ return YES;
+ }
+ */
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -132,7 +154,7 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([[segue identifier] isEqualToString:@"showDetail"]) {
+    if ([[segue identifier] isEqualToString:@"Show Detail"]) {
         // seque from selected row
         //NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
         //seque from accessory
@@ -143,6 +165,23 @@
         [[segue destinationViewController] setPreferredContentSize:self.preferredContentSize];
 
     }
+}
+
+- (void) refresh:(id)sender
+{
+    [self.refreshControl beginRefreshing];
+    [self.items refreshWithCompletionHandler:^(BOOL success) {
+        //on abackground thread
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.refreshControl endRefreshing];
+            if (success) {
+                //FIXME - get incremental updates with a delegate
+                [self.tableView reloadData];
+            } else {
+                [[[UIAlertView alloc] initWithTitle:@"Error" message:@"Can't connect to server" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil] show];
+            }
+        });
+    }];
 }
 
 @end
