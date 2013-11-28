@@ -224,10 +224,17 @@
     dispatch_async(dispatch_queue_create("gov.nps.akr.observer", DISPATCH_QUEUE_CONCURRENT), ^{
         //temporarily remove the delegate so that multiple updates wiil not be sent to the UI,
         //the UI update should be done with a reload in the callback.
+        //FIXME - two solutions, save cacee on UI, or use no delegate test and pick one
         id savedDelegate = self.delegate;
         self.delegate = nil;
         BOOL success = [self refreshRemoteProtocols] && [self refreshLocalProtocols];
-        [self saveCache];
+        if (self.delegate) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self saveCache];
+            });
+        } else {
+            [self saveCache];
+        }
         self.delegate = savedDelegate;
         if (completionHandler) {
             completionHandler(success);
@@ -343,12 +350,15 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.localItems insertObject:protocol atIndex:0];
             [self.delegate collection:self addedLocalItemsAtIndexes:[NSIndexSet indexSetWithIndex:0]];
+            if (save) {
+                [self saveCache];
+            }
         });
     } else {
         [self.localItems insertObject:protocol atIndex:0];
-    }
-    if (save) {
-        [self saveCache];
+        if (save) {
+            [self saveCache];
+        }
     }
     return YES;
 }
@@ -406,32 +416,33 @@
             }
         }
     }
-    if (self.delegate) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.localItems removeObjectsAtIndexes:itemsToRemove];
-            [self.delegate collection:self removedLocalItemsAtIndexes:itemsToRemove];
-        });
-    } else {
-        [self.localItems removeObjectsAtIndexes:itemsToRemove];
-    }
 
     //add filesystem urls not in cache
+    NSMutableArray *protocolsToAdd = [NSMutableArray new];
     for (NSURL *url in urls) {
         SProtocol *protocol = [[SProtocol alloc] initWithURL:url];
         if (!protocol.values) {
             NSLog(@"data at %@ was not a valid protocol object",url);
             [[NSFileManager defaultManager] removeItemAtURL:url error:nil];
         }
-        if (self.delegate) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.localItems addObject:protocol];
-                [self.delegate collection:self addedLocalItemsAtIndexes:[NSIndexSet indexSetWithIndex:self.localItems.count-1]];
-            });
-        } else {
-            [self.localItems addObject:protocol];
-        }
+        [protocolsToAdd addObject:protocol];
     }
-    [self checkAndFixSelectedIndex];
+
+    //update lists and UI synchronosly on UI thread if there is a delegate
+    if (self.delegate) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.localItems removeObjectsAtIndexes:itemsToRemove];
+            [self.delegate collection:self removedLocalItemsAtIndexes:itemsToRemove];
+            NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(self.localItems.count, protocolsToAdd.count)];
+            [self.localItems addObjectsFromArray:protocolsToAdd];
+            [self.delegate collection:self addedLocalItemsAtIndexes:indexes];
+            [self checkAndFixSelectedIndex];
+        });
+    } else {
+        [self.localItems removeObjectsAtIndexes:itemsToRemove];
+        [self.localItems addObjectsFromArray:protocolsToAdd];
+        [self checkAndFixSelectedIndex];
+    }
 }
 
 
@@ -487,7 +498,7 @@
     // option1 - remove all server protocols, and add new ones - simple, however all UI items would need to be reloaded
     // option2 - do incremental per item update (only update UI as necessary) - implemented
 
-    BOOL cacheNeedsResave = NO;
+    //BOOL cacheNeedsResave = NO;
 
     //do not change the list while enumerating
     NSMutableDictionary *protocolsToUpdate = [NSMutableDictionary new];
@@ -500,7 +511,7 @@
             NSUInteger index = [serverProtocols indexOfObject:p];
             if (index == NSNotFound) {
                 [itemsToRemove addIndex:i];
-                cacheNeedsResave = YES;
+                //cacheNeedsResave = YES;
             } else {
                 //update the url of cached server objects
                 SProtocol *serverProtocol = serverProtocols[index];
@@ -511,6 +522,15 @@
             }
         }
     }
+    //add server protocols not in cache (local or server)
+    NSMutableArray *protocolsToAdd = [NSMutableArray new];
+    for (Protocol *protocol in serverProtocols) {
+        if (![self.localItems containsObject:protocol] && ![self.remoteItems containsObject:protocol]) {
+            [protocolsToAdd addObject:protocol];
+            //cacheNeedsResave = YES;
+        }
+    }
+    //update lists and UI synchronosly on UI thread if there is a delegate
     if (self.delegate) {
         dispatch_async(dispatch_get_main_queue(), ^{
             for (id key in [protocolsToUpdate allKeys]) {
@@ -518,33 +538,21 @@
                 [self.delegate collection:self changedRemoteItemsAtIndexes:[NSIndexSet indexSetWithIndex:[key integerValue]]];
             }
             [self.remoteItems removeObjectsAtIndexes:itemsToRemove];
-            [self.delegate collection:self removedRemoteItemsAtIndexes:itemsToRemove];
-       });
+            NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(self.remoteItems.count, protocolsToAdd.count)];
+            [self.remoteItems addObjectsFromArray:protocolsToAdd];
+            [self.delegate collection:self addedRemoteItemsAtIndexes:indexes];
+        });
     } else {
         for (id key in [protocolsToUpdate allKeys]) {
             self.remoteItems[[key integerValue]] = [protocolsToUpdate objectForKey:key];
         }
         [self.remoteItems removeObjectsAtIndexes:itemsToRemove];
+        [self.remoteItems addObjectsFromArray:protocolsToAdd];
     }
-
-    //add server protocols not in cache (local or server)
-    for (Protocol *protocol in serverProtocols) {
-        if (![self.localItems containsObject:protocol] && ![self.remoteItems containsObject:protocol]) {
-            if (self.delegate) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self.remoteItems addObject:protocol];
-                    [self.delegate collection:self addedRemoteItemsAtIndexes:[NSIndexSet indexSetWithIndex:self.remoteItems.count-1]];
-                });
-            } else {
-                [self.remoteItems addObject:protocol];
-            }
-            cacheNeedsResave = YES;
-        }
-    }
-    //[self checkAndFixSelectedIndex];
-    if (cacheNeedsResave) {
-        [self saveCache];
-    }
+    //saving the cache is done by the caller
+    //if (cacheNeedsResave) {
+        //[self saveCache];
+    //}
 }
 
 - (void) checkAndFixSelectedIndex
