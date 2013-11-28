@@ -6,6 +6,27 @@
 //  Copyright (c) 2013 GIS Team. All rights reserved.
 //
 
+/*
+ The big problems:
+ 1) multiple threads could inconsistently mutate the local or remote lists, i.e. the user deletes an item, while it is being refreshed.
+ 2) add/remove/updates to the table view must be synced with changes to the model, therefore, the model must be changed on the UI
+ thread in concert with the updates to the table view.  (optionally you can do a reload, which does not check consistency).
+ for a background task that dispatches these changes to the UI thread, it must syncronize the save cache operation until all the UI
+ updates are done (otherwise it is saving an incomlete picture, and risks doing an enumeration of the list while it is mutatuing (crash!)
+ 
+ various solutions:
+ 1) create a private serial queue.  dispatch_async tasks onto the queue, the queue will execute each task in order.
+ the tasks will dispatch sync onto the main queue, with the net effect that each operation runs in turn on the main
+ queue, ensuring ordered operations, and no conflicting access to critical resources (i.e. my mutable lists)
+ 2) for the refresh and the bulk load, skip incremental updates, and do a bulk reload in the callback.  Any UI
+ operation that might change the lists must be disabled between the call and the callback.
+ 3) use locks for all changes and enumerations (all reads?) of the item lists. - somplicated and slow
+ 4) do all changes on the UI thread, and make a copy from the UI for all background tasks, then syncronize updates on the UI thread.
+ This doesn't sound like it will work.
+ 
+ */
+
+
 #import "ProtocolCollection.h"
 #import "SProtocol.h"
 #import "NSArray+map.h"
@@ -177,7 +198,7 @@
 
 - (void)openWithCompletionHandler:(void (^)(BOOL))completionHandler
 {
-    dispatch_async(dispatch_queue_create("gov.nps.akr.observer", DISPATCH_QUEUE_SERIAL), ^{
+    dispatch_async(dispatch_queue_create("gov.nps.akr.observer", DISPATCH_QUEUE_CONCURRENT), ^{
         //temporarily remove the delegate so that updates are not sent for the bulk updates before the UI might be ready
         id savedDelegate = self.delegate;
         self.delegate = nil;
@@ -200,9 +221,14 @@
 
 - (void)refreshWithCompletionHandler:(void (^)(BOOL))completionHandler;
 {
-    dispatch_async(dispatch_queue_create("gov.nps.akr.observer", DISPATCH_QUEUE_SERIAL), ^{
-        //BOOL success = [self refreshRemoteProtocols] && [self refreshLocalProtocols]  ;
-        BOOL success = [self refreshRemoteProtocols];
+    dispatch_async(dispatch_queue_create("gov.nps.akr.observer", DISPATCH_QUEUE_CONCURRENT), ^{
+        //temporarily remove the delegate so that multiple updates wiil not be sent to the UI,
+        //the UI update should be done with a reload in the callback.
+        id savedDelegate = self.delegate;
+        self.delegate = nil;
+        BOOL success = [self refreshRemoteProtocols] && [self refreshLocalProtocols];
+        [self saveCache];
+        self.delegate = savedDelegate;
         if (completionHandler) {
             completionHandler(success);
         }
@@ -220,7 +246,7 @@
 - (void)downloadProtocolAtIndex:(NSUInteger)index WithCompletionHandler:(void (^)(BOOL success))completionHandler
 {
     //if (self.remoteItems.count <= index) return; //safety check
-    dispatch_async(dispatch_queue_create("gov.nps.akr.observer", DISPATCH_QUEUE_SERIAL), ^{
+    dispatch_async(dispatch_queue_create("gov.nps.akr.observer", DISPATCH_QUEUE_CONCURRENT), ^{
         SProtocol *protocol = [self remoteProtocolAtIndex:index];
         NSURL *newUrl = [self.protocolDirectory URLByAppendingPathComponent:protocol.url.lastPathComponent];
         newUrl = [newUrl URLByUniquingPath];
@@ -232,12 +258,13 @@
                     [self.delegate collection:self removedRemoteItemsAtIndexes:[NSIndexSet indexSetWithIndex:index]];
                     [self.localItems insertObject:protocol atIndex:0];
                     [self.delegate collection:self addedLocalItemsAtIndexes:[NSIndexSet indexSetWithIndex:0]];
+                    [self saveCache];
                 });
             } else {
                 [self.remoteItems removeObjectAtIndex:index];
                 [self.localItems insertObject:protocol atIndex:0];
+                [self saveCache];
             }
-            [self saveCache];
         }
         if (completionHandler) {
             completionHandler(success);
@@ -268,12 +295,11 @@
 }
 
 
-//FIXME - make sure this is called after all the dispatches to the main queue have finished
-//otherwise, we may be enumerating the collections when they are being changed on the main thread.
+//FIXME - There is a race condition here.
+//The item lists may be modified by another thread while enumerating the lists, causing a crash.
 - (void)saveCache
 {
-    dispatch_async(dispatch_queue_create("gov.nps.akr.observer",DISPATCH_QUEUE_SERIAL), ^{
-        //do the enumeration on the main thread, because all changes to items will be done there
+    dispatch_async(dispatch_queue_create("gov.nps.akr.observer",DISPATCH_QUEUE_CONCURRENT), ^{
         NSMutableArray *plist = [NSMutableArray new];
         for (SProtocol *protocol in self.localItems) {
             [plist addObject:[NSKeyedArchiver archivedDataWithRootObject:protocol]];
