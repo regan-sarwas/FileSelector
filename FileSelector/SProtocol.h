@@ -35,6 +35,7 @@
 
 // download the protocol from the remote URL to a local file...
 - (void)prepareToDownload;
+- (BOOL)isDownloading;
 - (BOOL)downloadToURL:(NSURL *)url;
 
 @end

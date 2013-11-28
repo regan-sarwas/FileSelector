@@ -7,18 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "FSTableViewItemCollection.h"
+#import "ProtocolDetailViewController.h"
 #import "ProtocolCollection.h"
 
-@class FSDetailViewController;
+@interface ProtocolSelectViewController : UITableViewController <CollectionChanged>
 
-@interface ProtocolSelectViewController : UITableViewController
-
-@property (strong, nonatomic) FSDetailViewController *detailViewController;
+@property (strong, nonatomic) ProtocolDetailViewController *detailViewController;
 @property (nonatomic, weak) ProtocolCollection *items;
-@property (nonatomic) BOOL showRemoteItems;
 @property (nonatomic, weak) UIPopoverController *popover;
-//@property (copy) void (^popoverDismissedCallback)(void);
 @property (copy) void (^rowSelectedCallback)(NSIndexPath *indexPath);
 
 @end

@@ -40,6 +40,7 @@
 		3965ED131845100000701F8A /* SurveySelectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3965ED121845100000701F8A /* SurveySelectViewController.m */; };
 		3965ED161845122D00701F8A /* MapSelectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3965ED151845122D00701F8A /* MapSelectViewController.m */; };
 		3979BA46184569D300F3F7EC /* ProtocolDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3979BA45184569D300F3F7EC /* ProtocolDetailViewController.m */; };
+		3979BA491846D28700F3F7EC /* NSIndexSet+indexPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 3979BA481846D28700F3F7EC /* NSIndexSet+indexPath.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -108,6 +109,8 @@
 		3965ED151845122D00701F8A /* MapSelectViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapSelectViewController.m; sourceTree = "<group>"; };
 		3979BA44184569D300F3F7EC /* ProtocolDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProtocolDetailViewController.h; sourceTree = "<group>"; };
 		3979BA45184569D300F3F7EC /* ProtocolDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProtocolDetailViewController.m; sourceTree = "<group>"; };
+		3979BA471846D28700F3F7EC /* NSIndexSet+indexPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSIndexSet+indexPath.h"; sourceTree = "<group>"; };
+		3979BA481846D28700F3F7EC /* NSIndexSet+indexPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSIndexSet+indexPath.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -210,6 +213,8 @@
 				3965ED05183D8F5400701F8A /* ProtocolSelectViewController.m */,
 				3979BA44184569D300F3F7EC /* ProtocolDetailViewController.h */,
 				3979BA45184569D300F3F7EC /* ProtocolDetailViewController.m */,
+				3979BA471846D28700F3F7EC /* NSIndexSet+indexPath.h */,
+				3979BA481846D28700F3F7EC /* NSIndexSet+indexPath.m */,
 			);
 			path = FileSelector;
 			sourceTree = "<group>";
@@ -358,6 +363,7 @@
 				3903C76A18344ED000D82038 /* FSDetailViewController.m in Sources */,
 				3903C75E18344ED000D82038 /* FSAppDelegate.m in Sources */,
 				3965ED06183D8F5400701F8A /* ProtocolSelectViewController.m in Sources */,
+				3979BA491846D28700F3F7EC /* NSIndexSet+indexPath.m in Sources */,
 				3903C78A1834520A00D82038 /* FSMainViewController.m in Sources */,
 				3979BA46184569D300F3F7EC /* ProtocolDetailViewController.m in Sources */,
 				3965ED01183C076A00701F8A /* NSArray+map.m in Sources */,

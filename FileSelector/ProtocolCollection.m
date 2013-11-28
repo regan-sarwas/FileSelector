@@ -12,7 +12,9 @@
 #import "NSURL+unique.h"
 
 @interface ProtocolCollection()
-@property (nonatomic, strong) NSMutableArray *items;
+@property (nonatomic, strong) NSMutableArray *localItems;  // of SProtocol
+@property (nonatomic, strong) NSMutableArray *remoteItems; // of SProtocol
+@property (nonatomic) NSUInteger selectedLocalIndex;
 @property (nonatomic, strong) NSURL *documentsDirectory;
 @property (nonatomic, strong) NSURL *protocolDirectory;
 @property (nonatomic, strong) NSURL *inboxDirectory;
@@ -21,35 +23,23 @@
 
 @implementation ProtocolCollection
 
-//FIXME - move these to a better location in the code
-- (SProtocol *)localProtocolAtIndex:(NSUInteger)index
-{
-    return self.items[index];
-}
-
-- (SProtocol *)remoteProtocolAtIndex:(NSUInteger)index
-{
-    return self.items[index];
-}
-
--(NSUInteger)numberOfLocalProtocols
-{
-    return self.items.count;
-}
-
--(NSUInteger)numberOfRemoteProtocols
-{
-    return self.items.count;
-}
 
 #pragma mark - private properties
 
-- (NSMutableArray *)items
+- (NSMutableArray *)localItems
 {
-    if (!_items) {
-        _items = [NSMutableArray new];
+    if (!_localItems) {
+        _localItems = [NSMutableArray new];
     }
-    return _items;
+    return _localItems;
+}
+
+- (NSMutableArray *)remoteItems
+{
+    if (!_remoteItems) {
+        _remoteItems = [NSMutableArray new];
+    }
+    return _remoteItems;
 }
 
 - (NSURL *)documentsDirectory
@@ -90,75 +80,91 @@
 }
 
 
-#pragma mark - FSTableViewItemCollection
+#pragma mark - TableView Data Soource Support
 
-@synthesize selectedIndex;
-
--(id<FSTableViewItem>)itemAtIndexPath:(NSIndexPath *)indexPath
+- (SProtocol *)localProtocolAtIndex:(NSUInteger)index
 {
-    return self.items[indexPath.row];
+    //if (self.localItems.count <= index) return; //safety check
+    return self.localItems[index];
 }
 
-- (id<FSTableViewItem>)selectedItem
+- (SProtocol *)remoteProtocolAtIndex:(NSUInteger)index
 {
-    return [self itemAtIndexPath:[self selectedIndex]];
+    //if (self.remoteItems.count <= index) return; //safety check
+    return self.remoteItems[index];
 }
 
-- (int)itemCount
+-(NSUInteger)numberOfLocalProtocols
 {
-    return self.items.count;
+    return self.localItems.count;
 }
 
-- (NSIndexPath *)addNewItem
+-(NSUInteger)numberOfRemoteProtocols
 {
-    // method is required by FSTableViewItemCollection.h
-    // but clients cannot add new Protocols (UI should enforce this)
-    return nil;
+    return self.remoteItems.count;
 }
 
-- (void) moveItemAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
+-(void)removeLocalProtocolAtIndex:(NSUInteger)index
 {
-    NSUInteger fromIndex = fromIndexPath.row;
-    NSUInteger toIndex = toIndexPath.row;
-    NSUInteger selected = self.selectedIndex.row;
+    //if (self.localItems.count <= index) return; //safety check
+    SProtocol *item = [self localProtocolAtIndex:index];
+    [[NSFileManager defaultManager] removeItemAtURL:item.url error:nil];
+    [self.localItems removeObjectAtIndex:index];
+    [self saveCache];
+    if (index < self.selectedLocalIndex) {
+        self.selectedLocalIndex = self.selectedLocalIndex - 1;
+    }
+}
+
+-(void)moveLocalProtocolAtIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex
+{
+    //if (self.localItems.count <= fromIndex || self.localItems.count <= toIndex) return;  //safety check
     if (fromIndex == toIndex)
         return;
-    if (self.items.count <= fromIndex || self.items.count <= toIndex)
-        return;
+
     //adjust the selected Index
-    if (fromIndex < selected && selected <= toIndex) {
-        self.selectedIndex = [NSIndexPath indexPathForRow:(self.selectedIndex.row - 1)
-                                                inSection:self.selectedIndex.section];
+    if (fromIndex < self.selectedLocalIndex && self.selectedLocalIndex <= toIndex) {
+        self.selectedLocalIndex = self.selectedLocalIndex - 1;
     }
-    if (toIndex <= selected && selected < fromIndex) {
-        self.selectedIndex = [NSIndexPath indexPathForRow:(self.selectedIndex.row + 1)
-                                                inSection:self.selectedIndex.section];
+    if (toIndex <= self.selectedLocalIndex && self.selectedLocalIndex < fromIndex) {
+        self.selectedLocalIndex = self.selectedLocalIndex + 1;
     }
     //move the item
-    id temp = self.items[fromIndex];
-    [self.items removeObjectAtIndex:fromIndex];
-    [self.items insertObject:temp atIndex:toIndex];
+    id temp = self.localItems[fromIndex];
+    [self.localItems removeObjectAtIndex:fromIndex];
+    [self.localItems insertObject:temp atIndex:toIndex];
     [self saveCache];
 }
 
--(void)removeItemAtIndexPath:(NSIndexPath *)indexPath
+-(void)moveRemoteProtocolAtIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex
 {
-    SProtocol *item = [self.items objectAtIndex:indexPath.row];
-    if (!item.isLocal) {
+    //if (self.localItems.count <= fromIndex || self.localItems.count <= toIndex) return;  //safety check
+    if (fromIndex == toIndex)
         return;
-    }
-    [[NSFileManager defaultManager] removeItemAtURL:item.url error:nil];
-    [self.items removeObjectAtIndex:indexPath.row];
+    id temp = self.remoteItems[fromIndex];
+    [self.remoteItems removeObjectAtIndex:fromIndex];
+    [self.remoteItems insertObject:temp atIndex:toIndex];
     [self saveCache];
-    //update the selected index
-    if (indexPath.row < self.selectedIndex.row) {
-        self.selectedIndex = [NSIndexPath indexPathForRow:(self.selectedIndex.row - 1)
-                                                inSection:self.selectedIndex.section];
-    }
-    if (self.items.count == 0) {
-        self.selectedIndex = nil;
+}
+
+- (void)setSelectedLocalProtocol:(NSUInteger)index
+{
+    if (index < self.localItems.count) {
+        self.selectedLocalIndex = index;
     }
 }
+
+- (SProtocol *)selectedLocalProtocol
+{
+    if (self.localItems.count) {
+        return self.localItems[self.selectedLocalIndex];
+    } else {
+        return nil;
+    }
+}
+
+
+
 
 #pragma mark - public methods
 
@@ -168,18 +174,23 @@
     return [[url pathExtension] isEqualToString:PROTOCOL_EXT];
 }
 
+
 - (void)openWithCompletionHandler:(void (^)(BOOL))completionHandler
 {
-    dispatch_async(dispatch_queue_create("gov.nps.akr.observer", DISPATCH_QUEUE_CONCURRENT), ^{
+    dispatch_async(dispatch_queue_create("gov.nps.akr.observer", DISPATCH_QUEUE_SERIAL), ^{
+        //temporarily remove the delegate so that updates are not sent for the bulk updates before the UI might be ready
+        id savedDelegate = self.delegate;
+        self.delegate = nil;
         [self loadCache];
-        [self moveIncomingDocuments];
-        [self syncWithFileSystem];
+        BOOL success = [self refreshLocalProtocols];
         [self saveCache];
+        self.delegate = savedDelegate;
         if (completionHandler) {
-            completionHandler(YES);
+            completionHandler(success);
         }
     });
 }
+
 
 - (BOOL)openURL:(NSURL *)url
 {
@@ -189,26 +200,45 @@
 
 - (void)refreshWithCompletionHandler:(void (^)(BOOL))completionHandler;
 {
-    //TODO update filesystem ?
-    
-    //FIXME - get URL from settings
-    NSURL *url = [NSURL URLWithString:@"http://akrgis.nps.gov/observer/protocols/list.json"];
-    [self refreshFromURL:url completionHandler:completionHandler];
+    dispatch_async(dispatch_queue_create("gov.nps.akr.observer", DISPATCH_QUEUE_SERIAL), ^{
+        //BOOL success = [self refreshRemoteProtocols] && [self refreshLocalProtocols]  ;
+        BOOL success = [self refreshRemoteProtocols];
+        if (completionHandler) {
+            completionHandler(success);
+        }
+    });
 }
 
--(void)prepareToDownloadSelectedItem:(NSIndexPath *)indexPath
+
+-(void)prepareToDownloadProtocolAtIndex:(NSUInteger)index
 {
-    [self.items[indexPath.row] prepareToDownload];
+    //if (self.remoteItems.count <= index) return; //safety check
+    [self.remoteItems[index] prepareToDownload];
 }
 
-- (void)downloadSelectedItemWithCompletionHandler:(void (^)(BOOL success))completionHandler
+
+- (void)downloadProtocolAtIndex:(NSUInteger)index WithCompletionHandler:(void (^)(BOOL success))completionHandler
 {
-    dispatch_async(dispatch_queue_create("gov.nps.akr.observer", DISPATCH_QUEUE_CONCURRENT), ^{
-        SProtocol *protocol = (SProtocol *)self.selectedItem;
+    //if (self.remoteItems.count <= index) return; //safety check
+    dispatch_async(dispatch_queue_create("gov.nps.akr.observer", DISPATCH_QUEUE_SERIAL), ^{
+        SProtocol *protocol = [self remoteProtocolAtIndex:index];
         NSURL *newUrl = [self.protocolDirectory URLByAppendingPathComponent:protocol.url.lastPathComponent];
         newUrl = [newUrl URLByUniquingPath];
-        BOOL success = [((SProtocol *)self.selectedItem) downloadToURL:newUrl];
-        [self saveCache];
+        BOOL success = [protocol downloadToURL:newUrl];
+        if (success) {
+            if (self.delegate) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.remoteItems removeObjectAtIndex:index];
+                    [self.delegate collection:self removedRemoteItemsAtIndexes:[NSIndexSet indexSetWithIndex:index]];
+                    [self.localItems insertObject:protocol atIndex:0];
+                    [self.delegate collection:self addedLocalItemsAtIndexes:[NSIndexSet indexSetWithIndex:0]];
+                });
+            } else {
+                [self.remoteItems removeObjectAtIndex:index];
+                [self.localItems insertObject:protocol atIndex:0];
+            }
+            [self saveCache];
+        }
         if (completionHandler) {
             completionHandler(success);
         }
@@ -219,27 +249,47 @@
 
 #pragma mark - private methods
 
-//TODO - consider NSDefaults as it does memeory mapping and defered writes
-- (void) loadCache
+//TODO - consider NSDefaults as it does memory mapping and defered writes
+
+//done on background thread
+- (void)loadCache
 {
     NSArray *plist = [NSArray arrayWithContentsOfURL:self.cacheFile];
-    self.items = [plist mapObjectsUsingBlock:^id(id obj, NSUInteger idx) {
-        return [NSKeyedUnarchiver unarchiveObjectWithData:obj];
-    }];
+    for (id obj in plist) {
+        id protocol = [NSKeyedUnarchiver unarchiveObjectWithData:obj];
+        if ([protocol isKindOfClass:[SProtocol class]]) {
+            if (((SProtocol *)protocol).isLocal) {
+                [self.localItems addObject:protocol];
+            } else {
+                [self.remoteItems addObject:protocol];
+            }
+        }
+    }
 }
 
-- (void) saveCache
+
+//FIXME - make sure this is called after all the dispatches to the main queue have finished
+//otherwise, we may be enumerating the collections when they are being changed on the main thread.
+- (void)saveCache
 {
-    dispatch_async(dispatch_queue_create("gov.nps.akr.observer", DISPATCH_QUEUE_CONCURRENT), ^{
-        NSArray *plist = [self.items mapObjectsUsingBlock:^id(id obj, NSUInteger idx) {
-            return [NSKeyedArchiver archivedDataWithRootObject:obj];
-        }];
+    dispatch_async(dispatch_queue_create("gov.nps.akr.observer",DISPATCH_QUEUE_SERIAL), ^{
+        //do the enumeration on the main thread, because all changes to items will be done there
+        NSMutableArray *plist = [NSMutableArray new];
+        for (SProtocol *protocol in self.localItems) {
+            [plist addObject:[NSKeyedArchiver archivedDataWithRootObject:protocol]];
+        }
+        for (SProtocol *protocol in self.remoteItems) {
+            [plist addObject:[NSKeyedArchiver archivedDataWithRootObject:protocol]];
+        }
         [plist writeToURL:self.cacheFile atomically:YES];
     });
 }
 
+//done on callers thread
 - (BOOL)openURL:(NSURL *)url saveCache:(BOOL)save
 {
+    //FIXME - adding a new local protocol, might need to remove the same remote protocol
+
     NSURL *newUrl = [self.protocolDirectory URLByAppendingPathComponent:url.lastPathComponent];
     newUrl = [newUrl URLByUniquingPath];
     NSError *error = nil;
@@ -255,7 +305,7 @@
         [[NSFileManager defaultManager] removeItemAtURL:newUrl error:nil];
         return NO;
     }
-    if ([self.items containsObject:protocol])
+    if ([self.localItems containsObject:protocol])
     {
         NSLog(@"We already have the protocol in %@.  Ignoring the duplicate.",url.lastPathComponent);
         [[NSFileManager defaultManager] removeItemAtURL:url error:nil];
@@ -263,15 +313,30 @@
         return YES;
     }
     [[NSFileManager defaultManager] removeItemAtURL:url error:nil];
-    [self.items insertObject:protocol atIndex:0];
-    //FIXME - call delegate to update UI
+    if (self.delegate) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.localItems insertObject:protocol atIndex:0];
+            [self.delegate collection:self addedLocalItemsAtIndexes:[NSIndexSet indexSetWithIndex:0]];
+        });
+    } else {
+        [self.localItems insertObject:protocol atIndex:0];
+    }
     if (save) {
         [self saveCache];
     }
     return YES;
 }
 
+//done on background thread
+- (BOOL)refreshLocalProtocols;
+{
+    [self moveIncomingDocuments];
+    [self syncWithFileSystem];
+    return YES;
+}
 
+
+//done on background thread
 - (void) moveIncomingDocuments
 {
     for (NSURL *directory in @[self.inboxDirectory, self.documentsDirectory]) {
@@ -293,6 +358,7 @@
     }
 }
 
+//done on background thread
 - (void)syncWithFileSystem
 {
     //urls in the protocols directory
@@ -303,8 +369,8 @@
                                                     error:nil]];
     //remove cache items not in filesystem
     NSMutableIndexSet *itemsToRemove = [NSMutableIndexSet new];
-    for (int i = 0; i < self.items.count; i++) {
-        SProtocol *p = self.items[i];
+    for (int i = 0; i < self.localItems.count; i++) {
+        SProtocol *p = self.localItems[i];
         if (p.isLocal) {
             NSUInteger index = [urls indexOfObject:p.url];
             if (index == NSNotFound) {
@@ -314,8 +380,14 @@
             }
         }
     }
-    [self.items removeObjectsAtIndexes:itemsToRemove];
-    //FIXME - call delegate to update UI
+    if (self.delegate) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.localItems removeObjectsAtIndexes:itemsToRemove];
+            [self.delegate collection:self removedLocalItemsAtIndexes:itemsToRemove];
+        });
+    } else {
+        [self.localItems removeObjectsAtIndexes:itemsToRemove];
+    }
 
     //add filesystem urls not in cache
     for (NSURL *url in urls) {
@@ -324,32 +396,37 @@
             NSLog(@"data at %@ was not a valid protocol object",url);
             [[NSFileManager defaultManager] removeItemAtURL:url error:nil];
         }
-        //[self.items addObject:protocol];
-        [self.items insertObject:protocol atIndex:0];
-        //FIXME - call delegate to update UI
+        if (self.delegate) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.localItems addObject:protocol];
+                [self.delegate collection:self addedLocalItemsAtIndexes:[NSIndexSet indexSetWithIndex:self.localItems.count-1]];
+            });
+        } else {
+            [self.localItems addObject:protocol];
+        }
     }
     [self checkAndFixSelectedIndex];
 }
 
-- (void)refreshFromURL:(NSURL *)url completionHandler:(void (^)(BOOL))completionHandler;
+
+//done on background thread
+- (BOOL)refreshRemoteProtocols;
 {
-    dispatch_async(dispatch_queue_create("gov.nps.akr.observer", DISPATCH_QUEUE_CONCURRENT), ^{
-        BOOL success = NO;
-        NSMutableArray *serverProtocols = [self fetchProtocolListFromURL:url];
-        if (serverProtocols) {
-            [self syncCacheWithServerProtocols:serverProtocols];
-            success = YES;
-        }
-        if (completionHandler) {
-            completionHandler(success);
-        }
-    });
+    //FIXME - get URL from settings
+    NSURL *url = [NSURL URLWithString:@"http://akrgis.nps.gov/observer/protocols/list.json"];
+    NSMutableArray *serverProtocols = [self fetchProtocolListFromURL:url];
+    if (serverProtocols) {
+        [self syncCacheWithServerProtocols:serverProtocols];
+        return YES;
+    }
+    return NO;
 }
 
+
+//done on background thread
 - (NSMutableArray *)fetchProtocolListFromURL:(NSURL *)url
 {
     NSMutableArray *protocols = nil;
-    //TODO - does this work with a remote URL?
     NSData *data = [NSData dataWithContentsOfURL:url];
     if (data) {
         id json = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
@@ -374,6 +451,7 @@
     return protocols;
 }
 
+//done on background thread
 -  (void)syncCacheWithServerProtocols:(NSMutableArray *)serverProtocols
 {
     // we need to remove cached items not on the server,
@@ -381,15 +459,17 @@
     // Do not add server items that match local items in the cache.
     // a cached item (on the server) might have an updated URL
     // option1 - remove all server protocols, and add new ones - simple, however all UI items would need to be reloaded
-    // option2 - do incremental per item update (only update UI as necessary)
-    // FIXME - currently I have implemented option2, but the UI does a bulk update, since it doesn't know what has updated 
-    
+    // option2 - do incremental per item update (only update UI as necessary) - implemented
+
     BOOL cacheNeedsResave = NO;
 
-    //remove cached server items not the server
+    //do not change the list while enumerating
+    NSMutableDictionary *protocolsToUpdate = [NSMutableDictionary new];
+
+    //remove protocols in remoteItems not in serverProtocols
     NSMutableIndexSet *itemsToRemove = [NSMutableIndexSet new];
-    for (int i = 0; i < self.items.count; i++) {
-        SProtocol *p = self.items[i];
+    for (int i = 0; i < self.remoteItems.count; i++) {
+        SProtocol *p = self.remoteItems[i];
         if (!p.isLocal) {
             NSUInteger index = [serverProtocols indexOfObject:p];
             if (index == NSNotFound) {
@@ -399,24 +479,43 @@
                 //update the url of cached server objects
                 SProtocol *serverProtocol = serverProtocols[index];
                 if (![p.url isEqual:serverProtocol.url]) {
-                    self.items[i] = serverProtocol;
+                    protocolsToUpdate[[NSNumber numberWithInt:i]] = serverProtocol;
                 }
                 [serverProtocols removeObjectAtIndex:index];
             }
         }
     }
-    [self.items removeObjectsAtIndexes:itemsToRemove];
-    //FIXME - call delegate to update UI
+    if (self.delegate) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            for (id key in [protocolsToUpdate allKeys]) {
+                self.remoteItems[[key integerValue]] = [protocolsToUpdate objectForKey:key];
+                [self.delegate collection:self changedRemoteItemsAtIndexes:[NSIndexSet indexSetWithIndex:[key integerValue]]];
+            }
+            [self.remoteItems removeObjectsAtIndexes:itemsToRemove];
+            [self.delegate collection:self removedRemoteItemsAtIndexes:itemsToRemove];
+       });
+    } else {
+        for (id key in [protocolsToUpdate allKeys]) {
+            self.remoteItems[[key integerValue]] = [protocolsToUpdate objectForKey:key];
+        }
+        [self.remoteItems removeObjectsAtIndexes:itemsToRemove];
+    }
 
     //add server protocols not in cache (local or server)
     for (Protocol *protocol in serverProtocols) {
-        if (![self.items containsObject:protocol]) {
-            [self.items addObject:protocol];
-            //FIXME - call delegate to update UI
+        if (![self.localItems containsObject:protocol] && ![self.remoteItems containsObject:protocol]) {
+            if (self.delegate) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.remoteItems addObject:protocol];
+                    [self.delegate collection:self addedRemoteItemsAtIndexes:[NSIndexSet indexSetWithIndex:self.remoteItems.count-1]];
+                });
+            } else {
+                [self.remoteItems addObject:protocol];
+            }
             cacheNeedsResave = YES;
         }
     }
-    [self checkAndFixSelectedIndex];
+    //[self checkAndFixSelectedIndex];
     if (cacheNeedsResave) {
         [self saveCache];
     }
@@ -424,13 +523,8 @@
 
 - (void) checkAndFixSelectedIndex
 {
-    if (self.itemCount <= self.selectedIndex.row) {
-        if (self.items.count == 0) {
-            self.selectedIndex = nil;
-        } else {
-            self.selectedIndex = [NSIndexPath indexPathForRow:(self.itemCount - 1)
-                                                    inSection:self.selectedIndex.section];
-        }
+    if (self.localItems.count <= self.selectedLocalIndex) {
+        self.selectedLocalIndex = (self.localItems.count == 0) ? 0 : self.localItems.count - 1;
     }
 }
 

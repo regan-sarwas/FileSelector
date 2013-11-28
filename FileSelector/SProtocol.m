@@ -147,7 +147,7 @@
     return [self isEqualtoProtocol:other];
 }
 
--(NSUInteger)hash
+- (NSUInteger)hash
 {
     return self.title.hash ^ self.version.hash ^ self.date.hash;
 }
@@ -161,10 +161,16 @@
            ((self.date == other.date) || [self.date isEqual:other.date]);
 }
 
--(void)prepareToDownload
+- (void)prepareToDownload
 {
     self.downloading = YES;
 }
+
+- (BOOL)isDownloading
+{
+    return self.downloading;
+}
+
 
 -(BOOL)downloadToURL:(NSURL *)url
 {

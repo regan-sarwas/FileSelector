@@ -174,7 +174,7 @@
         vc.title = segue.identifier;
         vc.items = (id<FSTableViewItemCollection>)self.protocols;
         vc.rowSelectedCallback = ^(NSIndexPath *indexPath){
-            [self newSurveyWithProtocol:(SProtocol *)[self.protocols itemAtIndexPath:indexPath]];
+            [self newSurveyWithProtocol:[self.protocols localProtocolAtIndex:indexPath.row]];
         };
 
         //if we are in a popover, we what the new vc to stay the size.
