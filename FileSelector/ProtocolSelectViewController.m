@@ -30,7 +30,7 @@
 {
     [super viewDidLoad];
     self.toolbarItems = @[self.editButtonItem];
-    //FIXME - use setting manager in observer
+    //FIXME: use setting manager in observer
     //self.showRemoteItems = [Settings manager].showRemoteItems
     self.showRemoteItems = [[NSUserDefaults standardUserDefaults] boolForKey:@"showRemoteProtocolss"];
     self.refreshControl = [UIRefreshControl new];
@@ -46,7 +46,7 @@
 -(void)viewWillDisappear:(BOOL)animated
 {
     [self.navigationController setToolbarHidden:YES animated:NO];
-    //FIXME - use setting manager in observer
+    //FIXME: use setting manager in observer
     //[Settings manager].showRemoteItems = self.showRemoteItems
     [[NSUserDefaults standardUserDefaults] setBool:self.showRemoteItems forKey:@"showRemoteProtocolss"];
 }
@@ -157,7 +157,7 @@
         ProtocolTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier forIndexPath:indexPath];
         cell.titleLabel.text = item.title;
         cell.subtitleLabel.text = item.subtitle;
-        cell.downloadImageView.hidden = item.isDownloading;  //FIXME hide if downloading
+        cell.downloadImageView.hidden = item.isDownloading;  //FIXME: hide if downloading
         return cell;
     }
 }
@@ -255,7 +255,7 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.refreshControl endRefreshing];
             if (success) {
-                //FIXME - get incremental updates with a delegate
+                //FIXME: get incremental updates with a delegate
                 [tableView reloadData];
             } else {
                 [[[UIAlertView alloc] initWithTitle:@"Error" message:@"Can't connect to server" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil] show];

@@ -12,15 +12,17 @@
 //Note that the data model will be changed on the background thread, as changes are made to the collections
 //that are referenced by the table view, I must do the insert/delete/change on the mainthread with the call
 //to update the UI, otherwise, I will get an internal inconsistency error
-@protocol CollectionChanged <NSObject>
 
+//FIXME: this should be a singleton, multiple instances will clash when saving state to the cache.
+
+//FIXME: move protocol to a separate file
+@protocol CollectionChanged <NSObject>
 - (void) collection:(id)collection addedLocalItemsAtIndexes:(NSIndexSet *)indexSet;
 - (void) collection:(id)collection addedRemoteItemsAtIndexes:(NSIndexSet *)indexSet;
 - (void) collection:(id)collection removedLocalItemsAtIndexes:(NSIndexSet *)indexSet;
 - (void) collection:(id)collection removedRemoteItemsAtIndexes:(NSIndexSet *)indexSet;
 - (void) collection:(id)collection changedLocalItemsAtIndexes:(NSIndexSet *)indexSet;
 - (void) collection:(id)collection changedRemoteItemsAtIndexes:(NSIndexSet *)indexSet;
-
 @end
 
 #import <Foundation/Foundation.h>

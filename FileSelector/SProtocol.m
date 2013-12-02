@@ -18,7 +18,7 @@
 
 
 @interface SProtocol() {
-    NSString *_title;  //protocol properties cannot be sysnthesized
+    NSString *_title;  //protocol properties cannot be synthesized
 }
 @property (nonatomic) BOOL downloading;
 @end
@@ -197,7 +197,7 @@
 #pragma mark - date formatters
 
 //cached date formatters per xcdoc://ios/documentation/Cocoa/Conceptual/DataFormatting/Articles/dfDateFormatting10_4.html
-//FIXME - subscribe to the NSCurrentLocaleDidChangeNotification notification and update cached objects when the current locale changes
+//TODO: subscribe to the NSCurrentLocaleDidChangeNotification notification and update cached objects when the current locale changes
 
 - (NSDate *) dateFromString:(NSString *)date
 {

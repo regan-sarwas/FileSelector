@@ -87,26 +87,26 @@
 
 - (void)openWithCompletionHandler:(void (^)(BOOL))completionHandler
 {
-    //FIXME - just do it
+    //TODO: implement openWithCompletionHandler
     //See protocol for an example.
     //maps, be sure to set the file attribute to do not backup.
 }
 
 - (BOOL)openURL:(NSURL *)url
 {
-    //FIXME
+    //FIXME: just do it
     return YES;
 }
 
 + (BOOL) collectsURL:(NSURL *)url
 {
-    //FIXME - check for match with extension
+    //FIXME: check for match with extension
     return YES;
 }
 
 - (void)refreshWithCompletionHandler:(void (^)(BOOL))completionHandler;
 {
-    //FIXME - implement
+    //FIXME: implement
 }
 
 

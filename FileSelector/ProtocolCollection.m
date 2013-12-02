@@ -224,7 +224,7 @@
     dispatch_async(dispatch_queue_create("gov.nps.akr.observer", DISPATCH_QUEUE_CONCURRENT), ^{
         //temporarily remove the delegate so that multiple updates wiil not be sent to the UI,
         //the UI update should be done with a reload in the callback.
-        //FIXME - two solutions, save cacee on UI, or use no delegate test and pick one
+        //FIXME: two solutions, save cache on UI, or use no delegate test and pick one
         id savedDelegate = self.delegate;
         self.delegate = nil;
         BOOL success = [self refreshRemoteProtocols] && [self refreshLocalProtocols];
@@ -283,7 +283,8 @@
 
 #pragma mark - private methods
 
-//TODO - consider NSDefaults as it does memory mapping and defered writes
+//TODO: - consider NSDefaults as it does memory mapping and defered writes
+//       this also make the class a singleton object
 
 //done on background thread
 - (void)loadCache
@@ -302,7 +303,7 @@
 }
 
 
-//FIXME - There is a race condition here.
+//FIXME: There is a race condition here.
 //The item lists may be modified by another thread while enumerating the lists, causing a crash.
 - (void)saveCache
 {
@@ -321,7 +322,7 @@
 //done on callers thread
 - (BOOL)openURL:(NSURL *)url saveCache:(BOOL)save
 {
-    //FIXME - adding a new local protocol, might need to remove the same remote protocol
+    //FIXME: adding a new local protocol, might need to remove the same remote protocol
 
     NSURL *newUrl = [self.protocolDirectory URLByAppendingPathComponent:url.lastPathComponent];
     newUrl = [newUrl URLByUniquingPath];
@@ -449,7 +450,7 @@
 //done on background thread
 - (BOOL)refreshRemoteProtocols;
 {
-    //FIXME - get URL from settings
+    //FIXME: get URL from settings
     NSURL *url = [NSURL URLWithString:@"http://akrgis.nps.gov/observer/protocols/list.json"];
     NSMutableArray *serverProtocols = [self fetchProtocolListFromURL:url];
     if (serverProtocols) {

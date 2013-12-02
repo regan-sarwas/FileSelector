@@ -10,7 +10,7 @@
 
 @implementation FSMap
 
-// FIXME - This is kinda lame.  will be better when we implement a new class without inheritance
+//FIXME: This is kinda lame.  will be better when we implement a new class without inheritance
 -(NSString *)title
 {
     static int counter;
