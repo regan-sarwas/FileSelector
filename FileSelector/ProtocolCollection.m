@@ -40,6 +40,7 @@
 @property (nonatomic, strong) NSURL *protocolDirectory;
 @property (nonatomic, strong) NSURL *inboxDirectory;
 @property (nonatomic, strong) NSURL *cacheFile;
+@property (nonatomic) BOOL isLoaded;
 @end
 
 @implementation ProtocolCollection
@@ -189,6 +190,19 @@
 
 #pragma mark - public methods
 
+static ProtocolCollection *_sharedCollection = nil;
+
++ (ProtocolCollection *)sharedCollection
+{
+    if (!_sharedCollection) {
+        _sharedCollection = [[ProtocolCollection alloc] init];
+    }
+    return _sharedCollection;
+}
+
++ (void)releaseSharedCollection {
+    _sharedCollection = nil;
+}
 
 + (BOOL) collectsURL:(NSURL *)url
 {
@@ -198,19 +212,24 @@
 
 - (void)openWithCompletionHandler:(void (^)(BOOL))completionHandler
 {
-    dispatch_async(dispatch_queue_create("gov.nps.akr.observer", DISPATCH_QUEUE_CONCURRENT), ^{
-        //temporarily remove the delegate so that updates are not sent for the bulk updates before the UI might be ready
-        //  currently unnecessary, since open is only called when the delegate is nil;
-        id savedDelegate = self.delegate;
-        self.delegate = nil;
-        [self loadCache];
-        BOOL success = [self refreshLocalProtocols];
-        [self saveCache];
-        self.delegate = savedDelegate;
-        if (completionHandler) {
-            completionHandler(success);
-        }
-    });
+    if (self.isLoaded) {
+        if (completionHandler) completionHandler(YES);
+    } else {
+        dispatch_async(dispatch_queue_create("gov.nps.akr.observer", DISPATCH_QUEUE_CONCURRENT), ^{
+            //temporarily remove the delegate so that updates are not sent for the bulk updates before the UI might be ready
+            //  currently unnecessary, since open is only called when the delegate is nil;
+            id savedDelegate = self.delegate;
+            self.delegate = nil;
+            [self loadCache];
+            BOOL success = [self refreshLocalProtocols];
+            [self saveCache];
+            self.delegate = savedDelegate;
+            self.isLoaded = YES;
+            if (completionHandler) {
+                completionHandler(success);
+            }
+        });
+    }
 }
 
 
@@ -322,8 +341,6 @@
 //done on callers thread
 - (SProtocol *)openURL:(NSURL *)url saveCache:(BOOL)shouldSaveCache
 {
-    //FIXME: adding a new local protocol, might need to remove the same remote protocol
-
     NSURL *newUrl = [self.protocolDirectory URLByAppendingPathComponent:url.lastPathComponent];
     newUrl = [newUrl URLByUniquingPath];
     NSError *error = nil;
@@ -339,27 +356,44 @@
         [[NSFileManager defaultManager] removeItemAtURL:newUrl error:nil];
         return nil;
     }
-    NSUInteger protocolIndex = [self.localItems indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
+    //Check if the protocol is already in our local list
+    NSUInteger localIndex = [self.localItems indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
         return [protocol isEqualtoProtocol:obj];
     }];
-    if (protocolIndex != NSNotFound)
+    if (localIndex != NSNotFound)
     {
         NSLog(@"We already have the protocol in %@.  Ignoring the duplicate.",url.lastPathComponent);
         [[NSFileManager defaultManager] removeItemAtURL:url error:nil];
         [[NSFileManager defaultManager] removeItemAtURL:newUrl error:nil];
-        return self.localItems[protocolIndex];
+        return self.localItems[localIndex];
     }
     [[NSFileManager defaultManager] removeItemAtURL:url error:nil];
+
+    //Adding a new local protocol, might need to remove the same remote protocol
+    NSUInteger remoteIndex = [self.remoteItems indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
+        return [protocol isEqualtoProtocol:obj];
+    }];
+
     if (self.delegate) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.localItems insertObject:protocol atIndex:0];
             [self.delegate collection:self addedLocalItemsAtIndexes:[NSIndexSet indexSetWithIndex:0]];
+            if (remoteIndex != NSNotFound)
+            {
+                [self.remoteItems removeObjectAtIndex:remoteIndex];
+                [self.delegate collection:self addedLocalItemsAtIndexes:[NSIndexSet indexSetWithIndex:remoteIndex]];
+            }
             if (shouldSaveCache) {
                 [self saveCache];
             }
         });
     } else {
         [self.localItems insertObject:protocol atIndex:0];
+        if (remoteIndex != NSNotFound)
+        {
+            [self.remoteItems removeObjectAtIndex:remoteIndex];
+            [self.delegate collection:self addedLocalItemsAtIndexes:[NSIndexSet indexSetWithIndex:remoteIndex]];
+        }
         if (shouldSaveCache) {
             [self saveCache];
         }
@@ -382,7 +416,7 @@
     //If a file is added to the inbox, then the protocolcollection was created to add the inbox object, it will not be there when openURL is called.
     //OpenURL returns a protocol whcih can't be found if the URL is gone. therefore we cannot add Inbox items on open.
     //for (NSURL *directory in @[self.inboxDirectory, self.documentsDirectory]) {
-    for (NSURL *directory in @[self.inboxDirectory, self.documentsDirectory]) {
+    for (NSURL *directory in @[self.documentsDirectory]) {
         NSError *error = nil;
         NSArray *array = [[NSFileManager defaultManager]
                           contentsOfDirectoryAtURL:directory
@@ -514,7 +548,9 @@
     for (int i = 0; i < self.remoteItems.count; i++) {
         SProtocol *p = self.remoteItems[i];
         if (!p.isLocal) {
-            NSUInteger index = [serverProtocols indexOfObject:p];
+            NSUInteger index = [serverProtocols  indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
+                return [p isEqualtoProtocol:obj];
+            }];
             if (index == NSNotFound) {
                 [itemsToRemove addIndex:i];
                 modelChanged = YES;

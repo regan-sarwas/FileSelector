@@ -51,7 +51,7 @@
     [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
 
     addButton.enabled = NO;
-    self.protocols = [[ProtocolCollection alloc] init];
+    self.protocols = [ProtocolCollection sharedCollection];
     [self.protocols openWithCompletionHandler:^(BOOL success) {
         dispatch_async(dispatch_get_main_queue(), ^{
             addButton.enabled = YES;
@@ -71,6 +71,7 @@
 -(void)viewWillDisappear:(BOOL)animated
 {
     [self.navigationController setToolbarHidden:YES animated:NO];
+    [ProtocolCollection releaseSharedCollection];
 }
 
 - (void)didReceiveMemoryWarning

@@ -146,8 +146,10 @@
         }
     }
 
+    //FIXME: this isn't working when the Protocol view is up
+    //I need to make sure I am getting the protocol collection it is using, and make sure updates are going to the delegate.
     if ([ProtocolCollection collectsURL:url]) {
-        ProtocolCollection *protocols = [[ProtocolCollection alloc] init];
+        ProtocolCollection *protocols = [ProtocolCollection sharedCollection];
         [protocols openWithCompletionHandler:^(BOOL success) {
             SProtocol *protocol = [protocols openURL:url];
             dispatch_async(dispatch_get_main_queue(), ^{
