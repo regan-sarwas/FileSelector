@@ -13,6 +13,7 @@
 
 @interface ProtocolSelectViewController ()
 @property (nonatomic) BOOL showRemoteItems;
+@property (nonatomic) BOOL isBackgroundRefreshing;
 @end
 
 @implementation ProtocolSelectViewController
@@ -32,7 +33,7 @@
     self.toolbarItems = @[self.editButtonItem];
     //FIXME: use setting manager in observer
     //self.showRemoteItems = [Settings manager].showRemoteItems
-    self.showRemoteItems = [[NSUserDefaults standardUserDefaults] boolForKey:@"showRemoteProtocolss"];
+    self.showRemoteItems = [[NSUserDefaults standardUserDefaults] boolForKey:@"showRemoteProtocols"];
     self.refreshControl = [UIRefreshControl new];
     [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
 }
@@ -40,7 +41,6 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     [self.navigationController setToolbarHidden:NO animated:NO];
-
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -48,7 +48,7 @@
     [self.navigationController setToolbarHidden:YES animated:NO];
     //FIXME: use setting manager in observer
     //[Settings manager].showRemoteItems = self.showRemoteItems
-    [[NSUserDefaults standardUserDefaults] setBool:self.showRemoteItems forKey:@"showRemoteProtocolss"];
+    [[NSUserDefaults standardUserDefaults] setBool:self.showRemoteItems forKey:@"showRemoteProtocols"];
 }
 
 - (void)didReceiveMemoryWarning
@@ -164,6 +164,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    
     if (indexPath.section == 2) {
         self.showRemoteItems = ! self.showRemoteItems;
         [tableView reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(1, 2)] withRowAnimation:YES];
@@ -171,8 +172,14 @@
     }
 
     if (indexPath.section == 1) {
-        [self downloadItem:indexPath];
-        return;
+        if (self.isBackgroundRefreshing)
+        {
+            [[[UIAlertView alloc] initWithTitle:@"Try Again" message:@"Can not download while refreshing.  Please try again when refresh is complete." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil] show];
+            return;
+        } else {
+            [self downloadItem:indexPath];
+            return;
+        }
     }
 
     [self.items setSelectedLocalProtocol:indexPath.row];
@@ -212,6 +219,11 @@
     if (fromIndexPath.section != toIndexPath.section) {
         return;
     }
+    if (self.isBackgroundRefreshing)
+    {
+        [[[UIAlertView alloc] initWithTitle:@"Try Again" message:@"Could not make changes while refreshing.  Please try again when refresh is complete." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil] show];
+        return;
+    }
     if (fromIndexPath.section == 0) {
         [self.items moveLocalProtocolAtIndex:fromIndexPath.row toIndex:toIndexPath.row];
     }
@@ -222,6 +234,11 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if (self.isBackgroundRefreshing)
+    {
+        [[[UIAlertView alloc] initWithTitle:@"Try Again" message:@"Could not make changes while refreshing.  Please try again when refresh is complete." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil] show];
+        return;
+    }
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         [self.items removeLocalProtocolAtIndex:indexPath.row];
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
@@ -248,22 +265,22 @@
 - (void) refresh:(id)sender
 {
     [self.refreshControl beginRefreshing];
-    self.showRemoteItems = YES;
-    UITableView *tableView = self.tableView;
+    self.isBackgroundRefreshing = YES;
     [self.items refreshWithCompletionHandler:^(BOOL success) {
         //on abackground thread
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.refreshControl endRefreshing];
+            self.isBackgroundRefreshing = NO;
             if (success) {
-                //FIXME: get incremental updates with a delegate
-                [tableView reloadData];
+                self.showRemoteItems = YES;
+                //to avoid a multi-threaded race condition, the delegate is not called during a refresh.  Therefore bulk reload is required.
+                //[self.tableView reloadData];
             } else {
                 [[[UIAlertView alloc] initWithTitle:@"Error" message:@"Can't connect to server" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil] show];
             }
         });
     }];
 }
-
 
 - (void) downloadItem:(NSIndexPath *)indexPath
 {

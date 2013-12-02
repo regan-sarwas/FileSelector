@@ -10,6 +10,7 @@
 #import "FSSurvey.h"
 
 @interface FSSurveyCollection()
+//FIXME - we should be private properties. They are public temporarily as a convenience for the subclass
 //@property (strong,nonatomic) NSMutableArray *items;
 //@property (strong, nonatomic) FSSurvey* selectedSurvey;
 @end
@@ -44,11 +45,11 @@
 - (NSIndexPath *)addNewItem
 {
     //insert at head
-    //[self.items insertObject:[FSSurvey new] atIndex:0];
-    //return [NSIndexPath indexPathForRow:0 inSection:0];
+    [self.items insertObject:[FSSurvey new] atIndex:0];
+    return [NSIndexPath indexPathForRow:0 inSection:0];
     //insert at end
-    [self.items addObject:[FSSurvey new]];
-    return [NSIndexPath indexPathForRow:(self.items.count-1) inSection:0];
+    //[self.items addObject:[FSSurvey new]];
+    //return [NSIndexPath indexPathForRow:(self.items.count-1) inSection:0];
 }
 
 - (int)itemCount
@@ -90,6 +91,10 @@
     //TODO: implement openWithCompletionHandler
     //See protocol for an example.
     //maps, be sure to set the file attribute to do not backup.
+    BOOL success = YES;
+    if (completionHandler) {
+        completionHandler(success);
+    }
 }
 
 - (BOOL)openURL:(NSURL *)url
@@ -100,8 +105,7 @@
 
 + (BOOL) collectsURL:(NSURL *)url
 {
-    //FIXME: check for match with extension
-    return YES;
+    return [[url pathExtension] isEqualToString:SURVEY_EXT];
 }
 
 - (void)refreshWithCompletionHandler:(void (^)(BOOL))completionHandler;

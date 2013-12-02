@@ -48,7 +48,10 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="SelectSurveyButton" destination="cS4-7B-oXQ" id="4mZ-6n-04u"/>
                         <outlet property="barTitle" destination="2WE-pm-JS0" id="TTl-V9-gKA"/>
+                        <outlet property="selectMapButton" destination="Jlz-PJ-sAu" id="e0O-xL-hy1"/>
+                        <outlet property="selectSurveyButton" destination="cS4-7B-oXQ" id="3c5-FE-b3X"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qgN-41-z8c" userLabel="First Responder" sceneMemberID="firstResponder"/>

@@ -200,6 +200,7 @@
 {
     dispatch_async(dispatch_queue_create("gov.nps.akr.observer", DISPATCH_QUEUE_CONCURRENT), ^{
         //temporarily remove the delegate so that updates are not sent for the bulk updates before the UI might be ready
+        //  currently unnecessary, since open is only called when the delegate is nil;
         id savedDelegate = self.delegate;
         self.delegate = nil;
         [self loadCache];
@@ -213,7 +214,7 @@
 }
 
 
-- (BOOL)openURL:(NSURL *)url
+- (SProtocol *)openURL:(NSURL *)url
 {
     return [self openURL:url saveCache:YES];
 }
@@ -222,12 +223,9 @@
 - (void)refreshWithCompletionHandler:(void (^)(BOOL))completionHandler;
 {
     dispatch_async(dispatch_queue_create("gov.nps.akr.observer", DISPATCH_QUEUE_CONCURRENT), ^{
-        //temporarily remove the delegate so that multiple updates wiil not be sent to the UI,
-        //the UI update should be done with a reload in the callback.
-        //FIXME: two solutions, save cache on UI, or use no delegate test and pick one
-        id savedDelegate = self.delegate;
-        self.delegate = nil;
         BOOL success = [self refreshRemoteProtocols] && [self refreshLocalProtocols];
+        //assume that changes were made to the model and save the cache.
+        //If there is a delegate, then it must be queued up on main thread, because the model changes occur there
         if (self.delegate) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self saveCache];
@@ -235,7 +233,6 @@
         } else {
             [self saveCache];
         }
-        self.delegate = savedDelegate;
         if (completionHandler) {
             completionHandler(success);
         }
@@ -303,24 +300,27 @@
 }
 
 
-//FIXME: There is a race condition here.
-//The item lists may be modified by another thread while enumerating the lists, causing a crash.
+//must be called by the thread that changes the model, after changes are complete.
+//because of the enumeration of the model, it cannot be called while the model might be changed.
 - (void)saveCache
 {
+    //dispatching the creation of the archive data to a background thread could result in an exception
+    //if the UI thread then changed the model while it is being enumerated
+    NSMutableArray *plist = [NSMutableArray new];
+    for (SProtocol *protocol in self.localItems) {
+        [plist addObject:[NSKeyedArchiver archivedDataWithRootObject:protocol]];
+    }
+    for (SProtocol *protocol in self.remoteItems) {
+        [plist addObject:[NSKeyedArchiver archivedDataWithRootObject:protocol]];
+    }
+    //File save can be safely done on a background thread.
     dispatch_async(dispatch_queue_create("gov.nps.akr.observer",DISPATCH_QUEUE_CONCURRENT), ^{
-        NSMutableArray *plist = [NSMutableArray new];
-        for (SProtocol *protocol in self.localItems) {
-            [plist addObject:[NSKeyedArchiver archivedDataWithRootObject:protocol]];
-        }
-        for (SProtocol *protocol in self.remoteItems) {
-            [plist addObject:[NSKeyedArchiver archivedDataWithRootObject:protocol]];
-        }
         [plist writeToURL:self.cacheFile atomically:YES];
     });
 }
 
 //done on callers thread
-- (BOOL)openURL:(NSURL *)url saveCache:(BOOL)save
+- (SProtocol *)openURL:(NSURL *)url saveCache:(BOOL)shouldSaveCache
 {
     //FIXME: adding a new local protocol, might need to remove the same remote protocol
 
@@ -330,38 +330,41 @@
     [[NSFileManager defaultManager] copyItemAtURL:url toURL:newUrl error:&error];
     if (error) {
         NSLog(@"ProtocolCollection.openURL: Unable to copy %@ to %@; error: %@",url, newUrl, error);
-        return NO;
+        return nil;
     }
     SProtocol *protocol = [[SProtocol alloc] initWithURL:newUrl];
     if (!protocol.values) {
         NSLog(@"data in %@ was not a valid protocol object",url.lastPathComponent);
         [[NSFileManager defaultManager] removeItemAtURL:url error:nil];
         [[NSFileManager defaultManager] removeItemAtURL:newUrl error:nil];
-        return NO;
+        return nil;
     }
-    if ([self.localItems containsObject:protocol])
+    NSUInteger protocolIndex = [self.localItems indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
+        return [protocol isEqualtoProtocol:obj];
+    }];
+    if (protocolIndex != NSNotFound)
     {
         NSLog(@"We already have the protocol in %@.  Ignoring the duplicate.",url.lastPathComponent);
         [[NSFileManager defaultManager] removeItemAtURL:url error:nil];
         [[NSFileManager defaultManager] removeItemAtURL:newUrl error:nil];
-        return YES;
+        return self.localItems[protocolIndex];
     }
     [[NSFileManager defaultManager] removeItemAtURL:url error:nil];
     if (self.delegate) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.localItems insertObject:protocol atIndex:0];
             [self.delegate collection:self addedLocalItemsAtIndexes:[NSIndexSet indexSetWithIndex:0]];
-            if (save) {
+            if (shouldSaveCache) {
                 [self saveCache];
             }
         });
     } else {
         [self.localItems insertObject:protocol atIndex:0];
-        if (save) {
+        if (shouldSaveCache) {
             [self saveCache];
         }
     }
-    return YES;
+    return protocol;
 }
 
 //done on background thread
@@ -376,6 +379,9 @@
 //done on background thread
 - (void) moveIncomingDocuments
 {
+    //If a file is added to the inbox, then the protocolcollection was created to add the inbox object, it will not be there when openURL is called.
+    //OpenURL returns a protocol whcih can't be found if the URL is gone. therefore we cannot add Inbox items on open.
+    //for (NSURL *directory in @[self.inboxDirectory, self.documentsDirectory]) {
     for (NSURL *directory in @[self.inboxDirectory, self.documentsDirectory]) {
         NSError *error = nil;
         NSArray *array = [[NSFileManager defaultManager]
@@ -490,16 +496,15 @@
 }
 
 //done on background thread
--  (void)syncCacheWithServerProtocols:(NSMutableArray *)serverProtocols
+-  (BOOL)syncCacheWithServerProtocols:(NSMutableArray *)serverProtocols
 {
+    // return value of YES means changes were made and the caller should update the cache.
     // we need to remove cached items not on the server,
     // we need to add items on the server not in the cache,
     // Do not add server items that match local items in the cache.
     // a cached item (on the server) might have an updated URL
-    // option1 - remove all server protocols, and add new ones - simple, however all UI items would need to be reloaded
-    // option2 - do incremental per item update (only update UI as necessary) - implemented
 
-    //BOOL cacheNeedsResave = NO;
+    BOOL modelChanged = NO;
 
     //do not change the list while enumerating
     NSMutableDictionary *protocolsToUpdate = [NSMutableDictionary new];
@@ -512,12 +517,13 @@
             NSUInteger index = [serverProtocols indexOfObject:p];
             if (index == NSNotFound) {
                 [itemsToRemove addIndex:i];
-                //cacheNeedsResave = YES;
+                modelChanged = YES;
             } else {
                 //update the url of cached server objects
                 SProtocol *serverProtocol = serverProtocols[index];
                 if (![p.url isEqual:serverProtocol.url]) {
                     protocolsToUpdate[[NSNumber numberWithInt:i]] = serverProtocol;
+                    modelChanged = YES;
                 }
                 [serverProtocols removeObjectAtIndex:index];
             }
@@ -525,10 +531,17 @@
     }
     //add server protocols not in cache (local or server)
     NSMutableArray *protocolsToAdd = [NSMutableArray new];
-    for (Protocol *protocol in serverProtocols) {
-        if (![self.localItems containsObject:protocol] && ![self.remoteItems containsObject:protocol]) {
+    for (SProtocol *protocol in serverProtocols) {
+        //
+        NSUInteger localIndex = [self.localItems indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
+            return [protocol isEqualtoProtocol:obj];
+        }];
+        NSUInteger remoteIndex = [self.remoteItems indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
+            return [protocol isEqualtoProtocol:obj];
+        }];
+        if (localIndex == NSNotFound && remoteIndex == NSNotFound) {
             [protocolsToAdd addObject:protocol];
-            //cacheNeedsResave = YES;
+            modelChanged = YES;
         }
     }
     //update lists and UI synchronosly on UI thread if there is a delegate
@@ -539,6 +552,7 @@
                 [self.delegate collection:self changedRemoteItemsAtIndexes:[NSIndexSet indexSetWithIndex:[key integerValue]]];
             }
             [self.remoteItems removeObjectsAtIndexes:itemsToRemove];
+            [self.delegate collection:self removedRemoteItemsAtIndexes:itemsToRemove];
             NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(self.remoteItems.count, protocolsToAdd.count)];
             [self.remoteItems addObjectsFromArray:protocolsToAdd];
             [self.delegate collection:self addedRemoteItemsAtIndexes:indexes];
@@ -550,10 +564,7 @@
         [self.remoteItems removeObjectsAtIndexes:itemsToRemove];
         [self.remoteItems addObjectsFromArray:protocolsToAdd];
     }
-    //saving the cache is done by the caller
-    //if (cacheNeedsResave) {
-        //[self saveCache];
-    //}
+    return modelChanged;
 }
 
 - (void) checkAndFixSelectedIndex

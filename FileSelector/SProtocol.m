@@ -135,23 +135,9 @@
     return self.url.isFileURL;
 }
 
-// USE CAUTION:
-// An object's hash cannot change while it is in a collection (NSSet or NSDictionary), NS Array is ok.
-// This is not a guarantee that can be enforced, as type is not immutable
-
-- (BOOL)isEqual:(id)other {
-    if (other == self)
-        return YES;
-    if (!other || ![other isKindOfClass:[self class]])
-        return NO;
-    return [self isEqualtoProtocol:other];
-}
-
-- (NSUInteger)hash
-{
-    return self.title.hash ^ self.version.hash ^ self.date.hash;
-}
-
+// I do not override isEqual to use this method, because title,version and date could change
+// when the values are accessed.  This would cause the hash value to change which can cause
+// all kinds of problems if the object is used in a dictionary or set.
 - (BOOL)isEqualtoProtocol:(SProtocol *)other
 {
     // need to be careful with null properties.

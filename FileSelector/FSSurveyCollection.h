@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "FSTableViewItemCollection.h"
 
+#define SURVEY_EXT @"obssurv"
+
 @interface FSSurveyCollection : NSObject <FSTableViewItemCollection>
 @property (nonatomic, strong) NSIndexPath * selectedIndex;
 

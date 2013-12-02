@@ -328,6 +328,8 @@
                     <navigationItem key="navigationItem" id="gkh-88-rht"/>
                     <connections>
                         <outlet property="mapLabel" destination="1Ta-v4-e5z" id="aRZ-BW-YuR"/>
+                        <outlet property="selectMapButton" destination="h1j-zm-LN9" id="p6q-NI-eKD"/>
+                        <outlet property="selectSurveyButton" destination="Eud-PW-TOv" id="tAs-P4-ZDc"/>
                         <outlet property="surveyLabel" destination="vYB-ZS-gjF" id="eMK-Rh-5YO"/>
                     </connections>
                 </viewController>
