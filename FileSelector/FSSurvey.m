@@ -16,6 +16,12 @@
 
 - (id)init
 {
+    return [self init];
+}
+
+//FIXME: implement real creation
+- (id)initWithProtocol:(SProtocol *)protcol
+{
     if (self = [super init]) {
         self.creationDate = [NSDate date];
     }

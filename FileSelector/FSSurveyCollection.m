@@ -42,15 +42,22 @@
     }
 }
 
+//FIXME: remove (requires deleting adopted interface)
 - (NSIndexPath *)addNewItem
 {
+    return nil;
+}
+
+- (NSIndexPath *)newSurveyWithProtocol:(SProtocol *)protocol {
     //insert at head
-    [self.items insertObject:[FSSurvey new] atIndex:0];
+    [self.items insertObject:[[FSSurvey alloc] initWithProtocol:protocol] atIndex:0];
     return [NSIndexPath indexPathForRow:0 inSection:0];
     //insert at end
     //[self.items addObject:[FSSurvey new]];
     //return [NSIndexPath indexPathForRow:(self.items.count-1) inSection:0];
+
 }
+
 
 - (int)itemCount
 {
@@ -90,6 +97,8 @@
 {
     //TODO: implement openWithCompletionHandler
     //See protocol for an example.
+    //read cache and initialize ordered object collection with cache, do not load UIDocuments
+    
     //maps, be sure to set the file attribute to do not backup.
     BOOL success = YES;
     if (completionHandler) {

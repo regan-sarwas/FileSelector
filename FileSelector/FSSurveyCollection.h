@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "FSTableViewItemCollection.h"
+#import "SProtocol.h"
 
 #define SURVEY_EXT @"obssurv"
 
@@ -25,5 +26,7 @@
 
 // opens a file from the App delegate
 - (BOOL)openURL:(NSURL *)url;
+
+- (NSIndexPath *)newSurveyWithProtocol:(SProtocol *)protcol;
 
 @end

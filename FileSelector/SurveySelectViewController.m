@@ -201,17 +201,10 @@
 - (void) newSurveyWithProtocol:(SProtocol *)protocol
 {
     NSLog(@"New survey with protocol %@", protocol.title);
-    [self insertNewObject];
-}
-
-- (void)insertNewObject
-{
-    NSIndexPath *indexPath = [self.items addNewItem];
+    NSIndexPath *indexPath = [self.items newSurveyWithProtocol:protocol];
     if (indexPath) {
         [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
     }
 }
-
-
 
 @end
