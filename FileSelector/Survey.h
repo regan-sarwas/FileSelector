@@ -34,12 +34,13 @@ enum SurveyState {
 //Initializers
 // init will always return nil
 // This will return an unusable object (all properties will be null) until open is called.
-+ (Survey *)surveyFromURL:(NSURL *)url withCompletionHandler:(void (^)(BOOL success))handler;
++ (Survey *)surveyFromURL:(NSURL *)url;
 - (id)initWithProtocol:(SProtocol *)protcol;
 
 //otheractions
-- (void)syncWithCompletionHandler:(void (^)(NSError*))handler;
-- (void)openWithCompletionHandler:(void (^)(NSError*))handler;
+- (void)openPropertiesWithCompletionHandler:(void (^)(NSError*))handler;
+- (void)openDocumentWithCompletionHandler:(void (^)(NSError*))handler;
 - (void)closeWithCompletionHandler:(void (^)(NSError*))handler;
+- (void)syncWithCompletionHandler:(void (^)(NSError*))handler;
 
 @end

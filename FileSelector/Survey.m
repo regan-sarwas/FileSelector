@@ -46,12 +46,14 @@
 }
 
 
--(UIImage *)thumbnail
+#pragma mark property accessors
+
+- (UIImage *)thumbnail
 {
     return nil;
 }
 
--(NSString *)title
+- (NSString *)title
 {
     static int counter;
     if (!_title) {
@@ -60,9 +62,51 @@
     return _title;
 }
 
--(NSString *)subtitle
+- (NSString *)subtitle
 {
     return self.date.description;
+}
+
+
+#pragma mark - public methods
+
+- (void)openPropertiesWithCompletionHandler:(void (^)(NSError*))handler
+{
+    dispatch_async(dispatch_queue_create("gov.nps.akr.observer",DISPATCH_QUEUE_CONCURRENT), ^{
+        NSError *error;
+        [self openProperties:&error];
+        if (handler) handler(error);
+    });
+}
+
+- (void)openDocumentWithCompletionHandler:(void (^)(NSError*))handler
+{
+
+}
+
+- (void)closeWithCompletionHandler:(void (^)(NSError*))handler
+{
+
+}
+
+- (void)syncWithCompletionHandler:(void (^)(NSError*))handler
+{
+
+}
+
+
+#pragma mark - private methods
+
+- (BOOL)openProperties:(NSError **)error
+{
+    //FIXME: implement open from URL
+    return YES;
+}
+
+- (BOOL)openDocument:(NSError **)error
+{
+    //FIXME: implement open from URL
+    return YES;
 }
 
 @end
