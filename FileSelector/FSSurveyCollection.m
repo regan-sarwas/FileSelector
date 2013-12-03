@@ -7,7 +7,7 @@
 //
 
 #import "FSSurveyCollection.h"
-#import "FSSurvey.h"
+#import "Survey.h"
 
 @interface FSSurveyCollection()
 //FIXME - we should be private properties. They are public temporarily as a convenience for the subclass
@@ -50,7 +50,7 @@
 
 - (NSIndexPath *)newSurveyWithProtocol:(SProtocol *)protocol {
     //insert at head
-    [self.items insertObject:[[FSSurvey alloc] initWithProtocol:protocol] atIndex:0];
+    [self.items insertObject:[[Survey alloc] initWithProtocol:protocol] atIndex:0];
     return [NSIndexPath indexPathForRow:0 inSection:0];
     //insert at end
     //[self.items addObject:[FSSurvey new]];

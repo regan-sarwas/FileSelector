@@ -22,7 +22,6 @@
 		3903C77D18344ED000D82038 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3903C77B18344ED000D82038 /* InfoPlist.strings */; };
 		3903C77F18344ED000D82038 /* FileSelectorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 3903C77E18344ED000D82038 /* FileSelectorTests.m */; };
 		3903C78A1834520A00D82038 /* FSMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3903C7891834520A00D82038 /* FSMainViewController.m */; };
-		3903C78E18353FCF00D82038 /* FSSurvey.m in Sources */ = {isa = PBXBuildFile; fileRef = 3903C78D18353FCF00D82038 /* FSSurvey.m */; };
 		3903C79118353FE900D82038 /* FSSurveyCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = 3903C79018353FE900D82038 /* FSSurveyCollection.m */; };
 		3903C7931835665E00D82038 /* Lets_Try_Popovers.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3903C7921835665E00D82038 /* Lets_Try_Popovers.storyboard */; };
 		3903C79618356A0500D82038 /* FSMainIpadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3903C79518356A0500D82038 /* FSMainIpadViewController.m */; };
@@ -41,6 +40,7 @@
 		3965ED161845122D00701F8A /* MapSelectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3965ED151845122D00701F8A /* MapSelectViewController.m */; };
 		3979BA46184569D300F3F7EC /* ProtocolDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3979BA45184569D300F3F7EC /* ProtocolDetailViewController.m */; };
 		3979BA491846D28700F3F7EC /* NSIndexSet+indexPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 3979BA481846D28700F3F7EC /* NSIndexSet+indexPath.m */; };
+		3979BA4C184E4B5100F3F7EC /* Survey.m in Sources */ = {isa = PBXBuildFile; fileRef = 3979BA4B184E4B5100F3F7EC /* Survey.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -76,8 +76,6 @@
 		3903C7881834520A00D82038 /* FSMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSMainViewController.h; sourceTree = "<group>"; };
 		3903C7891834520A00D82038 /* FSMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSMainViewController.m; sourceTree = "<group>"; };
 		3903C78B18353ED300D82038 /* FSTableViewItemCollection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FSTableViewItemCollection.h; sourceTree = "<group>"; };
-		3903C78C18353FCE00D82038 /* FSSurvey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSSurvey.h; sourceTree = "<group>"; };
-		3903C78D18353FCF00D82038 /* FSSurvey.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSSurvey.m; sourceTree = "<group>"; };
 		3903C78F18353FE900D82038 /* FSSurveyCollection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSSurveyCollection.h; sourceTree = "<group>"; };
 		3903C79018353FE900D82038 /* FSSurveyCollection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSSurveyCollection.m; sourceTree = "<group>"; };
 		3903C7921835665E00D82038 /* Lets_Try_Popovers.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Lets_Try_Popovers.storyboard; sourceTree = "<group>"; };
@@ -111,6 +109,8 @@
 		3979BA45184569D300F3F7EC /* ProtocolDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProtocolDetailViewController.m; sourceTree = "<group>"; };
 		3979BA471846D28700F3F7EC /* NSIndexSet+indexPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSIndexSet+indexPath.h"; sourceTree = "<group>"; };
 		3979BA481846D28700F3F7EC /* NSIndexSet+indexPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSIndexSet+indexPath.m"; sourceTree = "<group>"; };
+		3979BA4A184E4B5100F3F7EC /* Survey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Survey.h; sourceTree = "<group>"; };
+		3979BA4B184E4B5100F3F7EC /* Survey.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Survey.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -193,8 +193,6 @@
 				3965ED0E1843DAAF00701F8A /* NSURL+unique.h */,
 				3965ED0F1843DAAF00701F8A /* NSURL+unique.m */,
 				3903C78B18353ED300D82038 /* FSTableViewItemCollection.h */,
-				3903C78C18353FCE00D82038 /* FSSurvey.h */,
-				3903C78D18353FCF00D82038 /* FSSurvey.m */,
 				3903C78F18353FE900D82038 /* FSSurveyCollection.h */,
 				3903C79018353FE900D82038 /* FSSurveyCollection.m */,
 				3903C79718358E9800D82038 /* FSMap.h */,
@@ -215,6 +213,8 @@
 				3979BA45184569D300F3F7EC /* ProtocolDetailViewController.m */,
 				3979BA471846D28700F3F7EC /* NSIndexSet+indexPath.h */,
 				3979BA481846D28700F3F7EC /* NSIndexSet+indexPath.m */,
+				3979BA4A184E4B5100F3F7EC /* Survey.h */,
+				3979BA4B184E4B5100F3F7EC /* Survey.m */,
 			);
 			path = FileSelector;
 			sourceTree = "<group>";
@@ -351,7 +351,7 @@
 			files = (
 				3903C79618356A0500D82038 /* FSMainIpadViewController.m in Sources */,
 				3965ED101843DAAF00701F8A /* NSURL+unique.m in Sources */,
-				3903C78E18353FCF00D82038 /* FSSurvey.m in Sources */,
+				3979BA4C184E4B5100F3F7EC /* Survey.m in Sources */,
 				3903C79918358E9800D82038 /* FSMap.m in Sources */,
 				3965ECFD183AE1B800701F8A /* SProtocol.m in Sources */,
 				3965ECFA183AE0DE00701F8A /* ProtocolCollection.m in Sources */,
