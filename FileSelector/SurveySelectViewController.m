@@ -49,9 +49,6 @@
 
     self.detailViewController = (FSDetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
 
-    self.refreshControl = [[UIRefreshControl alloc] init];
-    [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
-
     addButton.enabled = NO;
     self.protocols = [ProtocolCollection sharedCollection];
     [self.protocols openWithCompletionHandler:^(BOOL success) {
@@ -101,13 +98,13 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [self.items itemCount];
+    return self.items.numberOfSurveys;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     FSEntryCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
-    id<FSTableViewItem> item = [self.items itemAtIndexPath:indexPath];
+    id<FSTableViewItem> item = [self.items surveyAtIndex:indexPath.row];
     cell.titleTextField.text = item.title;
     cell.detailsLabel.text = item.subtitle;
     cell.thumbnailImageView.image = item.thumbnail;
@@ -116,7 +113,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    self.items.selectedIndex = indexPath;
+    [self.items setSelectedSurvey:indexPath.row];
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         [self.popover dismissPopoverAnimated:YES];
         self.popoverDismissedCallback();
@@ -135,21 +132,15 @@
     return YES;
 }
 
--(UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // allow moving but not deleting the current (selected) survey
-    return [indexPath isEqual:self.items.selectedIndex] ? UITableViewCellEditingStyleNone : UITableViewCellEditingStyleDelete;
-}
-
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
 {
-    [self.items moveItemAtIndexPath:fromIndexPath toIndexPath:toIndexPath];
+    [self.items moveSurveyAtIndex:fromIndexPath.row toIndex:toIndexPath.row];
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        Survey *survey = (Survey *)[self.items itemAtIndexPath:indexPath];
+        Survey *survey = self.items.selectedSurvey;
         if (survey.state == kModified) {
             self.indexPathToDelete = indexPath;
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Unsaved Changes"
@@ -159,7 +150,7 @@
                                                   otherButtonTitles:@"Delete",nil];
             [alert show];
         } else {
-            [self.items removeItemAtIndexPath:indexPath];
+            [self.items removeSurveyAtIndex:indexPath.row];
             [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
         }
     }
@@ -170,7 +161,7 @@
 {
     if ([[segue identifier] isEqualToString:@"Show Detail"]) {
         NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
-        id<FSTableViewItem> item = [self.items itemAtIndexPath:indexPath];
+        id<FSTableViewItem> item = [self.items surveyAtIndex:indexPath.row];
         [[segue destinationViewController] setDetailItem:item];
         //if we are in a popover, we want the new vc to stay the same size.
         [[segue destinationViewController] setPreferredContentSize:self.preferredContentSize];
@@ -187,32 +178,16 @@
     }
 }
 
-- (void) refresh:(id)sender
-{
-    [self.refreshControl beginRefreshing];
-    self.isBackgroundRefreshing = YES;
-    [self.items refreshWithCompletionHandler:^(BOOL success) {
-        //on abackground thread
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.refreshControl endRefreshing];
-            self.isBackgroundRefreshing = NO;
-            if (success) {
-                //to avoid a multi-threaded race condition, the delegate is not called during a refresh.  Therefore bulk reload is required.
-                [self.tableView reloadData];
-            } else {
-                [[[UIAlertView alloc] initWithTitle:@"Sorry" message:@"I failed to refresh.  Try again." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil] show];
-            }
-        });
-    }];
-}
-
 
 - (void) newSurveyWithProtocol:(SProtocol *)protocol
 {
     NSLog(@"New survey with protocol %@", protocol.title);
-    NSIndexPath *indexPath = [self.items newSurveyWithProtocol:protocol];
-    if (indexPath) {
+    NSInteger row = [self.items newSurveyWithProtocol:protocol];
+    if (0 <= row) {
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
         [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    } else {
+        //TODO: alert unable to create new survey
     }
 }
 
@@ -221,7 +196,7 @@
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if (buttonIndex == 1 && self.indexPathToDelete) {
-        [self.items removeItemAtIndexPath:self.indexPathToDelete];
+        [self.items removeSurveyAtIndex:self.indexPathToDelete.row];
         [self.tableView deleteRowsAtIndexPaths:@[self.indexPathToDelete] withRowAnimation:UITableViewRowAnimationFade];
         self.indexPathToDelete = nil;
     }

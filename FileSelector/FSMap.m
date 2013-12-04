@@ -10,6 +10,8 @@
 
 @implementation FSMap
 
+//maps, be sure to set the file attribute to do not backup.
+
 //FIXME: This is kinda lame.  will be better when we implement a new class without inheritance
 -(NSString *)title
 {

@@ -8,6 +8,8 @@
 
 #import "Survey.h"
 
+#define MAP_EXT @"tpk"
+
 @interface FSMap : Survey
 
 @end

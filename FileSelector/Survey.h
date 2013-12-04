@@ -42,7 +42,6 @@ typedef NS_ENUM(NSUInteger, SurveyState) {
 // init will always return nil
 //- (id)init //overridden to always return nil, use the designated initializer
 // Designated Initializer  (typically not called directly
-- (id)initWithURL:(NSURL *)url title:(NSString *)title state:(SurveyState)state date:(NSDate *)date;
 - (id)initWithURL:(NSURL *)url;
 //This involve doing IO (to find and create the unused url), it should be called on a background thread
 - (id)initWithProtocol:(SProtocol *)protocol;

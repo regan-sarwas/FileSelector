@@ -47,13 +47,12 @@
 - (id)initWithURL:(NSURL *)url title:(NSString *)title state:(SurveyState)state date:(NSDate *)date
 {
     if (self = [super init]) {
-        self.url = url;
-        self.state = state;
-        self.date = date;
-        //Calling title will save the properties (do it last)
-        self.title = title;
-        self.protocolIsLoaded = NO;
-        self.thumbnailIsLoaded = NO;
+        _url = url;
+        _state = state;
+        _date = date;
+        _title = title;
+        _protocolIsLoaded = NO;
+        _thumbnailIsLoaded = NO;
     }
     return self;
 }
@@ -210,10 +209,18 @@
 - (void)readPropertiesWithCompletionHandler:(void (^)(NSError*))handler
 {
     dispatch_async(dispatch_queue_create("gov.nps.akr.observer",DISPATCH_QUEUE_CONCURRENT), ^{
-        NSError *error;
-        [self loadProperties];
+        if (![self loadProperties]) {
+            self.state = kCorrupt;
+        }
         [self loadProtocol];
         [self loadThumbnail];
+        NSError *error;
+        if (self.state == kCorrupt) {
+            NSMutableDictionary* errorDetails = [NSMutableDictionary dictionary];
+            [errorDetails setValue:@"Survey File is corrupt" forKey:NSLocalizedDescriptionKey];
+            // populate the error object with the details
+            error = [NSError errorWithDomain:@"gov.nps.akr.observer" code:1 userInfo:errorDetails];
+        }
         if (handler) handler(error);
     });
 }
@@ -242,9 +249,9 @@
     NSInteger version = [plist[kCodingVersionKey] integerValue];
     switch (version) {
         case 1:
-            self.title = plist[kTitleKey];
-            self.State = [plist[kStateKey] integerValue];
-            self.date = plist[kDateKey];
+            _title = plist[kTitleKey];
+            _state = [plist[kStateKey] integerValue];
+            _date = plist[kDateKey];
             return YES;
         default:
             return NO;

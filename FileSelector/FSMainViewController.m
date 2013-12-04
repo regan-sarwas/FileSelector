@@ -83,8 +83,8 @@
 
 - (void) updateView
 {
-    if (self.surveys.selectedIndex) {
-        self.surveyLabel.text = self.surveys.selectedItem.title;
+    if (self.surveys.selectedSurvey) {
+        self.surveyLabel.text = self.surveys.selectedSurvey.title;
     }
     if (self.maps.selectedIndex) {
         self.mapLabel.text = self.maps.selectedItem.title;

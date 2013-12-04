@@ -79,7 +79,7 @@
 -(void) updateTitle
 {
     self.barTitle.title = [NSString stringWithFormat:@"%@ - %@",
-                           (self.surveys.selectedIndex ? self.surveys.selectedItem.title : @"Select Survey"),
+                           (0 < self.surveys.numberOfSurveys ? self.surveys.selectedSurvey.title : @"Select Survey"),
                            (self.maps.selectedIndex ? self.maps.selectedItem.title : @"Select Map")];
 }
 

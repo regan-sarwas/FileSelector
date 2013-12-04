@@ -9,12 +9,13 @@
 #import <Foundation/Foundation.h>
 #import "FSTableViewItemCollection.h"
 #import "SProtocol.h"
+#import "Survey.h"
 
-@interface SurveyCollection : NSObject <FSTableViewItemCollection>
-@property (nonatomic, strong) NSIndexPath * selectedIndex;
+@interface SurveyCollection : NSObject
 
-//FIXME - this should be private, it is public temporarily as a convenience for the subclass
-@property (strong,nonatomic) NSMutableArray *items;
+//<FSTableViewItemCollection>
+//@property (nonatomic, strong) NSIndexPath * selectedIndex;
+//@property (nonatomic, strong, readonly) Survey *selectedSurvey;
 
 //Does this collection manage the provided URL?
 + (BOOL) collectsURL:(NSURL *)url;
@@ -25,6 +26,15 @@
 // opens a file from the App delegate
 - (BOOL)openURL:(NSURL *)url;
 
-- (NSIndexPath *)newSurveyWithProtocol:(SProtocol *)protcol;
+- (NSInteger)newSurveyWithProtocol:(SProtocol *)protcol;
+
+
+// UITableView DataSource Support
+- (NSUInteger) numberOfSurveys;
+- (Survey *) surveyAtIndex:(NSUInteger)index;
+- (void) removeSurveyAtIndex:(NSUInteger)index;
+- (void) moveSurveyAtIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex;
+- (void) setSelectedSurvey:(NSUInteger)index;
+- (Survey *)selectedSurvey;
 
 @end
