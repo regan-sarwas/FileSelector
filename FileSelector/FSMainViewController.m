@@ -13,7 +13,7 @@
 #import "MapSelectViewController.h"
 //FIXME: this is only needed at the main VC for testing
 #import "ProtocolSelectViewController.h"
-#import "FSSurveyCollection.h"
+#import "SurveyCollection.h"
 #import "FSMapCollection.h"
 #import "ProtocolCollection.h"
 
@@ -24,8 +24,8 @@
 @property (weak, nonatomic) IBOutlet UIButton *selectMapButton;
 @property (weak, nonatomic) IBOutlet UILabel *surveyLabel;
 @property (weak, nonatomic) IBOutlet UILabel *mapLabel;
+@property (strong, nonatomic) SurveyCollection* surveys;
 //FIXME: change names
-@property (strong, nonatomic) FSSurveyCollection* surveys;
 @property (strong, nonatomic) FSMapCollection* maps;
 @end
 
@@ -56,7 +56,7 @@
 - (void) configureView
 {
     self.selectSurveyButton.enabled = NO;
-    self.surveys = [[FSSurveyCollection alloc] init];
+    self.surveys = [[SurveyCollection alloc] init];
     [self.surveys openWithCompletionHandler:^(BOOL success) {
         //do any other background work;
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -111,7 +111,7 @@
 - (BOOL) openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
 {
     BOOL success = NO;
-    if ([FSSurveyCollection collectsURL:url]) {
+    if ([SurveyCollection collectsURL:url]) {
         success = [self.surveys openURL:url];
         if (!success) {
             [[[UIAlertView alloc] initWithTitle:@"Error" message:@"Can't open file" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];

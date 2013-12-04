@@ -1,8 +1,8 @@
 //
-//  FSSurveyCollection.h
+//  SurveyCollection.h
 //  FileSelector
 //
-//  Created by Regan Sarwas on 11/14/13.
+//  Created by Regan Sarwas on 12/3/13.
 //  Copyright (c) 2013 GIS Team. All rights reserved.
 //
 
@@ -10,7 +10,7 @@
 #import "FSTableViewItemCollection.h"
 #import "SProtocol.h"
 
-@interface FSSurveyCollection : NSObject <FSTableViewItemCollection>
+@interface SurveyCollection : NSObject <FSTableViewItemCollection>
 @property (nonatomic, strong) NSIndexPath * selectedIndex;
 
 //FIXME - this should be private, it is public temporarily as a convenience for the subclass

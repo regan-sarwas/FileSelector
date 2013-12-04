@@ -22,7 +22,6 @@
 		3903C77D18344ED000D82038 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3903C77B18344ED000D82038 /* InfoPlist.strings */; };
 		3903C77F18344ED000D82038 /* FileSelectorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 3903C77E18344ED000D82038 /* FileSelectorTests.m */; };
 		3903C78A1834520A00D82038 /* FSMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3903C7891834520A00D82038 /* FSMainViewController.m */; };
-		3903C79118353FE900D82038 /* FSSurveyCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = 3903C79018353FE900D82038 /* FSSurveyCollection.m */; };
 		3903C7931835665E00D82038 /* Lets_Try_Popovers.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3903C7921835665E00D82038 /* Lets_Try_Popovers.storyboard */; };
 		3903C79618356A0500D82038 /* FSMainIpadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3903C79518356A0500D82038 /* FSMainIpadViewController.m */; };
 		3903C79918358E9800D82038 /* FSMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 3903C79818358E9800D82038 /* FSMap.m */; };
@@ -42,6 +41,7 @@
 		3979BA491846D28700F3F7EC /* NSIndexSet+indexPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 3979BA481846D28700F3F7EC /* NSIndexSet+indexPath.m */; };
 		3979BA4C184E4B5100F3F7EC /* Survey.m in Sources */ = {isa = PBXBuildFile; fileRef = 3979BA4B184E4B5100F3F7EC /* Survey.m */; };
 		3979BA52184EAA1400F3F7EC /* NSDate+Formatting.m in Sources */ = {isa = PBXBuildFile; fileRef = 3979BA51184EAA1400F3F7EC /* NSDate+Formatting.m */; };
+		3979BA55184EABA100F3F7EC /* SurveyCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = 3979BA54184EABA100F3F7EC /* SurveyCollection.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -77,8 +77,6 @@
 		3903C7881834520A00D82038 /* FSMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSMainViewController.h; sourceTree = "<group>"; };
 		3903C7891834520A00D82038 /* FSMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSMainViewController.m; sourceTree = "<group>"; };
 		3903C78B18353ED300D82038 /* FSTableViewItemCollection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FSTableViewItemCollection.h; sourceTree = "<group>"; };
-		3903C78F18353FE900D82038 /* FSSurveyCollection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSSurveyCollection.h; sourceTree = "<group>"; };
-		3903C79018353FE900D82038 /* FSSurveyCollection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSSurveyCollection.m; sourceTree = "<group>"; };
 		3903C7921835665E00D82038 /* Lets_Try_Popovers.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Lets_Try_Popovers.storyboard; sourceTree = "<group>"; };
 		3903C79418356A0500D82038 /* FSMainIpadViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSMainIpadViewController.h; sourceTree = "<group>"; };
 		3903C79518356A0500D82038 /* FSMainIpadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSMainIpadViewController.m; sourceTree = "<group>"; };
@@ -114,6 +112,8 @@
 		3979BA4B184E4B5100F3F7EC /* Survey.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Survey.m; sourceTree = "<group>"; };
 		3979BA50184EAA1400F3F7EC /* NSDate+Formatting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Formatting.h"; sourceTree = "<group>"; };
 		3979BA51184EAA1400F3F7EC /* NSDate+Formatting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Formatting.m"; sourceTree = "<group>"; };
+		3979BA53184EABA100F3F7EC /* SurveyCollection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SurveyCollection.h; sourceTree = "<group>"; };
+		3979BA54184EABA100F3F7EC /* SurveyCollection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SurveyCollection.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -195,9 +195,9 @@
 				3965ED00183C076A00701F8A /* NSArray+map.m */,
 				3965ED0E1843DAAF00701F8A /* NSURL+unique.h */,
 				3965ED0F1843DAAF00701F8A /* NSURL+unique.m */,
+				3979BA50184EAA1400F3F7EC /* NSDate+Formatting.h */,
+				3979BA51184EAA1400F3F7EC /* NSDate+Formatting.m */,
 				3903C78B18353ED300D82038 /* FSTableViewItemCollection.h */,
-				3903C78F18353FE900D82038 /* FSSurveyCollection.h */,
-				3903C79018353FE900D82038 /* FSSurveyCollection.m */,
 				3903C79718358E9800D82038 /* FSMap.h */,
 				3903C79818358E9800D82038 /* FSMap.m */,
 				3903C79A18358FDA00D82038 /* FSMapCollection.h */,
@@ -218,8 +218,8 @@
 				3979BA481846D28700F3F7EC /* NSIndexSet+indexPath.m */,
 				3979BA4A184E4B5100F3F7EC /* Survey.h */,
 				3979BA4B184E4B5100F3F7EC /* Survey.m */,
-				3979BA50184EAA1400F3F7EC /* NSDate+Formatting.h */,
-				3979BA51184EAA1400F3F7EC /* NSDate+Formatting.m */,
+				3979BA53184EABA100F3F7EC /* SurveyCollection.h */,
+				3979BA54184EABA100F3F7EC /* SurveyCollection.m */,
 			);
 			path = FileSelector;
 			sourceTree = "<group>";
@@ -364,7 +364,7 @@
 				3965ED0D183E9B2A00701F8A /* ProtocolTableViewCell.m in Sources */,
 				3903C79F18359D0000D82038 /* FSEntryCell.m in Sources */,
 				3903C79C18358FDA00D82038 /* FSMapCollection.m in Sources */,
-				3903C79118353FE900D82038 /* FSSurveyCollection.m in Sources */,
+				3979BA55184EABA100F3F7EC /* SurveyCollection.m in Sources */,
 				3903C76A18344ED000D82038 /* FSDetailViewController.m in Sources */,
 				3903C75E18344ED000D82038 /* FSAppDelegate.m in Sources */,
 				3965ED06183D8F5400701F8A /* ProtocolSelectViewController.m in Sources */,

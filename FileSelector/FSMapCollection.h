@@ -6,8 +6,8 @@
 //  Copyright (c) 2013 GIS Team. All rights reserved.
 //
 
-#import "FSSurveyCollection.h"
+#import "SurveyCollection.h"
 
-@interface FSMapCollection : FSSurveyCollection
+@interface FSMapCollection : SurveyCollection
 
 @end

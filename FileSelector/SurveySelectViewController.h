@@ -9,14 +9,14 @@
 #import <UIKit/UIKit.h>
 #import "FSTableViewItemCollection.h"
 #import "ProtocolCollection.h"
-#import "FSSurveyCollection.h"
+#import "SurveyCollection.h"
 
 @class FSDetailViewController;
 
-@interface SurveySelectViewController : UITableViewController
+@interface SurveySelectViewController : UITableViewController <UIAlertViewDelegate>
 
 @property (strong, nonatomic) FSDetailViewController *detailViewController;
-@property (nonatomic, weak) FSSurveyCollection *items;
+@property (nonatomic, weak) SurveyCollection *items;
 @property (nonatomic, weak) UIPopoverController *popover;
 @property (copy) void (^popoverDismissedCallback)(void);
 

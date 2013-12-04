@@ -12,7 +12,7 @@
 #import "ProtocolSelectViewController.h"
 #import "SurveySelectViewController.h"
 #import "MapSelectViewController.h"
-#import "FSSurveyCollection.h"
+#import "SurveyCollection.h"
 #import "FSMapCollection.h"
 #import "ProtocolCollection.h"
 
@@ -21,7 +21,7 @@
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *barTitle;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *selectSurveyButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *selectMapButton;
-@property (strong, nonatomic) FSSurveyCollection* surveys;
+@property (strong, nonatomic) SurveyCollection* surveys;
 @property (strong, nonatomic) FSMapCollection* maps;
 
 @end
@@ -46,7 +46,7 @@
 - (void) configureView
 {
     self.selectSurveyButton.enabled = NO;
-    self.surveys = [[FSSurveyCollection alloc] init];
+    self.surveys = [[SurveyCollection alloc] init];
     [self.surveys openWithCompletionHandler:^(BOOL success) {
         //do any other background work;
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -127,7 +127,7 @@
 - (BOOL) openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
 {
     BOOL success = NO;
-    if ([FSSurveyCollection collectsURL:url]) {
+    if ([SurveyCollection collectsURL:url]) {
         success = [self.surveys openURL:url];
         if (!success) {
             [[[UIAlertView alloc] initWithTitle:@"Error" message:@"Can't open file" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];

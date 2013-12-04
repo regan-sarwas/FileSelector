@@ -11,10 +11,12 @@
 #import "ProtocolSelectViewController.h"
 #import "SurveySelectViewController.h"
 #import "SProtocol.h"
+#import "Survey.h"
 
 @interface SurveySelectViewController ()
 @property (nonatomic) BOOL isBackgroundRefreshing;
 @property (strong, nonatomic) ProtocolCollection* protocols;
+@property (strong, nonatomic) NSIndexPath *indexPathToDelete;
 @end
 
 @implementation SurveySelectViewController
@@ -147,14 +149,21 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        //FIXME: check and alert if this survey has unsynced data.
-        [self.items removeItemAtIndexPath:indexPath];
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        Survey *survey = (Survey *)[self.items itemAtIndexPath:indexPath];
+        if (survey.state == kModified) {
+            self.indexPathToDelete = indexPath;
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Unsaved Changes"
+                                                            message:@"You will lose your unsaved data.  This cannot be undone."
+                                                           delegate:self
+                                                  cancelButtonTitle:@"Keep"
+                                                  otherButtonTitles:@"Delete",nil];
+            [alert show];
+        } else {
+            [self.items removeItemAtIndexPath:indexPath];
+            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        }
     }
 }
-
-
-
 
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
@@ -204,6 +213,17 @@
     NSIndexPath *indexPath = [self.items newSurveyWithProtocol:protocol];
     if (indexPath) {
         [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+}
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 1 && self.indexPathToDelete) {
+        [self.items removeItemAtIndexPath:self.indexPathToDelete];
+        [self.tableView deleteRowsAtIndexPaths:@[self.indexPathToDelete] withRowAnimation:UITableViewRowAnimationFade];
+        self.indexPathToDelete = nil;
     }
 }
 
