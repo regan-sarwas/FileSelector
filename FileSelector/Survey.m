@@ -48,9 +48,10 @@
 {
     if (self = [super init]) {
         self.url = url;
-        self.title = title;
         self.state = state;
         self.date = date;
+        //Calling title will save the properties (do it last)
+        self.title = title;
         self.protocolIsLoaded = NO;
         self.thumbnailIsLoaded = NO;
     }
@@ -78,7 +79,8 @@
     NSURL *documentsDirectory = [[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask][0];
     NSString *filename = [NSString stringWithFormat:@"%@.%@", protocol.title, SURVEY_EXT];
     NSURL *url = [[documentsDirectory URLByAppendingPathComponent:filename] URLByUniquingPath];
-    self = [self initWithURL:url title:[[url lastPathComponent] stringByDeletingPathExtension] state:kCreated date:[NSDate date]];
+    NSString *title = [[url lastPathComponent] stringByDeletingPathExtension];
+    self = [self initWithURL:url title:title state:kCreated date:[NSDate date]];
     if (![[NSFileManager defaultManager] createDirectoryAtURL:url withIntermediateDirectories:YES attributes:nil error:nil]) {
         return nil;
     };
@@ -288,6 +290,10 @@
 }
 
 - (BOOL)saveProperties {
+    //TODO: omit null values from the dictionary, and then check for missing keys on load
+    if (!self.title || !self.date) {
+        return NO;
+    }
     NSDictionary *plist = @{kCodingVersionKey:@kCodingVersion,
                             kTitleKey:self.title,
                             kStateKey:@(self.state),
