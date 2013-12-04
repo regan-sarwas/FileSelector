@@ -158,15 +158,11 @@
 }
 
 
--(BOOL)downloadToURL:(NSURL *)url
+- (BOOL)downloadToURL:(NSURL *)url
 {
     BOOL success = NO;
     if (!self.isLocal && self.values) {
-        NSOutputStream *stream = [NSOutputStream outputStreamWithURL:url append:NO];
-        [stream open];
-        NSInteger numberOfBytesWritten =  [NSJSONSerialization writeJSONObject:self.values toStream:stream options:NSJSONWritingPrettyPrinted error:nil];
-        [stream close];
-        if (numberOfBytesWritten > 0) {
+        if ([self saveCopyToURL:url]) {
             _url = url;
             success = YES;
         } else {
@@ -177,6 +173,15 @@
     }
     self.downloading = NO;
     return success;
+}
+
+- (BOOL)saveCopyToURL:(NSURL *)url
+{
+    NSOutputStream *stream = [NSOutputStream outputStreamWithURL:url append:NO];
+    [stream open];
+    NSInteger numberOfBytesWritten =  [NSJSONSerialization writeJSONObject:self.values toStream:stream options:NSJSONWritingPrettyPrinted error:nil];
+    [stream close];
+    return numberOfBytesWritten > 0;
 }
 
 

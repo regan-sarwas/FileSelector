@@ -6,8 +6,8 @@
 //  Copyright (c) 2013 GIS Team. All rights reserved.
 //
 
-#import "FSSurvey.h"
+#import "Survey.h"
 
-@interface FSMap : FSSurvey
+@interface FSMap : Survey
 
 @end

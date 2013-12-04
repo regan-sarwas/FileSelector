@@ -41,6 +41,7 @@
 		3979BA46184569D300F3F7EC /* ProtocolDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3979BA45184569D300F3F7EC /* ProtocolDetailViewController.m */; };
 		3979BA491846D28700F3F7EC /* NSIndexSet+indexPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 3979BA481846D28700F3F7EC /* NSIndexSet+indexPath.m */; };
 		3979BA4C184E4B5100F3F7EC /* Survey.m in Sources */ = {isa = PBXBuildFile; fileRef = 3979BA4B184E4B5100F3F7EC /* Survey.m */; };
+		3979BA52184EAA1400F3F7EC /* NSDate+Formatting.m in Sources */ = {isa = PBXBuildFile; fileRef = 3979BA51184EAA1400F3F7EC /* NSDate+Formatting.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -111,6 +112,8 @@
 		3979BA481846D28700F3F7EC /* NSIndexSet+indexPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSIndexSet+indexPath.m"; sourceTree = "<group>"; };
 		3979BA4A184E4B5100F3F7EC /* Survey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Survey.h; sourceTree = "<group>"; };
 		3979BA4B184E4B5100F3F7EC /* Survey.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Survey.m; sourceTree = "<group>"; };
+		3979BA50184EAA1400F3F7EC /* NSDate+Formatting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Formatting.h"; sourceTree = "<group>"; };
+		3979BA51184EAA1400F3F7EC /* NSDate+Formatting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Formatting.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -215,6 +218,8 @@
 				3979BA481846D28700F3F7EC /* NSIndexSet+indexPath.m */,
 				3979BA4A184E4B5100F3F7EC /* Survey.h */,
 				3979BA4B184E4B5100F3F7EC /* Survey.m */,
+				3979BA50184EAA1400F3F7EC /* NSDate+Formatting.h */,
+				3979BA51184EAA1400F3F7EC /* NSDate+Formatting.m */,
 			);
 			path = FileSelector;
 			sourceTree = "<group>";
@@ -369,6 +374,7 @@
 				3965ED01183C076A00701F8A /* NSArray+map.m in Sources */,
 				3965ED161845122D00701F8A /* MapSelectViewController.m in Sources */,
 				3965ED131845100000701F8A /* SurveySelectViewController.m in Sources */,
+				3979BA52184EAA1400F3F7EC /* NSDate+Formatting.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

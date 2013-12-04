@@ -10,37 +10,50 @@
 #import "FSTableViewItemCollection.h"
 #import "SProtocol.h"
 
-enum SurveyState {
-    Created = 0,
-    Modified = 1,
-    Saved = 2
+#define SURVEY_EXT @"obssurv"
+
+typedef NS_ENUM(NSUInteger, SurveyState) {
+    kUnborn   = 0,
+    kCorrupt  = 1,
+    kCreated  = 2,
+    kModified = 3,
+    kSaved    = 4
 };
 
 @interface Survey : NSObject <FSTableViewItem>
 
-@property (nonatomic, strong) NSString *title;
 @property (nonatomic, strong, readonly) NSURL *url;
-@property (nonatomic, readonly) enum SurveyState state;
+@property (nonatomic, readonly) SurveyState state;
+@property (nonatomic, strong, readonly) NSString *subtitle;
+
+//title and date will block (reading values from the filessytem) if the state is unborn.
+//To avoid the potential delay, call readPropertiesWithCompletionHandler first
+@property (nonatomic, strong) NSString *title;
 @property (nonatomic, strong, readonly) NSDate *date;
 
-@property (nonatomic, strong, readonly) NSString *subtitle;
+//The following methods will block (reading data from the filessytem)
+//To avoid the potential delay, call openPropertiesWithCompletionHandler first
 @property (nonatomic, strong, readonly) UIImage *thumbnail;
-
-//The following two methods will block the UI thread while IO is performed
-//Use the open method first to initialize them on a background thread
 @property (nonatomic, strong, readonly) SProtocol *protocol;
+
 @property (nonatomic, strong, readonly) UIManagedDocument *document;
 
 //Initializers
 // init will always return nil
-// This will return an unusable object (all properties will be null) until open is called.
-+ (Survey *)surveyFromURL:(NSURL *)url;
-- (id)initWithProtocol:(SProtocol *)protcol;
+//- (id)init //overridden to always return nil, use the designated initializer
+// Designated Initializer  (typically not called directly
+- (id)initWithURL:(NSURL *)url title:(NSString *)title state:(SurveyState)state date:(NSDate *)date;
+- (id)initWithURL:(NSURL *)url;
+//This involve doing IO (to find and create the unused url), it should be called on a background thread
+- (id)initWithProtocol:(SProtocol *)protocol;
 
-//otheractions
-- (void)openPropertiesWithCompletionHandler:(void (^)(NSError*))handler;
+//other actions
+//load all properties
+- (void)readPropertiesWithCompletionHandler:(void (^)(NSError*))handler;
 - (void)openDocumentWithCompletionHandler:(void (^)(NSError*))handler;
 - (void)closeWithCompletionHandler:(void (^)(NSError*))handler;
 - (void)syncWithCompletionHandler:(void (^)(NSError*))handler;
+
+//TODO: memory releaser (unload properties), reset object to unborn
 
 @end

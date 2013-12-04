@@ -37,5 +37,6 @@
 - (void)prepareToDownload;
 - (BOOL)isDownloading;
 - (BOOL)downloadToURL:(NSURL *)url;
+- (BOOL)saveCopyToURL:(NSURL *)url;
 
 @end
