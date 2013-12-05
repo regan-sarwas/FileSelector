@@ -274,6 +274,8 @@
 {
     self.thumbnailIsLoaded = YES;
     _thumbnail = [[UIImage alloc] initWithContentsOfFile:[self.thumbnailUrl path]];
+    if (!_thumbnail)
+        _thumbnail = [UIImage imageNamed:@"SurveyDoc"];
     return !_thumbnail;
 }
 
