@@ -145,12 +145,18 @@
         return;
 
     //adjust the selected Index
-    if (fromIndex < self.selectedLocalIndex && self.selectedLocalIndex <= toIndex) {
-        self.selectedLocalIndex = self.selectedLocalIndex - 1;
+    if (self.selectedLocalIndex == fromIndex) {
+        self.selectedLocalIndex = toIndex;
+    } else {
+        if (fromIndex < self.selectedLocalIndex && self.selectedLocalIndex <= toIndex) {
+            self.selectedLocalIndex = self.selectedLocalIndex - 1;
+        } else {
+            if (toIndex <= self.selectedLocalIndex && self.selectedLocalIndex < fromIndex) {
+                self.selectedLocalIndex = self.selectedLocalIndex + 1;
+            }
+        }
     }
-    if (toIndex <= self.selectedLocalIndex && self.selectedLocalIndex < fromIndex) {
-        self.selectedLocalIndex = self.selectedLocalIndex + 1;
-    }
+    
     //move the item
     id temp = self.localItems[fromIndex];
     [self.localItems removeObjectAtIndex:fromIndex];

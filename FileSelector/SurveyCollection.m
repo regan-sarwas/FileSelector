@@ -78,15 +78,18 @@
         return;
 
     //adjust the selected Index
-    if (fromIndex < self.selectedIndex && self.selectedIndex <= toIndex) {
-        self.selectedIndex = self.selectedIndex - 1;
-    }
-    if (toIndex <= self.selectedIndex && self.selectedIndex < fromIndex) {
-        self.selectedIndex = self.selectedIndex + 1;
-    }
     if (self.selectedIndex == fromIndex) {
         self.selectedIndex = toIndex;
+    } else {
+        if (fromIndex < self.selectedIndex && self.selectedIndex <= toIndex) {
+            self.selectedIndex = self.selectedIndex - 1;
+        } else {
+            if (toIndex <= self.selectedIndex && self.selectedIndex < fromIndex) {
+                self.selectedIndex = self.selectedIndex + 1;
+            }
+        }
     }
+    
     //move the item
     id temp = self.items[fromIndex];
     [self.items removeObjectAtIndex:fromIndex];
