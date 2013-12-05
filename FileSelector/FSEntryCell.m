@@ -30,6 +30,7 @@
 {
     [super setEditing:editing animated:animated];
     [UIView animateWithDuration:0.1 animations:^{
+        //FIXME: does not turn off in all cases
         if (editing && !self.showingDeleteConfirmation) {
             self.titleTextField.enabled = YES;
             self.titleTextField.borderStyle = UITextBorderStyleRoundedRect;
@@ -40,6 +41,9 @@
     }];
 }
 
+//TODO: turn off textField editing when transitioning from delete to delete confirmation and back on in reverse
+//- (void)willTransitionToState:(UITableViewCellStateMask)state
+//{    [super willTransitionToState:state];}
 
 
 @end
