@@ -30,7 +30,7 @@
 {
     [super setEditing:editing animated:animated];
     [UIView animateWithDuration:0.1 animations:^{
-        if (editing) {
+        if (editing && !self.showingDeleteConfirmation) {
             self.titleTextField.enabled = YES;
             self.titleTextField.borderStyle = UITextBorderStyleRoundedRect;
         } else {
