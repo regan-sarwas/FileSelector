@@ -202,4 +202,25 @@
     }
 }
 
+
+#pragma mark - UITextFieldDelegate
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+	[textField resignFirstResponder];
+    [self textChanged:textField];
+	return YES;
+}
+
+- (void)textChanged:(UITextField *)textField {
+    UIView * view = textField.superview;
+    while( ![view isKindOfClass: [FSEntryCell class]]){
+        view = view.superview;
+    }
+    FSEntryCell *cell = (FSEntryCell *) view;
+    NSIndexPath * indexPath = [self.tableView indexPathForCell:cell];
+    Survey *survey = [self.items surveyAtIndex:indexPath.row];
+    NSLog(@"Going to rename %@ to %@", survey.title, textField.text);
+    survey.title = textField.text;
+}
+
 @end

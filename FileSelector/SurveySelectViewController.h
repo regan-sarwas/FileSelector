@@ -13,7 +13,7 @@
 
 @class FSDetailViewController;
 
-@interface SurveySelectViewController : UITableViewController <UIAlertViewDelegate>
+@interface SurveySelectViewController : UITableViewController <UIAlertViewDelegate, UITextFieldDelegate>
 
 @property (strong, nonatomic) FSDetailViewController *detailViewController;
 @property (nonatomic, weak) SurveyCollection *items;

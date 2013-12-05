@@ -16,8 +16,8 @@
 //@property (strong, nonatomic) FSSurvey* selectedSurvey;
 @property (nonatomic, strong) NSMutableArray *items;
 @property (nonatomic) BOOL isLoaded;
-//TODO: consider using NUInteger for selectedIndex with -1 meaning no item selected
-@property (nonatomic) NSUInteger selectedIndex;
+//selectedIndex < 0  meaning that no item is selected
+@property (nonatomic) NSInteger selectedIndex;
 @end
 
 @implementation SurveyCollection
@@ -32,13 +32,15 @@
     return _items;
 }
 
-- (void) setSelectedIndex:(NSUInteger)selectedIndex
+- (void) setSelectedIndex:(NSInteger)selectedIndex
 {
     if (_selectedIndex == selectedIndex)
         return;
-    if (self.items.count <= selectedIndex) {
+    //Since self.items.count is unsigned, the comparison is unsigned, so 2 < -1
+    if (0 < selectedIndex && self.items.count <= selectedIndex) {
         return; //ignore bogus indexes
     }
+    //Allow setting selected index to -1 (or any negative) to indicate no selected item
     _selectedIndex = selectedIndex;
     //FIXME:  use settings
     //[Settings manager].currentSurveyIndex = selectedIndex;
@@ -66,6 +68,9 @@
     [[NSFileManager defaultManager] removeItemAtURL:item.url error:nil];
     [self.items removeObjectAtIndex:index];
     [self saveCache];
+    if (index == self.selectedIndex) {
+        self.selectedIndex = -1;
+    }
     if (index < self.selectedIndex) {
         self.selectedIndex = self.selectedIndex - 1;
     }
@@ -78,15 +83,18 @@
         return;
 
     //adjust the selected Index
-    if (fromIndex < self.selectedIndex && self.selectedIndex <= toIndex) {
-        self.selectedIndex = self.selectedIndex - 1;
-    }
-    if (toIndex <= self.selectedIndex && self.selectedIndex < fromIndex) {
-        self.selectedIndex = self.selectedIndex + 1;
-    }
     if (self.selectedIndex == fromIndex) {
         self.selectedIndex = toIndex;
+    } else {
+        if (fromIndex < self.selectedIndex && self.selectedIndex <= toIndex) {
+            self.selectedIndex = self.selectedIndex - 1;
+        } else {
+            if (toIndex <= self.selectedIndex && self.selectedIndex < fromIndex) {
+                self.selectedIndex = self.selectedIndex + 1;
+            }
+        }
     }
+    
     //move the item
     id temp = self.items[fromIndex];
     [self.items removeObjectAtIndex:fromIndex];
@@ -103,11 +111,13 @@
 
 - (SProtocol *)selectedSurvey
 {
-    if (self.items.count) {
-        return self.items[self.selectedIndex];
-    } else {
+    if (self.selectedIndex < 0 || self.items.count <= self.selectedIndex) {
         return nil;
     }
+    if (self.items.count == 0) {
+        return nil;
+    }
+    return self.items[self.selectedIndex];
 }
 
 
@@ -186,18 +196,18 @@
     if (cacheWasOutdated) {
         [self saveCache];
         //Need to validate/fix the selected index (if files were added or deleted, it may not be valid)
-        if (self.selectedIndex < cachedSurveyUrls.count) {
+        if (0 <= self.selectedIndex && self.selectedIndex < cachedSurveyUrls.count) {
             NSURL *url = cachedSurveyUrls[self.selectedIndex];
             NSInteger index = [self.items indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
                 return [url isEqual:((Survey *)obj).url];
             }];
             if (index == NSNotFound) {
-                self.selectedIndex = 0;  //FIXME: -1
+                self.selectedIndex = -1;
             } else {
                 self.selectedIndex = index;
             }
         } else {
-            self.selectedIndex = 0;  //FIXME: -1
+            self.selectedIndex = -1;
         }
     }
 }
