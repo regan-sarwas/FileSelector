@@ -22,7 +22,7 @@
 
     NSURL *newURL;
     do {
-        NSString *newName = [NSString stringWithFormat:@"%@-%d.%@",originalName,i,extension];
+        NSString *newName = [NSString stringWithFormat:@"%@-%d.%@",originalName,i++,extension];
         newURL = [directory URLByAppendingPathComponent:newName];
     } while ([[NSFileManager defaultManager] fileExistsAtPath:[newURL path]]);
     return newURL;
