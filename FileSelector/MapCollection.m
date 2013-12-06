@@ -57,6 +57,7 @@
         if(![[NSFileManager defaultManager] fileExistsAtPath:[_mapDirectory path]]) {
             [[NSFileManager defaultManager] createDirectoryAtPath:[_mapDirectory path]
                                       withIntermediateDirectories:YES attributes:nil error:nil];
+            //TODO: set this directory to not backup
         }
     }
     return _mapDirectory;
@@ -217,7 +218,7 @@ static MapCollection *_sharedCollection = nil;
 
 - (BOOL)openURL:(NSURL *)url
 {
-    //FIXME: Protocol returns the protocol, Survey returns BOOL, which should I use?
+    //FIXME: SProtocol returns the protocol, Survey returns BOOL, which should I use?
     return ![self openURL:url saveCache:YES];
 }
 
@@ -455,11 +456,15 @@ static MapCollection *_sharedCollection = nil;
     //update lists and UI synchronosly on UI thread if there is a delegate
     if (self.delegate) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.localItems removeObjectsAtIndexes:itemsToRemove];
-            [self.delegate collection:self removedLocalItemsAtIndexes:itemsToRemove];
-            NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(self.localItems.count, mapsToAdd.count)];
-            [self.localItems addObjectsFromArray:mapsToAdd];
-            [self.delegate collection:self addedLocalItemsAtIndexes:indexes];
+            if (0 < itemsToRemove.count) {
+                [self.localItems removeObjectsAtIndexes:itemsToRemove];
+                [self.delegate collection:self removedLocalItemsAtIndexes:itemsToRemove];
+            }
+            if (0 < mapsToAdd.count) {
+                NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(self.localItems.count, mapsToAdd.count)];
+                [self.localItems addObjectsFromArray:mapsToAdd];
+                [self.delegate collection:self addedLocalItemsAtIndexes:indexes];
+            }
             [self checkAndFixSelectedIndex];
         });
     } else {
@@ -570,11 +575,15 @@ static MapCollection *_sharedCollection = nil;
                 self.remoteItems[[key integerValue]] = [mapsToUpdate objectForKey:key];
                 [self.delegate collection:self changedRemoteItemsAtIndexes:[NSIndexSet indexSetWithIndex:[key integerValue]]];
             }
-            [self.remoteItems removeObjectsAtIndexes:itemsToRemove];
-            [self.delegate collection:self removedRemoteItemsAtIndexes:itemsToRemove];
-            NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(self.remoteItems.count, mapsToAdd.count)];
-            [self.remoteItems addObjectsFromArray:mapsToAdd];
-            [self.delegate collection:self addedRemoteItemsAtIndexes:indexes];
+            if (0 < itemsToRemove.count) {
+                [self.remoteItems removeObjectsAtIndexes:itemsToRemove];
+                [self.delegate collection:self removedRemoteItemsAtIndexes:itemsToRemove];
+            }
+            if (0 < mapsToAdd.count) {
+                NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(self.remoteItems.count, mapsToAdd.count)];
+                [self.remoteItems addObjectsFromArray:mapsToAdd];
+                [self.delegate collection:self addedRemoteItemsAtIndexes:indexes];
+            }
         });
     } else {
         for (id key in [mapsToUpdate allKeys]) {
