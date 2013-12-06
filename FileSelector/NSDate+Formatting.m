@@ -19,4 +19,13 @@
     return [dateFormatter stringFromDate:self];
 }
 
+- (NSString *)stringWithMediumDateFormat
+{
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDoesRelativeDateFormatting:YES];
+    [dateFormatter setTimeStyle:NSDateFormatterNoStyle];
+    [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
+    return [dateFormatter stringFromDate:self];
+}
+
 @end

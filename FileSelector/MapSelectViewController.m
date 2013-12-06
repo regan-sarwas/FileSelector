@@ -166,7 +166,9 @@
         NSString *identifier = (indexPath.section == 0) ? @"LocalMapCell" : @"RemoteMapCell";
         MapTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier forIndexPath:indexPath];
         cell.titleLabel.text = item.title;
-        cell.subtitleLabel.text = item.subtitle;
+        cell.thumbnailImageView.image = item.thumbnail;
+        cell.subtitle1Label.text = item.subtitle;
+        cell.subtitle2Label.text = item.subtitle2;
         cell.downloadImageView.hidden = item.isDownloading;  //FIXME: hide if downloading
         return cell;
     }
@@ -287,7 +289,7 @@
                     [self.tableView reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(1, 2)] withRowAnimation:YES];
                 }
             } else {
-                [[[UIAlertView alloc] initWithTitle:@"Error" message:@"Can't connect to server" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil] show];
+                [[[UIAlertView alloc] initWithTitle:@"Error" message:@"Can't get the map list from the server" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil] show];
             }
         });
     }];

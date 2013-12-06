@@ -11,5 +11,6 @@
 @interface NSDate (Formatting)
 
 - (NSString *)stringWithMediumDateTimeFormat;
+- (NSString *)stringWithMediumDateFormat;
 
 @end

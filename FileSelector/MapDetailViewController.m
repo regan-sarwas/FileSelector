@@ -7,6 +7,7 @@
 //
 
 #import "MapDetailViewController.h"
+#import "NSDate+Formatting.h"
 
 @interface MapDetailViewController ()
 
@@ -22,10 +23,10 @@
 {
     [super viewDidLoad];
     //FIXME: Autolayout bug? - title height in landscape is set by title height in portrait
-    self.nameLabel.text = self.map.version ? [NSString stringWithFormat:@"%@, v. %@", self.map.title, self.map.version] : self.map.title;
-    self.dateLabel.text = self.map.dateString;
+    self.nameLabel.text = self.map.title;
+    self.dateLabel.text = [self.map.date stringWithMediumDateFormat];
     //FIXME: AutoLayout issue - details not taking all available space in popover
-    self.descriptionLabel.text = self.map.isLocal ? self.map.details : @"Download the protocol for more details.";
+    self.descriptionLabel.text = self.map.isLocal ? self.map.description : @"Download the protocol for more details.";
 }
 
 @end

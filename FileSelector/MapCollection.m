@@ -505,9 +505,10 @@ static MapCollection *_sharedCollection = nil;
                     NSDictionary *item = jsonItem;
                     Map *map = [[Map alloc] initWithURL:[NSURL URLWithString:item[@"url"]]
                                                                    title:item[@"name"]
-                                                                 version:item[@"version"]
+                                                                  author:item[@"author"]
                                                                     date:item[@"date"]];
                     if (map) {
+                        //FIXME: Add other attributes thumbnail url, etc.
                         [maps addObject:map];
                     }
                 }

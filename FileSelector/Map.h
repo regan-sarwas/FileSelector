@@ -7,29 +7,38 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 #import "FSTableViewItemCollection.h"
 
 @interface Map : NSObject <NSCoding, FSTableViewItem>
 
 @property (nonatomic, strong, readonly) NSURL *url;
-@property (nonatomic, strong, readonly) NSNumber *version;
-@property (nonatomic, strong, readonly) NSString *versionString;
+@property (nonatomic, strong, readonly) NSString *title;
+@property (nonatomic, strong, readonly) NSString *description;
+@property (nonatomic, strong, readonly) NSString *author;
 @property (nonatomic, strong, readonly) NSDate *date;
-@property (nonatomic, strong, readonly) NSString *dateString;
-@property (nonatomic, strong, readonly) NSString *details;
-
-//FIXME: get correct type for tilecache and validate usage
-@property (nonatomic, strong, readonly) id tileCache;
+@property (nonatomic, readonly) NSUInteger byteCount;
+@property (nonatomic, readonly) CGRect extents;
 
 //YES if the Map is available locally, NO otherwise;
 - (BOOL)isLocal;
+
+//title and date will block (reading values from the filessytem) if the state is unborn.
+//To avoid the potential delay, call readPropertiesWithCompletionHandler first
+
+//The following methods will block (reading data from the filessytem)
+//To avoid the potential delay, call openPropertiesWithCompletionHandler first
+@property (nonatomic, strong, readonly) UIImage *thumbnail;
+//FIXME: get correct type for tilecache and validate usage
+@property (nonatomic, strong, readonly) id tileCache;
+
 
 //YES if two Maps are the same (same title, version and date)
 //    do not compare urls, because the same Map will have either a local, or a server url
 - (BOOL)isEqualtoMap:(Map *)Map;
 
 //designated initializer
-- (id)initWithURL:(NSURL *)url title:(id)title version:(id)version date:(id)date;
+- (id)initWithURL:(NSURL *)url title:(id)title author:(id)author date:(id)date;
 - (id)initWithURL:(NSURL *)url;
 - (id) init __attribute__((unavailable("Must use initWithURL: instead.")));
 

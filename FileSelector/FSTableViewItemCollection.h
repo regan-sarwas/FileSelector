@@ -14,6 +14,7 @@
 - (UIImage *) thumbnail;
 @optional
 - (void) setTitle:(NSString *)title;
+- (NSString *) subtitle2;
 @end
 
 @protocol FSTableViewItemCollection <NSObject>
