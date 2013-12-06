@@ -47,6 +47,7 @@
 		3979BA6B1851570700F3F7EC /* Map.m in Sources */ = {isa = PBXBuildFile; fileRef = 3979BA6A1851570700F3F7EC /* Map.m */; };
 		3979BA6E1851600100F3F7EC /* MapDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3979BA6D1851600100F3F7EC /* MapDetailViewController.m */; };
 		3979BA71185163BF00F3F7EC /* MapTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3979BA70185163BF00F3F7EC /* MapTableViewCell.m */; };
+		3979BA741852405800F3F7EC /* RESdownloadView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3979BA731852405800F3F7EC /* RESdownloadView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -129,6 +130,8 @@
 		3979BA6D1851600100F3F7EC /* MapDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapDetailViewController.m; sourceTree = "<group>"; };
 		3979BA6F185163BF00F3F7EC /* MapTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapTableViewCell.h; sourceTree = "<group>"; };
 		3979BA70185163BF00F3F7EC /* MapTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapTableViewCell.m; sourceTree = "<group>"; };
+		3979BA721852405800F3F7EC /* RESdownloadView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RESdownloadView.h; sourceTree = "<group>"; };
+		3979BA731852405800F3F7EC /* RESdownloadView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RESdownloadView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -190,6 +193,11 @@
 		3903C75318344ED000D82038 /* FileSelector */ = {
 			isa = PBXGroup;
 			children = (
+				3979BA77185241F300F3F7EC /* Surveys */,
+				3979BA76185241E600F3F7EC /* Protocols */,
+				3979BA75185241DE00F3F7EC /* Maps */,
+				3979BA721852405800F3F7EC /* RESdownloadView.h */,
+				3979BA731852405800F3F7EC /* RESdownloadView.m */,
 				3979BA621851185800F3F7EC /* ObserverModel.xcdatamodeld */,
 				3903C75C18344ED000D82038 /* FSAppDelegate.h */,
 				3903C75D18344ED000D82038 /* FSAppDelegate.m */,
@@ -199,16 +207,8 @@
 				3903C7891834520A00D82038 /* FSMainViewController.m */,
 				3903C79418356A0500D82038 /* FSMainIpadViewController.h */,
 				3903C79518356A0500D82038 /* FSMainIpadViewController.m */,
-				3903C76818344ED000D82038 /* FSDetailViewController.h */,
-				3903C76918344ED000D82038 /* FSDetailViewController.m */,
 				3903C76B18344ED000D82038 /* Images.xcassets */,
 				3903C75418344ED000D82038 /* Supporting Files */,
-				3903C79D18359D0000D82038 /* FSEntryCell.h */,
-				3903C79E18359D0000D82038 /* FSEntryCell.m */,
-				3965ED0B183E9B2A00701F8A /* ProtocolTableViewCell.h */,
-				3965ED0C183E9B2A00701F8A /* ProtocolTableViewCell.m */,
-				3979BA6F185163BF00F3F7EC /* MapTableViewCell.h */,
-				3979BA70185163BF00F3F7EC /* MapTableViewCell.m */,
 				3965ECFF183C076A00701F8A /* NSArray+map.h */,
 				3965ED00183C076A00701F8A /* NSArray+map.m */,
 				3965ED0E1843DAAF00701F8A /* NSURL+unique.h */,
@@ -216,35 +216,9 @@
 				3979BA50184EAA1400F3F7EC /* NSDate+Formatting.h */,
 				3979BA51184EAA1400F3F7EC /* NSDate+Formatting.m */,
 				3903C78B18353ED300D82038 /* FSTableViewItemCollection.h */,
-				3965ECFB183AE1B800701F8A /* SProtocol.h */,
-				3965ECFC183AE1B800701F8A /* SProtocol.m */,
-				3965ECF8183AE0DE00701F8A /* ProtocolCollection.h */,
-				3965ECF9183AE0DE00701F8A /* ProtocolCollection.m */,
-				3965ED111845100000701F8A /* SurveySelectViewController.h */,
-				3965ED121845100000701F8A /* SurveySelectViewController.m */,
-				3965ED141845122D00701F8A /* MapSelectViewController.h */,
-				3965ED151845122D00701F8A /* MapSelectViewController.m */,
-				3965ED04183D8F5400701F8A /* ProtocolSelectViewController.h */,
-				3965ED05183D8F5400701F8A /* ProtocolSelectViewController.m */,
-				3979BA44184569D300F3F7EC /* ProtocolDetailViewController.h */,
-				3979BA45184569D300F3F7EC /* ProtocolDetailViewController.m */,
-				3979BA6C1851600100F3F7EC /* MapDetailViewController.h */,
-				3979BA6D1851600100F3F7EC /* MapDetailViewController.m */,
 				3979BA471846D28700F3F7EC /* NSIndexSet+indexPath.h */,
 				3979BA481846D28700F3F7EC /* NSIndexSet+indexPath.m */,
-				3979BA4A184E4B5100F3F7EC /* Survey.h */,
-				3979BA4B184E4B5100F3F7EC /* Survey.m */,
-				3979BA53184EABA100F3F7EC /* SurveyCollection.h */,
-				3979BA54184EABA100F3F7EC /* SurveyCollection.m */,
-				3979BA5C1850EB5100F3F7EC /* SurveyCoreDataDocument.h */,
-				3979BA5D1850EB5100F3F7EC /* SurveyCoreDataDocument.m */,
-				3979BA5F1850EF1400F3F7EC /* SurveyObjectModel.h */,
-				3979BA601850EF1400F3F7EC /* SurveyObjectModel.m */,
-				3979BA65185154E400F3F7EC /* MapCollection.h */,
-				3979BA66185154E400F3F7EC /* MapCollection.m */,
 				3979BA681851551400F3F7EC /* CollectionChanged.h */,
-				3979BA691851570700F3F7EC /* Map.h */,
-				3979BA6A1851570700F3F7EC /* Map.m */,
 			);
 			path = FileSelector;
 			sourceTree = "<group>";
@@ -276,6 +250,61 @@
 				3903C77B18344ED000D82038 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		3979BA75185241DE00F3F7EC /* Maps */ = {
+			isa = PBXGroup;
+			children = (
+				3979BA691851570700F3F7EC /* Map.h */,
+				3979BA6A1851570700F3F7EC /* Map.m */,
+				3979BA65185154E400F3F7EC /* MapCollection.h */,
+				3979BA66185154E400F3F7EC /* MapCollection.m */,
+				3965ED141845122D00701F8A /* MapSelectViewController.h */,
+				3965ED151845122D00701F8A /* MapSelectViewController.m */,
+				3979BA6C1851600100F3F7EC /* MapDetailViewController.h */,
+				3979BA6D1851600100F3F7EC /* MapDetailViewController.m */,
+				3979BA6F185163BF00F3F7EC /* MapTableViewCell.h */,
+				3979BA70185163BF00F3F7EC /* MapTableViewCell.m */,
+			);
+			name = Maps;
+			sourceTree = "<group>";
+		};
+		3979BA76185241E600F3F7EC /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				3965ECFB183AE1B800701F8A /* SProtocol.h */,
+				3965ECFC183AE1B800701F8A /* SProtocol.m */,
+				3965ECF8183AE0DE00701F8A /* ProtocolCollection.h */,
+				3965ECF9183AE0DE00701F8A /* ProtocolCollection.m */,
+				3965ED04183D8F5400701F8A /* ProtocolSelectViewController.h */,
+				3965ED05183D8F5400701F8A /* ProtocolSelectViewController.m */,
+				3979BA44184569D300F3F7EC /* ProtocolDetailViewController.h */,
+				3979BA45184569D300F3F7EC /* ProtocolDetailViewController.m */,
+				3965ED0B183E9B2A00701F8A /* ProtocolTableViewCell.h */,
+				3965ED0C183E9B2A00701F8A /* ProtocolTableViewCell.m */,
+			);
+			name = Protocols;
+			sourceTree = "<group>";
+		};
+		3979BA77185241F300F3F7EC /* Surveys */ = {
+			isa = PBXGroup;
+			children = (
+				3979BA4A184E4B5100F3F7EC /* Survey.h */,
+				3979BA4B184E4B5100F3F7EC /* Survey.m */,
+				3979BA53184EABA100F3F7EC /* SurveyCollection.h */,
+				3979BA54184EABA100F3F7EC /* SurveyCollection.m */,
+				3979BA5C1850EB5100F3F7EC /* SurveyCoreDataDocument.h */,
+				3979BA5D1850EB5100F3F7EC /* SurveyCoreDataDocument.m */,
+				3979BA5F1850EF1400F3F7EC /* SurveyObjectModel.h */,
+				3979BA601850EF1400F3F7EC /* SurveyObjectModel.m */,
+				3965ED111845100000701F8A /* SurveySelectViewController.h */,
+				3965ED121845100000701F8A /* SurveySelectViewController.m */,
+				3903C76818344ED000D82038 /* FSDetailViewController.h */,
+				3903C76918344ED000D82038 /* FSDetailViewController.m */,
+				3903C79D18359D0000D82038 /* FSEntryCell.h */,
+				3903C79E18359D0000D82038 /* FSEntryCell.m */,
+			);
+			name = Surveys;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -397,6 +426,7 @@
 				3979BA491846D28700F3F7EC /* NSIndexSet+indexPath.m in Sources */,
 				3903C78A1834520A00D82038 /* FSMainViewController.m in Sources */,
 				3979BA46184569D300F3F7EC /* ProtocolDetailViewController.m in Sources */,
+				3979BA741852405800F3F7EC /* RESdownloadView.m in Sources */,
 				3965ED01183C076A00701F8A /* NSArray+map.m in Sources */,
 				3979BA6E1851600100F3F7EC /* MapDetailViewController.m in Sources */,
 				3979BA641851185800F3F7EC /* ObserverModel.xcdatamodeld in Sources */,
