@@ -1,35 +1,30 @@
 //
-//  ProtocolCollection.h
+//  MapCollection.h
 //  FileSelector
 //
-//  Created by Regan Sarwas on 11/18/13.
+//  Created by Regan Sarwas on 12/5/13.
 //  Copyright (c) 2013 GIS Team. All rights reserved.
 //
 
-@class ProtocolCollection;
-
-//Note that the data model will be changed on the background thread, as changes are made to the collections
-//that are referenced by the table view, I must do the insert/delete/change on the mainthread with the call
-//to update the UI, otherwise, I will get an internal inconsistency error
-
 #import <Foundation/Foundation.h>
 #import "FSTableViewItemCollection.h"
-#import "SProtocol.h"
+#import "Map.h"
 #import "CollectionChanged.h"
 
-#define PROTOCOL_EXT @"obsprot"
-#define PROTOCOL_DIR @"protocols"
+#define MAP_EXT @"tpk"
+#define MAP_DIR @"maps"
 
-@interface ProtocolCollection : NSObject //<FSTableViewItemCollection>
+@interface MapCollection : NSObject
 
 @property (nonatomic, weak) id<CollectionChanged> delegate;
 
 // This is a singleton - actually a psuedo singleton, it is based on the honor system.
 // if you create your own instance with alloc/init then the behaviour is unspecified
-+ (ProtocolCollection *)sharedCollection;
++ (MapCollection *)sharedCollection;
+
 + (void)releaseSharedCollection;
 //FIXME: multiple instances will clash when saving state to the cache.
-//However, I want to create and destroy the protocol list with the view controller to
+//However, I want to create and destroy the Map list with the view controller to
 //avoid keeping the collection in memory if it isn't needed.  making a singleton object
 //ensures that it is trapped in memory, unless I create a cleanup method that the VC calls
 //when it disappears.
@@ -47,29 +42,29 @@
 
 // Opens a file from Mail/Safari (via the App delegate)
 // nil return indicates the URL could not be opened or is not valid.
-// Will return an existing protocol if it already exists in the local collection.
-// If the protocol exists in the remote list, it will be added to the local list and removed from the remote list.
+// Will return an existing Map if it already exists in the local collection.
+// If the Map exists in the remote list, it will be added to the local list and removed from the remote list.
 // Will send messages to the delegate when/if the changes to the model occur.
-- (SProtocol *)openURL:(NSURL *)url;
+- (BOOL)openURL:(NSURL *)url;
 
 // UITableView DataSource Support
-- (NSUInteger) numberOfLocalProtocols;
-- (NSUInteger) numberOfRemoteProtocols;
-- (SProtocol *) localProtocolAtIndex:(NSUInteger)index;
-- (SProtocol *) remoteProtocolAtIndex:(NSUInteger)index;
-- (void) removeLocalProtocolAtIndex:(NSUInteger)index;
-- (void) moveLocalProtocolAtIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex;
-- (void) moveRemoteProtocolAtIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex;
-- (void) setSelectedLocalProtocol:(NSUInteger)index;
-- (SProtocol *)selectedLocalProtocol;
+- (NSUInteger) numberOfLocalMaps;
+- (NSUInteger) numberOfRemoteMaps;
+- (Map *) localMapAtIndex:(NSUInteger)index;
+- (Map *) remoteMapAtIndex:(NSUInteger)index;
+- (void) removeLocalMapAtIndex:(NSUInteger)index;
+- (void) moveLocalMapAtIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex;
+- (void) moveRemoteMapAtIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex;
+- (void) setSelectedLocalMap:(NSUInteger)index;
+- (Map *)selectedLocalMap;
 
-// Download a Protocol from the server
-- (void)prepareToDownloadProtocolAtIndex:(NSUInteger)index;
+// Download a Map from the server
+- (void)prepareToDownloadMapAtIndex:(NSUInteger)index;
 // On success, the delegate will be sent two messages, one to remove the remote item, the other to add the new local item.
 // The completion handler is used only to signal success/failure
-- (void)downloadProtocolAtIndex:(NSUInteger)index WithCompletionHandler:(void (^)(BOOL success))completionHandler;
+- (void)downloadMapAtIndex:(NSUInteger)index WithCompletionHandler:(void (^)(BOOL success))completionHandler;
 
-// Refresh the list of remote protocols
+// Refresh the list of remote Maps
 // Will send message to the delegate as items are added/removed from the local/remote lists
 // The completion handler is used only to signal success/failure
 - (void) refreshWithCompletionHandler:(void (^)(BOOL success))completionHandler;

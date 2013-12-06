@@ -13,7 +13,7 @@
 #import "SurveySelectViewController.h"
 #import "MapSelectViewController.h"
 #import "SurveyCollection.h"
-#import "FSMapCollection.h"
+#import "MapCollection.h"
 #import "ProtocolCollection.h"
 
 @interface FSMainIpadViewController ()
@@ -22,7 +22,7 @@
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *selectSurveyButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *selectMapButton;
 @property (strong, nonatomic) SurveyCollection* surveys;
-@property (strong, nonatomic) FSMapCollection* maps;
+@property (strong, nonatomic) MapCollection* maps;
 
 @end
 
@@ -64,7 +64,7 @@
     }];
 
     self.selectMapButton.enabled = NO;
-    self.maps = [[FSMapCollection alloc] init];
+    self.maps = [[MapCollection alloc] init];
     [self.maps openWithCompletionHandler:^(BOOL success) {
         //do any other background work;
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -88,7 +88,7 @@
 {
     self.barTitle.title = [NSString stringWithFormat:@"%@ - %@",
                            (self.surveys.selectedSurvey ? self.surveys.selectedSurvey.title : @"Select Survey"),
-                           (self.maps.selectedIndex ? self.maps.selectedItem.title : @"Select Map")];
+                           (self.maps.selectedLocalMap ? self.maps.selectedLocalMap.title : @"Select Map")];
 }
 
 - (void)setupNewSurvey
@@ -130,7 +130,7 @@
         if ([segue isKindOfClass:[UIStoryboardPopoverSegue class]]) {
             vc.popover = ((UIStoryboardPopoverSegue *)segue).popoverController;
             vc.popover.delegate = self;
-            vc.popoverDismissedCallback = ^{[self updateTitle];};
+            vc.rowSelectedCallback = ^(NSIndexPath*indexPath){[self updateTitle];};
         }
         return;
     }
@@ -155,8 +155,8 @@
             [[[UIAlertView alloc] initWithTitle:@"Thanks" message:@"I should do something now." delegate:nil cancelButtonTitle:@"Do it later" otherButtonTitles:nil] show];
         }
     }
-    if ([FSMapCollection collectsURL:url]) {
-        success = [self.maps openURL:url];
+    if ([MapCollection collectsURL:url]) {
+        success = ![self.maps openURL:url];
         if (!success) {
             [[[UIAlertView alloc] initWithTitle:@"Error" message:@"Can't open file" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
         } else {

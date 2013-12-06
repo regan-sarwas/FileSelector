@@ -1,12 +1,12 @@
 //
-//  Protocol.m
+//  Map.m
 //  FileSelector
 //
-//  Created by Regan Sarwas on 11/18/13.
+//  Created by Regan Sarwas on 12/5/13.
 //  Copyright (c) 2013 GIS Team. All rights reserved.
 //
 
-#import "SProtocol.h"
+#import "Map.h"
 
 #define kCodingVersion    1
 #define kCodingVersionKey @"codingversion"
@@ -17,13 +17,13 @@
 #define kJsonDateFormat   @""
 
 
-@interface SProtocol() {
-    NSString *_title;  //protocol properties cannot be synthesized
+@interface Map() {
+    NSString *_title;  //interface properties cannot be synthesized
 }
 @property (nonatomic) BOOL downloading;
 @end
 
-@implementation SProtocol
+@implementation Map
 
 
 - (id) initWithURL:(NSURL *)url title:(id)title version:(id)version date:(id)date
@@ -102,29 +102,6 @@
 
 #pragma mark - public methods
 
-@synthesize values = _values;  //need to synthesize because I am implementing all property methods
-
-- (NSDictionary *)values
-{
-    if (!_values) {
-        NSData *data = [NSData dataWithContentsOfURL:self.url];
-        if (data) {
-            id json = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-            if ([json isKindOfClass:[NSDictionary class]])
-            {
-                _values = json;
-                id title = _values[@"name"];
-                id version =  _values[@"version"];
-                id date = _values[@"date"];
-                _title = ([title isKindOfClass:[NSString class]] ? title : nil);
-                _version = ([version isKindOfClass:[NSNumber class]] ? version : nil);
-                _date = [self dateFromString:([date isKindOfClass:[NSString class]] ? date : nil)];
-            }
-        }
-    }
-    return _values;
-}
-
 - (BOOL)isLocal
 {
     return self.url.isFileURL;
@@ -133,13 +110,13 @@
 // I do not override isEqual to use this method, because title,version and date could change
 // when the values are accessed.  This would cause the hash value to change which can cause
 // all kinds of problems if the object is used in a dictionary or set.
-- (BOOL)isEqualtoProtocol:(SProtocol *)other
+- (BOOL)isEqualtoMap:(Map *)other
 {
     // need to be careful with null properties.
     // without the == check, two null properties will be not equal
     return ((self.title == other.title) || [self.title isEqualToString:other.title]) &&
-           ((self.version == other.version) || [self.version isEqual:other.version]) &&
-           ((self.date == other.date) || [self.date isEqual:other.date]);
+    ((self.version == other.version) || [self.version isEqual:other.version]) &&
+    ((self.date == other.date) || [self.date isEqual:other.date]);
 }
 
 - (void)prepareToDownload
@@ -155,16 +132,17 @@
 
 - (BOOL)downloadToURL:(NSURL *)url
 {
+    //FIXME: use NSURLSession, and use delegate to provide progress indication
     BOOL success = NO;
-    if (!self.isLocal && self.values) {
+    if (!self.isLocal && self.tileCache) {
         if ([self saveCopyToURL:url]) {
             _url = url;
             success = YES;
         } else {
-            NSLog(@"Protocol.downloadToURL:  Got data but write to %@ failed",url);
+            NSLog(@"Map.downloadToURL:  Got data but write to %@ failed",url);
         }
     } else {
-        NSLog(@"Protocol.downloadToURL: Unable to get data at %@", self.url);
+        NSLog(@"Map.downloadToURL: Unable to get data at %@", self.url);
     }
     self.downloading = NO;
     return success;
@@ -174,7 +152,7 @@
 {
     NSOutputStream *stream = [NSOutputStream outputStreamWithURL:url append:NO];
     [stream open];
-    NSInteger numberOfBytesWritten =  [NSJSONSerialization writeJSONObject:self.values toStream:stream options:NSJSONWritingPrettyPrinted error:nil];
+    NSInteger numberOfBytesWritten = 0; //FIXME: get tilecache at remote URL and write to stream
     [stream close];
     return numberOfBytesWritten > 0;
 }
@@ -217,12 +195,7 @@
 
 - (NSString *)details
 {
-    id d = self.values[@"description"];
-    if ([d isKindOfClass:[NSString class]]) {
-        return d;
-    } else {
-        return @"";
-    }
+    return @"get details from the tilecache";
 }
 
 - (NSString *)dateString
@@ -233,25 +206,6 @@
 - (NSString *)versionString
 {
     return self.version ? [self.version stringValue] : @"Unknown";
-}
-
-- (NSArray *)features
-{
-    NSMutableArray *results = [NSMutableArray new];
-    id jsonObj = self.values[@"features"];
-    if ([jsonObj isKindOfClass:[NSArray class]]) {
-        NSArray *entities = (NSArray *)jsonObj;
-        for (id jsonEntity in entities) {
-            if ([jsonEntity isKindOfClass:[NSDictionary class]]) {
-                NSDictionary *entity = (NSDictionary *)jsonEntity;
-                if ([entity[@"name"] isKindOfClass:[NSString class]] &&
-                    [entity[@"attributes"] isKindOfClass:[NSArray class]]) {
-                    [results addObject:entity];
-                }
-            }
-        }
-    }
-    return results;
 }
 
 @end

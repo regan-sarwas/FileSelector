@@ -7,16 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "FSTableViewItemCollection.h"
+#import "MapDetailViewController.h"
+#import "MapCollection.h"
 
-@class FSDetailViewController;
+@interface MapSelectViewController : UITableViewController <CollectionChanged>
 
-@interface MapSelectViewController : UITableViewController
-
-@property (strong, nonatomic) FSDetailViewController *detailViewController;
-@property (nonatomic, weak) id<FSTableViewItemCollection> items;
-@property (nonatomic, weak) ProtocolCollection *protocols;
+@property (strong, nonatomic) MapDetailViewController *detailViewController;
+@property (nonatomic, weak) MapCollection *items;
 @property (nonatomic, weak) UIPopoverController *popover;
-@property (copy) void (^popoverDismissedCallback)(void);
+@property (copy) void (^rowSelectedCallback)(NSIndexPath *indexPath);
 
 @end

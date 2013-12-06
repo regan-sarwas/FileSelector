@@ -36,7 +36,7 @@
 //designated initializer
 - (id)initWithURL:(NSURL *)url title:(id)title version:(id)version date:(id)date;
 - (id)initWithURL:(NSURL *)url;
-- (id)init;  //will always return nil
+- (id) init __attribute__((unavailable("Must use initWithURL: instead.")));
 
 // download the protocol from the remote URL to a local file...
 - (void)prepareToDownload;

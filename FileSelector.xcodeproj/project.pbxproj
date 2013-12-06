@@ -24,8 +24,6 @@
 		3903C78A1834520A00D82038 /* FSMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3903C7891834520A00D82038 /* FSMainViewController.m */; };
 		3903C7931835665E00D82038 /* Lets_Try_Popovers.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3903C7921835665E00D82038 /* Lets_Try_Popovers.storyboard */; };
 		3903C79618356A0500D82038 /* FSMainIpadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3903C79518356A0500D82038 /* FSMainIpadViewController.m */; };
-		3903C79918358E9800D82038 /* FSMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 3903C79818358E9800D82038 /* FSMap.m */; };
-		3903C79C18358FDA00D82038 /* FSMapCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = 3903C79B18358FDA00D82038 /* FSMapCollection.m */; };
 		3903C79F18359D0000D82038 /* FSEntryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3903C79E18359D0000D82038 /* FSEntryCell.m */; };
 		39278325183A96680049B71B /* observations.png in Resources */ = {isa = PBXBuildFile; fileRef = 39278324183A96680049B71B /* observations.png */; };
 		39278327183AA7490049B71B /* tilepackageIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 39278326183AA7490049B71B /* tilepackageIcon.png */; };
@@ -45,6 +43,10 @@
 		3979BA5E1850EB5100F3F7EC /* SurveyCoreDataDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 3979BA5D1850EB5100F3F7EC /* SurveyCoreDataDocument.m */; };
 		3979BA611850EF1400F3F7EC /* SurveyObjectModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3979BA601850EF1400F3F7EC /* SurveyObjectModel.m */; };
 		3979BA641851185800F3F7EC /* ObserverModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3979BA621851185800F3F7EC /* ObserverModel.xcdatamodeld */; };
+		3979BA67185154E400F3F7EC /* MapCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = 3979BA66185154E400F3F7EC /* MapCollection.m */; };
+		3979BA6B1851570700F3F7EC /* Map.m in Sources */ = {isa = PBXBuildFile; fileRef = 3979BA6A1851570700F3F7EC /* Map.m */; };
+		3979BA6E1851600100F3F7EC /* MapDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3979BA6D1851600100F3F7EC /* MapDetailViewController.m */; };
+		3979BA71185163BF00F3F7EC /* MapTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3979BA70185163BF00F3F7EC /* MapTableViewCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -83,10 +85,6 @@
 		3903C7921835665E00D82038 /* Lets_Try_Popovers.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Lets_Try_Popovers.storyboard; sourceTree = "<group>"; };
 		3903C79418356A0500D82038 /* FSMainIpadViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSMainIpadViewController.h; sourceTree = "<group>"; };
 		3903C79518356A0500D82038 /* FSMainIpadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSMainIpadViewController.m; sourceTree = "<group>"; };
-		3903C79718358E9800D82038 /* FSMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSMap.h; sourceTree = "<group>"; };
-		3903C79818358E9800D82038 /* FSMap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSMap.m; sourceTree = "<group>"; };
-		3903C79A18358FDA00D82038 /* FSMapCollection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSMapCollection.h; sourceTree = "<group>"; };
-		3903C79B18358FDA00D82038 /* FSMapCollection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSMapCollection.m; sourceTree = "<group>"; };
 		3903C79D18359D0000D82038 /* FSEntryCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSEntryCell.h; sourceTree = "<group>"; };
 		3903C79E18359D0000D82038 /* FSEntryCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSEntryCell.m; sourceTree = "<group>"; };
 		39278324183A96680049B71B /* observations.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = observations.png; sourceTree = "<group>"; };
@@ -122,6 +120,15 @@
 		3979BA5F1850EF1400F3F7EC /* SurveyObjectModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SurveyObjectModel.h; sourceTree = "<group>"; };
 		3979BA601850EF1400F3F7EC /* SurveyObjectModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SurveyObjectModel.m; sourceTree = "<group>"; };
 		3979BA631851185800F3F7EC /* ObserverModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ObserverModel.xcdatamodel; sourceTree = "<group>"; };
+		3979BA65185154E400F3F7EC /* MapCollection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapCollection.h; sourceTree = "<group>"; };
+		3979BA66185154E400F3F7EC /* MapCollection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapCollection.m; sourceTree = "<group>"; };
+		3979BA681851551400F3F7EC /* CollectionChanged.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CollectionChanged.h; sourceTree = "<group>"; };
+		3979BA691851570700F3F7EC /* Map.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Map.h; sourceTree = "<group>"; };
+		3979BA6A1851570700F3F7EC /* Map.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Map.m; sourceTree = "<group>"; };
+		3979BA6C1851600100F3F7EC /* MapDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapDetailViewController.h; sourceTree = "<group>"; };
+		3979BA6D1851600100F3F7EC /* MapDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapDetailViewController.m; sourceTree = "<group>"; };
+		3979BA6F185163BF00F3F7EC /* MapTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapTableViewCell.h; sourceTree = "<group>"; };
+		3979BA70185163BF00F3F7EC /* MapTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapTableViewCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -200,6 +207,8 @@
 				3903C79E18359D0000D82038 /* FSEntryCell.m */,
 				3965ED0B183E9B2A00701F8A /* ProtocolTableViewCell.h */,
 				3965ED0C183E9B2A00701F8A /* ProtocolTableViewCell.m */,
+				3979BA6F185163BF00F3F7EC /* MapTableViewCell.h */,
+				3979BA70185163BF00F3F7EC /* MapTableViewCell.m */,
 				3965ECFF183C076A00701F8A /* NSArray+map.h */,
 				3965ED00183C076A00701F8A /* NSArray+map.m */,
 				3965ED0E1843DAAF00701F8A /* NSURL+unique.h */,
@@ -207,10 +216,6 @@
 				3979BA50184EAA1400F3F7EC /* NSDate+Formatting.h */,
 				3979BA51184EAA1400F3F7EC /* NSDate+Formatting.m */,
 				3903C78B18353ED300D82038 /* FSTableViewItemCollection.h */,
-				3903C79718358E9800D82038 /* FSMap.h */,
-				3903C79818358E9800D82038 /* FSMap.m */,
-				3903C79A18358FDA00D82038 /* FSMapCollection.h */,
-				3903C79B18358FDA00D82038 /* FSMapCollection.m */,
 				3965ECFB183AE1B800701F8A /* SProtocol.h */,
 				3965ECFC183AE1B800701F8A /* SProtocol.m */,
 				3965ECF8183AE0DE00701F8A /* ProtocolCollection.h */,
@@ -223,6 +228,8 @@
 				3965ED05183D8F5400701F8A /* ProtocolSelectViewController.m */,
 				3979BA44184569D300F3F7EC /* ProtocolDetailViewController.h */,
 				3979BA45184569D300F3F7EC /* ProtocolDetailViewController.m */,
+				3979BA6C1851600100F3F7EC /* MapDetailViewController.h */,
+				3979BA6D1851600100F3F7EC /* MapDetailViewController.m */,
 				3979BA471846D28700F3F7EC /* NSIndexSet+indexPath.h */,
 				3979BA481846D28700F3F7EC /* NSIndexSet+indexPath.m */,
 				3979BA4A184E4B5100F3F7EC /* Survey.h */,
@@ -233,6 +240,11 @@
 				3979BA5D1850EB5100F3F7EC /* SurveyCoreDataDocument.m */,
 				3979BA5F1850EF1400F3F7EC /* SurveyObjectModel.h */,
 				3979BA601850EF1400F3F7EC /* SurveyObjectModel.m */,
+				3979BA65185154E400F3F7EC /* MapCollection.h */,
+				3979BA66185154E400F3F7EC /* MapCollection.m */,
+				3979BA681851551400F3F7EC /* CollectionChanged.h */,
+				3979BA691851570700F3F7EC /* Map.h */,
+				3979BA6A1851570700F3F7EC /* Map.m */,
 			);
 			path = FileSelector;
 			sourceTree = "<group>";
@@ -371,13 +383,13 @@
 				3965ED101843DAAF00701F8A /* NSURL+unique.m in Sources */,
 				3979BA4C184E4B5100F3F7EC /* Survey.m in Sources */,
 				3979BA5E1850EB5100F3F7EC /* SurveyCoreDataDocument.m in Sources */,
-				3903C79918358E9800D82038 /* FSMap.m in Sources */,
 				3965ECFD183AE1B800701F8A /* SProtocol.m in Sources */,
 				3965ECFA183AE0DE00701F8A /* ProtocolCollection.m in Sources */,
 				3903C75A18344ED000D82038 /* main.m in Sources */,
+				3979BA67185154E400F3F7EC /* MapCollection.m in Sources */,
 				3965ED0D183E9B2A00701F8A /* ProtocolTableViewCell.m in Sources */,
+				3979BA6B1851570700F3F7EC /* Map.m in Sources */,
 				3903C79F18359D0000D82038 /* FSEntryCell.m in Sources */,
-				3903C79C18358FDA00D82038 /* FSMapCollection.m in Sources */,
 				3979BA55184EABA100F3F7EC /* SurveyCollection.m in Sources */,
 				3903C76A18344ED000D82038 /* FSDetailViewController.m in Sources */,
 				3903C75E18344ED000D82038 /* FSAppDelegate.m in Sources */,
@@ -386,10 +398,12 @@
 				3903C78A1834520A00D82038 /* FSMainViewController.m in Sources */,
 				3979BA46184569D300F3F7EC /* ProtocolDetailViewController.m in Sources */,
 				3965ED01183C076A00701F8A /* NSArray+map.m in Sources */,
+				3979BA6E1851600100F3F7EC /* MapDetailViewController.m in Sources */,
 				3979BA641851185800F3F7EC /* ObserverModel.xcdatamodeld in Sources */,
 				3965ED161845122D00701F8A /* MapSelectViewController.m in Sources */,
 				3979BA611850EF1400F3F7EC /* SurveyObjectModel.m in Sources */,
 				3965ED131845100000701F8A /* SurveySelectViewController.m in Sources */,
+				3979BA71185163BF00F3F7EC /* MapTableViewCell.m in Sources */,
 				3979BA52184EAA1400F3F7EC /* NSDate+Formatting.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -6,25 +6,21 @@
 //  Copyright (c) 2013 GIS Team. All rights reserved.
 //
 
-#import "FSDetailViewController.h"
-#import "FSEntryCell.h"
-#import "ProtocolSelectViewController.h"
 #import "MapSelectViewController.h"
+#import "Map.h"
+#import "NSIndexSet+indexPath.h"
+
+#import "MapDetailViewController.h"
+#import "FSEntryCell.h"
+#import "MapTableViewCell.h"
+
 
 @interface MapSelectViewController ()
-
+@property (nonatomic) BOOL showRemoteItems;
+@property (nonatomic) BOOL isBackgroundRefreshing;
 @end
 
 @implementation MapSelectViewController
-
-- (id)initWithStyle:(UITableViewStyle)style
-{
-    self = [super initWithStyle:style];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
 
 - (void)awakeFromNib
 {
@@ -38,19 +34,12 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
-
-    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
-    UIBarButtonItem *spacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    self.toolbarItems = @[self.editButtonItem,spacer,addButton];
-
-    //self.navigationItem.leftBarButtonItem = self.editButtonItem;
-    //self.navigationItem.rightBarButtonItem = addButton;
-    self.detailViewController = (FSDetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
-
-    self.refreshControl = [[UIRefreshControl alloc] init];
+    self.toolbarItems = @[self.editButtonItem];
+    //FIXME: use setting manager in observer
+    //self.showRemoteItems = [Settings manager].showRemoteItems
+    self.showRemoteItems = [[NSUserDefaults standardUserDefaults] boolForKey:@"showRemoteMaps"];
+    self.refreshControl = [UIRefreshControl new];
     [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
-
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -61,122 +50,235 @@
 -(void)viewWillDisappear:(BOOL)animated
 {
     [self.navigationController setToolbarHidden:YES animated:NO];
+    //FIXME: use setting manager in observer
+    //[Settings manager].showRemoteItems = self.showRemoteItems
+    [[NSUserDefaults standardUserDefaults] setBool:self.showRemoteItems forKey:@"showRemoteMaps"];
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+    self.detailViewController = nil;
 }
 
-- (void)insertNewObject:(id)sender
+#pragma mark - lazy property initializers
+
+- (MapDetailViewController *)detailViewController
 {
-    if (!self.items) {
-        return;
+    if (!_detailViewController) {
+        _detailViewController = (MapDetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
     }
-    [self insertNewObject];
-    //[self performSegueWithIdentifier:@"Associate" sender:sender];
+    return _detailViewController;
 }
 
-- (void)insertNewObject
+- (void) setItems:(MapCollection *)items
 {
-    NSIndexPath *indexPath = [self.items addNewItem];
-    if (indexPath) {
-        [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-    }
+    _items = items;
+    items.delegate = self;
 }
+
+#pragma mark - CollectionChanged
+
+//These delegates will be called on the main queue whenever the datamodel has changed
+- (void) collection:(id)collection addedLocalItemsAtIndexes:(NSIndexSet *)indexSet
+{
+    NSArray *indexPaths = [indexSet indexPathsWithSection:0];
+    [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:YES];
+}
+
+- (void) collection:(id)collection addedRemoteItemsAtIndexes:(NSIndexSet *)indexSet
+{
+    NSArray *indexPaths = [indexSet indexPathsWithSection:1];
+    [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:YES];
+}
+
+- (void) collection:(id)collection removedLocalItemsAtIndexes:(NSIndexSet *)indexSet
+{
+    NSArray *indexPaths = [indexSet indexPathsWithSection:0];
+    [self.tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:YES];
+}
+
+- (void) collection:(id)collection removedRemoteItemsAtIndexes:(NSIndexSet *)indexSet
+{
+    NSArray *indexPaths = [indexSet indexPathsWithSection:1];
+    [self.tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:YES];
+}
+
+- (void) collection:(id)collection changedLocalItemsAtIndexes:(NSIndexSet *)indexSet
+{
+    NSArray *indexPaths = [indexSet indexPathsWithSection:0];
+    [self.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:YES];
+}
+
+- (void) collection:(id)collection changedRemoteItemsAtIndexes:(NSIndexSet *)indexSet
+{
+    NSArray *indexPaths = [indexSet indexPathsWithSection:1];
+    [self.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:YES];
+}
+
 #pragma mark - Table View
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 1;
+    return 3;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [self.items itemCount]; //_objects.count;
+    if (section == 0) {
+        return self.items.numberOfLocalMaps;
+    }
+    if (section == 1 && self.showRemoteItems) {
+        return self.items.numberOfRemoteMaps;
+    }
+    if (section == 2) {
+        return 1;
+    }
+    return 0;
+}
+
+-(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    if (section == 0) {
+        return @"On this device";
+    }
+    if (section == 1 && self.showRemoteItems ) {
+        return @"In the cloud";
+    }
+    return nil;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    FSEntryCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
-    id<FSTableViewItem> item = [self.items itemAtIndexPath:indexPath];
-    cell.titleTextField.text = item.title;
-    cell.detailsLabel.text = item.subtitle;
-    cell.thumbnailImageView.image = item.thumbnail;
-    return cell;
+    if (indexPath.section == 2) {
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MapButtonCell" forIndexPath:indexPath];
+        cell.textLabel.textColor = cell.tintColor;
+        cell.textLabel.text = self.showRemoteItems ? @"Show Only Downloaded Maps" : @"Show All Maps";
+        return cell;
+    } else {
+        Map *item = (indexPath.section == 0) ? [self.items localMapAtIndex:indexPath.row] : [self.items remoteMapAtIndex:indexPath.row];
+        NSString *identifier = (indexPath.section == 0) ? @"LocalMapCell" : @"RemoteMapCell";
+        MapTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier forIndexPath:indexPath];
+        cell.titleLabel.text = item.title;
+        cell.subtitleLabel.text = item.subtitle;
+        cell.downloadImageView.hidden = item.isDownloading;  //FIXME: hide if downloading
+        return cell;
+    }
 }
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+
+    if (indexPath.section == 2) {
+        self.showRemoteItems = ! self.showRemoteItems;
+        [tableView reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(1, 2)] withRowAnimation:YES];
+        return;
+    }
+
+    if (indexPath.section == 1) {
+        if (self.isBackgroundRefreshing)
+        {
+            [[[UIAlertView alloc] initWithTitle:@"Try Again" message:@"Can not download while refreshing.  Please try again when refresh is complete." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil] show];
+            return;
+        } else {
+            [self downloadItem:indexPath];
+            return;
+        }
+    }
+
+    [self.items setSelectedLocalMap:indexPath.row];
+    if (self.popover) {
+        [self.popover dismissPopoverAnimated:YES];
+    } else {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
+    if (self.rowSelectedCallback) {
+        self.rowSelectedCallback(indexPath);
+    }
+}
+
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Return NO if you do not want the specified item to be editable.
-    return ![indexPath isEqual:self.items.selectedIndex];
+    return indexPath.section < 2;
+}
+
+- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return indexPath.section < 2;
+}
+
+- (NSIndexPath *)tableView:(UITableView *)tableView targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath toProposedIndexPath:(NSIndexPath *)proposedDestinationIndexPath
+{
+    return (proposedDestinationIndexPath.section == sourceIndexPath.section) ? proposedDestinationIndexPath : sourceIndexPath;
+}
+
+-(UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return indexPath.section == 0  ? UITableViewCellEditingStyleDelete : UITableViewCellEditingStyleNone;
+}
+
+- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
+{
+    if (fromIndexPath.section != toIndexPath.section) {
+        return;
+    }
+    if (self.isBackgroundRefreshing)
+    {
+        [[[UIAlertView alloc] initWithTitle:@"Try Again" message:@"Could not make changes while refreshing.  Please try again when refresh is complete." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil] show];
+        return;
+    }
+    if (fromIndexPath.section == 0) {
+        [self.items moveLocalMapAtIndex:fromIndexPath.row toIndex:toIndexPath.row];
+    }
+    if (fromIndexPath.section == 1) {
+        [self.items moveRemoteMapAtIndex:fromIndexPath.row toIndex:toIndexPath.row];
+    }
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if (self.isBackgroundRefreshing)
+    {
+        [[[UIAlertView alloc] initWithTitle:@"Try Again" message:@"Could not make changes while refreshing.  Please try again when refresh is complete." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil] show];
+        return;
+    }
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        [self.items removeItemAtIndexPath:indexPath];
+        [self.items removeLocalMapAtIndex:indexPath.row];
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
     }
 }
 
 
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-    [self.items moveItemAtIndexPath:fromIndexPath toIndexPath:toIndexPath];
-}
 
-/*
- // Override to support conditional rearranging of the table view.
- - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
- {
- // Return NO if you do not want the item to be re-orderable.
- return YES;
- }
- */
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    self.items.selectedIndex = indexPath;
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        //id<FSTableViewItem> item = [self.items itemAtIndexPath:indexPath];
-        //self.detailViewController.detailItem = item;
-        [self.popover dismissPopoverAnimated:YES];
-        self.popoverDismissedCallback();
-    } else {
-        [self.navigationController popViewControllerAnimated:YES];
-    }
-}
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([[segue identifier] isEqualToString:@"Show Detail"]) {
-        // seque from selected row
-        //NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-        //seque from accessory
+    if ([segue.identifier isEqualToString:@"Map Details"]) {
         NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
-        id<FSTableViewItem> item = [self.items itemAtIndexPath:indexPath];
-        [[segue destinationViewController] setDetailItem:item];
-        //if we are in a popover, we what the popover to stay the size.
-        [[segue destinationViewController] setPreferredContentSize:self.preferredContentSize];
-
+        Map *item = indexPath.section == 0 ? [self.items localMapAtIndex:indexPath.row] :  [self.items remoteMapAtIndex:indexPath.row];
+        MapDetailViewController *vc = (MapDetailViewController *)[segue destinationViewController];
+        vc.title = segue.identifier;
+        vc.map = item;
+        //if we are in a popover, we want the popover to stay the same size.
+        [vc setPreferredContentSize:self.preferredContentSize];
     }
 }
 
 - (void) refresh:(id)sender
 {
     [self.refreshControl beginRefreshing];
+    self.isBackgroundRefreshing = YES;
     [self.items refreshWithCompletionHandler:^(BOOL success) {
         //on abackground thread
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.refreshControl endRefreshing];
+            self.isBackgroundRefreshing = NO;
             if (success) {
-                //FIXME - get incremental updates with a delegate
-                [self.tableView reloadData];
+                self.showRemoteItems = YES;
+                //to avoid a multi-threaded race condition, the delegate is not called during a refresh.  Therefore bulk reload is required.
+                //[self.tableView reloadData];
             } else {
                 [[[UIAlertView alloc] initWithTitle:@"Error" message:@"Can't connect to server" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil] show];
             }
@@ -184,4 +286,23 @@
     }];
 }
 
+- (void) downloadItem:(NSIndexPath *)indexPath
+{
+    [self.items prepareToDownloadMapAtIndex:indexPath.row];
+    UITableView *tableView = self.tableView;
+    [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+    [self.items downloadMapAtIndex:indexPath.row WithCompletionHandler:^(BOOL success) {
+        //on background thread
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (!success) {
+                [[[UIAlertView alloc] initWithTitle:@"Error" message:@"Can't download map" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil] show];
+                [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:YES];
+            } else {
+                // updates are done by delegate calls
+            }
+        });
+    }];
+}
+
 @end
+

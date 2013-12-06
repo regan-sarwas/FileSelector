@@ -239,6 +239,8 @@
             }
         }
      });
+    //FIXME:  hook up document changed handler
+    //FIXME: need to make sure this is closed and saved at appropriate times
 }
 
 - (void)closeWithCompletionHandler:(void (^)(NSError*))handler

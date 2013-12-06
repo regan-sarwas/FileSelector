@@ -115,7 +115,7 @@ static SurveyCollection *_sharedCollection;
     }
 }
 
-- (SProtocol *)selectedSurvey
+- (Survey *)selectedSurvey
 {
     if (self.selectedIndex < 0 || self.items.count <= self.selectedIndex) {
         return nil;

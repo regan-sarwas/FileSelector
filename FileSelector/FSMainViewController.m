@@ -14,7 +14,7 @@
 //FIXME: this is only needed at the main VC for testing
 #import "ProtocolSelectViewController.h"
 #import "SurveyCollection.h"
-#import "FSMapCollection.h"
+#import "MapCollection.h"
 #import "ProtocolCollection.h"
 
 
@@ -26,7 +26,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *mapLabel;
 @property (strong, nonatomic) SurveyCollection* surveys;
 //FIXME: change names
-@property (strong, nonatomic) FSMapCollection* maps;
+@property (strong, nonatomic) MapCollection* maps;
 @end
 
 @implementation FSMainViewController
@@ -66,7 +66,7 @@
     }];
 
     self.selectMapButton.enabled = NO;
-    self.maps = [[FSMapCollection alloc] init];
+    self.maps = [[MapCollection alloc] init];
     [self.maps openWithCompletionHandler:^(BOOL success) {
         //do any other background work;
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -86,8 +86,8 @@
     if (self.surveys.selectedSurvey) {
         self.surveyLabel.text = self.surveys.selectedSurvey.title;
     }
-    if (self.maps.selectedIndex) {
-        self.mapLabel.text = self.maps.selectedItem.title;
+    if (self.maps.selectedLocalMap) {
+        self.mapLabel.text = self.maps.selectedLocalMap.title;
     }
 }
 
@@ -120,7 +120,7 @@
             [[[UIAlertView alloc] initWithTitle:@"Thanks" message:@"I should do something now." delegate:nil cancelButtonTitle:@"Do it later" otherButtonTitles:nil] show];
         }
     }
-    if ([FSMapCollection collectsURL:url]) {
+    if ([MapCollection collectsURL:url]) {
         success = [self.maps openURL:url];
         if (!success) {
             [[[UIAlertView alloc] initWithTitle:@"Error" message:@"Can't open file" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
