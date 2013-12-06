@@ -21,6 +21,11 @@
 //@property (nonatomic, strong, readonly) NSString *date;
 @property (nonatomic, strong, readonly) NSDictionary *values;
 
+// features is guaranteed to contain 0 or more NSDictionary with at least the following
+// key:@"name" value:NSString
+// key:@"attributes" value:NSArray (types in array are not guaranteed)
+@property (nonatomic, strong, readonly) NSArray *features;
+
 //YES if the protocol is available locally, NO otherwise;
 - (BOOL)isLocal;
 

@@ -77,7 +77,8 @@
     //find a suitable URL (reads filesystem)
     NSURL *documentsDirectory = [[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask][0];
     NSString *filename = [NSString stringWithFormat:@"%@.%@", protocol.title, SURVEY_EXT];
-    NSURL *url = [[documentsDirectory URLByAppendingPathComponent:filename] URLByUniquingPath];
+    //the trailing slash is added because it is a directory, and this standardizes the URL for comparisons
+    NSURL *url = [[[documentsDirectory URLByAppendingPathComponent:filename] URLByUniquingPath] URLByAppendingPathComponent:@"/"];
     NSString *title = [[url lastPathComponent] stringByDeletingPathExtension];
     self = [self initWithURL:url title:title state:kCreated date:[NSDate date]];
     if (![[NSFileManager defaultManager] createDirectoryAtURL:url withIntermediateDirectories:YES attributes:nil error:nil]) {
@@ -87,7 +88,6 @@
         [[NSFileManager defaultManager] removeItemAtURL:url error:nil];
         return nil;
     }
-    self.protocolIsLoaded = YES;
     [self saveProperties];
     return self;
 }
@@ -163,14 +163,6 @@
     return _protocol;
 }
 
-- (UIManagedDocument *)document
-{
-    if (!_document && !self.documentIsLoaded) {
-        [self openDocument:nil];
-    }
-    return _document;
-}
-
 - (NSURL *)propertiesUrl
 {
     if (!_propertiesUrl) {
@@ -225,9 +217,28 @@
     });
 }
 
-- (void)openDocumentWithCompletionHandler:(void (^)(NSError*))handler
+- (void)openDocumentWithCompletionHandler:(void (^)(BOOL success))handler
 {
-    //TODO: Implement
+     dispatch_async(dispatch_queue_create("gov.nps.akr.observer",DISPATCH_QUEUE_CONCURRENT), ^{
+        if (self.state == kCorrupt) {
+            if (handler) handler(NO);
+        } else {
+            BOOL documentExists = [[NSFileManager defaultManager] fileExistsAtPath:[self.documentUrl path]];
+            if (documentExists) {
+                self.document = [[SurveyCoreDataDocument alloc] initWithFileURL:self.documentUrl];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.document openWithCompletionHandler:handler];  //fails unless executed on UI thread
+                });
+            }
+            else
+            {
+                self.document = [[SurveyCoreDataDocument alloc] initWithFileURL:self.documentUrl];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.document saveToURL:self.documentUrl forSaveOperation:UIDocumentSaveForCreating completionHandler:handler];
+                });
+            }
+        }
+     });
 }
 
 - (void)closeWithCompletionHandler:(void (^)(NSError*))handler
@@ -279,17 +290,6 @@
     return !_thumbnail;
 }
 
-- (BOOL)openDocument:(NSError **)error
-{
-    if (self.state == kCorrupt) {
-        return NO;
-    }
-    //TODO: Implement
-    //open UIManagedDocument at self.documentURL
-    //signup to receive saved notifications to update state/date
-    //FIXME: there is a threading issue here, need to wait on the background thread opening UIManagedDocument
-    return YES;
-}
 
 - (void)documentChanged:(id)sender {
     self.state = kModified;

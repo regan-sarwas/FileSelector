@@ -22,6 +22,12 @@
 
 @implementation SurveyCollection
 
+static SurveyCollection *_sharedCollection;
+
++ (SurveyCollection *) sharedCollection {
+    return _sharedCollection;
+}
+
 #pragma mark - private properties
 
 - (NSMutableArray *)items
@@ -137,12 +143,13 @@
 
 - (void)openWithCompletionHandler:(void (^)(BOOL))completionHandler
 {
-    if (self.isLoaded) {
+    //TODO: lock access to _sharedCollection
+    if (_sharedCollection) {
         if (completionHandler) completionHandler(YES);
     } else {
         dispatch_async(dispatch_queue_create("gov.nps.akr.observer", DISPATCH_QUEUE_CONCURRENT), ^{
             [self readSurveyList];
-            self.isLoaded = YES;
+            _sharedCollection = self;
             BOOL success = self.items != nil;
             //TODO: open each survey item in the background?
             if (completionHandler) {
@@ -161,6 +168,14 @@
 + (BOOL) collectsURL:(NSURL *)url
 {
     return [[url pathExtension] isEqualToString:SURVEY_EXT];
+}
+
+- (Survey *)surveyForURL:(NSURL *)url
+{
+    NSUInteger index = [self.items indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
+        return [url isEqual:[obj url]];
+    }];
+    return (index == NSNotFound) ? nil : [self.items objectAtIndex:index];
 }
 
 - (void) readSurveyList

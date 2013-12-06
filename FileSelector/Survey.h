@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "FSTableViewItemCollection.h"
 #import "SProtocol.h"
+#import "SurveyCoreDataDocument.h"
 
 #define SURVEY_EXT @"obssurv"
 
@@ -36,6 +37,7 @@ typedef NS_ENUM(NSUInteger, SurveyState) {
 @property (nonatomic, strong, readonly) UIImage *thumbnail;
 @property (nonatomic, strong, readonly) SProtocol *protocol;
 
+//document will return nil until openDocumentWithCompletionHandler is called with success
 @property (nonatomic, strong, readonly) UIManagedDocument *document;
 
 //Initializers
@@ -49,7 +51,7 @@ typedef NS_ENUM(NSUInteger, SurveyState) {
 //other actions
 //load all properties
 - (void)readPropertiesWithCompletionHandler:(void (^)(NSError*))handler;
-- (void)openDocumentWithCompletionHandler:(void (^)(NSError*))handler;
+- (void)openDocumentWithCompletionHandler:(void (^)(BOOL success))handler;
 - (void)closeWithCompletionHandler:(void (^)(NSError*))handler;
 - (void)syncWithCompletionHandler:(void (^)(NSError*))handler;
 

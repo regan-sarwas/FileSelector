@@ -51,7 +51,15 @@
         //do any other background work;
         dispatch_async(dispatch_get_main_queue(), ^{
             self.selectSurveyButton.enabled = YES;
-            [self updateView];
+            if (self.surveys.selectedSurvey) {
+                self.barTitle.title = @"Loading Survey...";
+                [self.surveys.selectedSurvey openDocumentWithCompletionHandler:^(BOOL success) {
+                    //do any other background work;
+                    dispatch_async(dispatch_get_main_queue(), ^{[self setupNewSurvey];});
+                }];
+            } else {
+                [self updateView];
+            }
         });
     }];
 
@@ -83,6 +91,11 @@
                            (self.maps.selectedIndex ? self.maps.selectedItem.title : @"Select Map")];
 }
 
+- (void)setupNewSurvey
+{
+    [self updateTitle];
+}
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -100,7 +113,13 @@
         if ([segue isKindOfClass:[UIStoryboardPopoverSegue class]]) {
             vc.popover = ((UIStoryboardPopoverSegue *)segue).popoverController;
             vc.popover.delegate = self;
-            vc.popoverDismissedCallback = ^{[self updateTitle];};
+            vc.popoverDismissedCallback = ^{
+                self.barTitle.title = @"Loading Survey...";
+                [self.surveys.selectedSurvey openDocumentWithCompletionHandler:^(BOOL success) {
+                    //do any other background work;
+                    dispatch_async(dispatch_get_main_queue(), ^{[self setupNewSurvey];});
+                }];
+            };
         }
         return;
     }

@@ -240,4 +240,23 @@
     return self.version ? [self.version stringValue] : @"Unknown";
 }
 
+- (NSArray *)features
+{
+    NSMutableArray *results = [NSMutableArray new];
+    id jsonObj = self.values[@"features"];
+    if ([jsonObj isKindOfClass:[NSArray class]]) {
+        NSArray *entities = (NSArray *)jsonObj;
+        for (id jsonEntity in entities) {
+            if ([jsonEntity isKindOfClass:[NSDictionary class]]) {
+                NSDictionary *entity = (NSDictionary *)jsonEntity;
+                if ([entity[@"name"] isKindOfClass:[NSString class]] &&
+                    [entity[@"attributes"] isKindOfClass:[NSArray class]]) {
+                    [results addObject:entity];
+                }
+            }
+        }
+    }
+    return results;
+}
+
 @end
