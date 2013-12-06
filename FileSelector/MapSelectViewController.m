@@ -89,7 +89,9 @@
 - (void) collection:(id)collection addedRemoteItemsAtIndexes:(NSIndexSet *)indexSet
 {
     NSArray *indexPaths = [indexSet indexPathsWithSection:1];
-    [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:YES];
+    if (self.showRemoteItems) {
+        [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:YES];
+    }
 }
 
 - (void) collection:(id)collection removedLocalItemsAtIndexes:(NSIndexSet *)indexSet
@@ -101,7 +103,9 @@
 - (void) collection:(id)collection removedRemoteItemsAtIndexes:(NSIndexSet *)indexSet
 {
     NSArray *indexPaths = [indexSet indexPathsWithSection:1];
-    [self.tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:YES];
+    if (self.showRemoteItems) {
+        [self.tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:YES];
+    }
 }
 
 - (void) collection:(id)collection changedLocalItemsAtIndexes:(NSIndexSet *)indexSet
@@ -113,7 +117,9 @@
 - (void) collection:(id)collection changedRemoteItemsAtIndexes:(NSIndexSet *)indexSet
 {
     NSArray *indexPaths = [indexSet indexPathsWithSection:1];
-    [self.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:YES];
+    if (self.showRemoteItems) {
+        [self.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:YES];
+    }
 }
 
 #pragma mark - Table View
@@ -276,9 +282,10 @@
             [self.refreshControl endRefreshing];
             self.isBackgroundRefreshing = NO;
             if (success) {
-                self.showRemoteItems = YES;
-                //to avoid a multi-threaded race condition, the delegate is not called during a refresh.  Therefore bulk reload is required.
-                //[self.tableView reloadData];
+                if (!self.showRemoteItems) {
+                    self.showRemoteItems = YES;
+                    [self.tableView reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(1, 2)] withRowAnimation:YES];
+                }
             } else {
                 [[[UIAlertView alloc] initWithTitle:@"Error" message:@"Can't connect to server" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil] show];
             }
