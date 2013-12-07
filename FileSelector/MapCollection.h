@@ -63,6 +63,7 @@
 // On success, the delegate will be sent two messages, one to remove the remote item, the other to add the new local item.
 // The completion handler is used only to signal success/failure
 - (void)downloadMapAtIndex:(NSUInteger)index WithCompletionHandler:(void (^)(BOOL success))completionHandler;
+- (void)cancelDownloadMapAtIndex:(NSUInteger)index;
 
 // Refresh the list of remote Maps
 // Will send message to the delegate as items are added/removed from the local/remote lists

@@ -249,6 +249,10 @@ static MapCollection *_sharedCollection = nil;
     [self.remoteItems[index] prepareToDownload];
 }
 
+- (void)cancelDownloadMapAtIndex:(NSUInteger)index
+{
+    
+}
 
 - (void)downloadMapAtIndex:(NSUInteger)index WithCompletionHandler:(void (^)(BOOL success))completionHandler
 {
@@ -479,7 +483,8 @@ static MapCollection *_sharedCollection = nil;
 - (BOOL)refreshRemoteMaps;
 {
     //FIXME: get URL from settings
-    NSURL *url = [NSURL URLWithString:@"http://akrgis.nps.gov/observer/maps/maplist.json"];
+    NSURL *url = [NSURL URLWithString:@"file:///Users/regan/Downloads/maplist.json"];
+    //NSURL *url = [NSURL URLWithString:@"http://akrgis.nps.gov/observer/maps/maplist.json"];
     NSMutableArray *serverMaps = [self fetchMapListFromURL:url];
     if (serverMaps) {
         [self syncCacheWithServerMaps:serverMaps];

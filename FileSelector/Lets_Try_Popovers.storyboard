@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4514" systemVersion="13A603" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="V6c-Py-5S7">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4514" systemVersion="13A2093" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="V6c-Py-5S7">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3747"/>
     </dependencies>
@@ -367,7 +367,7 @@
                                     <segue destination="PsK-tw-eBa" kind="push" identifier="Map Details" trigger="accessoryAction" id="mjs-fP-D59"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="detailButton" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="RemoteMapCell" id="idc-uv-0fZ" customClass="MapTableViewCell">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="none" accessoryType="detailButton" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="RemoteMapCell" id="idc-uv-0fZ" customClass="MapTableViewCell">
                                 <rect key="frame" x="0.0" y="161" width="768" height="75"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="idc-uv-0fZ" id="CNJ-3v-zC0">
@@ -395,10 +395,6 @@
                                             <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Download" translatesAutoresizingMaskIntoConstraints="NO" id="pXK-Q6-idF">
-                                            <rect key="frame" x="690" y="24" width="27" height="26"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        </imageView>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Uou-SC-j7u">
                                             <rect key="frame" x="20" y="4" width="100" height="67"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -407,25 +403,47 @@
                                                 <constraint firstAttribute="width" constant="100" id="oJY-Mv-a6u"/>
                                             </constraints>
                                         </imageView>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VqO-Z4-Zdj" customClass="RESdownloadView">
+                                            <rect key="frame" x="686" y="22" width="30" height="30"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Download" translatesAutoresizingMaskIntoConstraints="NO" id="6ZL-DL-X4b">
+                                                    <rect key="frame" x="2" y="2" width="27" height="26"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="26" id="Gjt-PL-90X"/>
+                                                        <constraint firstAttribute="width" constant="27" id="Lb0-83-0xg"/>
+                                                    </constraints>
+                                                </imageView>
+                                            </subviews>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                            <constraints>
+                                                <constraint firstAttribute="centerX" secondItem="6ZL-DL-X4b" secondAttribute="centerX" id="G62-3t-pNU"/>
+                                                <constraint firstAttribute="width" constant="30" id="Ib1-Pp-HVi"/>
+                                                <constraint firstAttribute="centerY" secondItem="6ZL-DL-X4b" secondAttribute="centerY" id="fvq-BH-xK9"/>
+                                                <constraint firstAttribute="height" constant="30" id="lcA-cM-nx4"/>
+                                            </constraints>
+                                        </view>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstItem="pXK-Q6-idF" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="ZHJ-wQ-ing" secondAttribute="trailing" constant="8" symbolic="YES" id="3KZ-xK-1jF"/>
                                         <constraint firstItem="Xyd-Wd-gBE" firstAttribute="leading" secondItem="ZHJ-wQ-ing" secondAttribute="leading" id="3T4-8r-JBt"/>
                                         <constraint firstItem="Uou-SC-j7u" firstAttribute="bottom" secondItem="ZHJ-wQ-ing" secondAttribute="bottom" id="4ib-Xz-Dvm"/>
+                                        <constraint firstAttribute="trailing" secondItem="VqO-Z4-Zdj" secondAttribute="trailing" constant="5" id="5zZ-ce-rH4"/>
                                         <constraint firstItem="ZHJ-wQ-ing" firstAttribute="top" secondItem="Xyd-Wd-gBE" secondAttribute="bottom" constant="4" id="842-Tp-2ts"/>
-                                        <constraint firstAttribute="trailing" secondItem="pXK-Q6-idF" secondAttribute="trailing" constant="4" id="Evz-fb-7z1"/>
                                         <constraint firstItem="TX4-4i-zf2" firstAttribute="leading" secondItem="Xyd-Wd-gBE" secondAttribute="leading" id="FUy-HI-a9A"/>
                                         <constraint firstAttribute="centerY" secondItem="Uou-SC-j7u" secondAttribute="centerY" id="ITp-dH-hDW"/>
-                                        <constraint firstItem="pXK-Q6-idF" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Xyd-Wd-gBE" secondAttribute="trailing" constant="8" symbolic="YES" id="TDa-xv-GUF"/>
-                                        <constraint firstAttribute="centerY" secondItem="pXK-Q6-idF" secondAttribute="centerY" id="a6T-zg-Gmy"/>
+                                        <constraint firstItem="VqO-Z4-Zdj" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="ZHJ-wQ-ing" secondAttribute="trailing" constant="8" symbolic="YES" id="Ycg-N1-Oxu"/>
+                                        <constraint firstItem="VqO-Z4-Zdj" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="TX4-4i-zf2" secondAttribute="trailing" constant="8" symbolic="YES" id="bIm-gm-wLB"/>
+                                        <constraint firstAttribute="centerY" secondItem="VqO-Z4-Zdj" secondAttribute="centerY" id="iRF-L1-oKa"/>
                                         <constraint firstItem="TX4-4i-zf2" firstAttribute="leading" secondItem="Uou-SC-j7u" secondAttribute="trailing" constant="8" symbolic="YES" id="qWK-Ns-XRT"/>
+                                        <constraint firstItem="VqO-Z4-Zdj" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Xyd-Wd-gBE" secondAttribute="trailing" constant="8" symbolic="YES" id="qoY-He-L2R"/>
                                         <constraint firstItem="Uou-SC-j7u" firstAttribute="leading" secondItem="CNJ-3v-zC0" secondAttribute="leading" constant="20" symbolic="YES" id="tpQ-2U-5fW"/>
                                         <constraint firstItem="Xyd-Wd-gBE" firstAttribute="top" secondItem="TX4-4i-zf2" secondAttribute="bottom" constant="8" symbolic="YES" id="ubV-QY-HC4"/>
-                                        <constraint firstItem="pXK-Q6-idF" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="TX4-4i-zf2" secondAttribute="trailing" constant="8" symbolic="YES" id="wfm-8i-Ofb"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>
-                                    <outlet property="downloadImageView" destination="pXK-Q6-idF" id="vPf-b1-ogR"/>
+                                    <outlet property="downloadImageView" destination="6ZL-DL-X4b" id="2sr-AZ-vsG"/>
+                                    <outlet property="downloadView" destination="VqO-Z4-Zdj" id="BW4-Bs-yaI"/>
                                     <outlet property="subtitle1Label" destination="Xyd-Wd-gBE" id="6SO-Gw-dQz"/>
                                     <outlet property="subtitle2Label" destination="ZHJ-wQ-ing" id="FbM-Qd-ixa"/>
                                     <outlet property="thumbnailImageView" destination="Uou-SC-j7u" id="wJx-tG-fSF"/>
