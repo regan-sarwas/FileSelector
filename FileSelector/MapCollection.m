@@ -503,12 +503,8 @@ static MapCollection *_sharedCollection = nil;
             for (id jsonItem in items) {
                 if ([jsonItem isKindOfClass:[NSDictionary class]]) {
                     NSDictionary *item = jsonItem;
-                    Map *map = [[Map alloc] initWithURL:[NSURL URLWithString:item[@"url"]]
-                                                                   title:item[@"name"]
-                                                                  author:item[@"author"]
-                                                                    date:item[@"date"]];
+                    Map *map = [[Map alloc] initWithDictionary:item];
                     if (map) {
-                        //FIXME: Add other attributes thumbnail url, etc.
                         [maps addObject:map];
                     }
                 }

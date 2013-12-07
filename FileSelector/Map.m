@@ -12,51 +12,81 @@
 #define kCodingVersion    1
 #define kCodingVersionKey @"codingversion"
 #define kUrlKey           @"url"
-#define kTitleKey         @"title"
+#define kThumbnailUrlKey  @"thumbnail"
+#define kTitleKey         @"name"
 #define kAuthorKey        @"author"
 #define kDateKey          @"date"
-#define kJsonDateFormat   @""
-
+#define kDescriptionKey   @"description"
+#define kSizeKey          @"size"
+#define kExtentsKey       @"extents"
 
 @interface Map()
+
+@property (nonatomic, strong, readwrite) NSString *title;
+@property (nonatomic, strong, readwrite) NSString *description;
+@property (nonatomic, strong, readwrite) NSString *author;
+@property (nonatomic, strong, readwrite) NSDate *date;
+@property (nonatomic, readwrite) NSUInteger byteCount;
+@property (nonatomic, readwrite) CGRect extents;
+
 @property (nonatomic) BOOL downloading;
 @property (nonatomic, strong, readwrite) UIImage *thumbnail;
 @property (nonatomic, strong, readwrite) id tileCache;
 @property (nonatomic, strong) NSURL *thumbnailUrl;
 @property (nonatomic) BOOL thumbnailIsLoaded;
 @property (nonatomic) BOOL tileCacheIsLoaded;
+
 @end
 
 @implementation Map
 
-
-- (id) initWithURL:(NSURL *)url title:(id)title author:(id)author date:(id)date
+- (id) initWithURL:(NSURL *)url
 {
     if (!url) {
         return nil;
     }
     if (self = [super init]) {
         _url = url;
-        _title = ([title isKindOfClass:[NSString class]] ? title : nil);
-        _date = [date isKindOfClass:[NSDate class]] ? date : ([date isKindOfClass:[NSString class]] ? [self dateFromString:date] : nil);
-        _author = ([author isKindOfClass:[NSString class]] ? author : nil);
-        _tileCacheIsLoaded = NO;
-        _thumbnailIsLoaded = NO;
     }
     return self;
 }
 
-
-- (id) initWithURL:(NSURL *)url
+- (id)initWithDictionary:(NSDictionary *)dictionary
 {
-    return [self initWithURL:url
-                       title:url.lastPathComponent
-                      author:nil
-                        date:nil];
+    id item = dictionary[kUrlKey];
+    NSURL *url;
+    if ([item isKindOfClass:[NSString class]]) {
+        url = [NSURL URLWithString:item];
+    }
+    if (!url) {
+        return nil;
+    }
+    Map *map = [self initWithURL:url];
+    if (map) {
+        item = dictionary[kTitleKey];
+        map.title = ([item isKindOfClass:[NSString class]] ? item : nil);
+        item = dictionary[kDateKey];
+        map.date = [item isKindOfClass:[NSDate class]] ? item : ([item isKindOfClass:[NSString class]] ? [self dateFromString:item] : nil);
+        item = dictionary[kAuthorKey];
+        map.author = ([item isKindOfClass:[NSString class]] ? item : nil);
+        item =  dictionary[kSizeKey];
+        map.byteCount = [item isKindOfClass:[NSNumber class]] ? [item integerValue] : 0;
+        item =  dictionary[kDescriptionKey];
+        map.description = [item isKindOfClass:[NSString class]] ? item : nil;
+        item =  dictionary[kThumbnailUrlKey];
+        map.thumbnailUrl = [item isKindOfClass:[NSString class]] ? [NSURL URLWithString:item] : nil;
+        item =  dictionary[@"xmin"];
+        CGFloat xmin = [item isKindOfClass:[NSNumber class]] ? [item floatValue] : 0.0;
+        item =  dictionary[@"ymin"];
+        CGFloat ymin = [item isKindOfClass:[NSNumber class]] ? [item floatValue] : 0.0;
+        item =  dictionary[@"xmax"];
+        CGFloat xmax = [item isKindOfClass:[NSNumber class]] ? [item floatValue] : 0.0;
+        item =  dictionary[@"ymax"];
+        CGFloat ymax = [item isKindOfClass:[NSNumber class]] ? [item floatValue] : 0.0;
+        map.extents = CGRectMake(xmin, ymin, xmax - xmin, ymax - ymin);
+    }
+    return map;
 }
-
-
-#pragma mark - Lazy property initiallizers
 
 #pragma mark - NSCoding
 
@@ -64,11 +94,19 @@
 {
     int version = [aDecoder decodeIntForKey:kCodingVersionKey];
     switch (version) {
-        case 1:
-            return [self initWithURL:[aDecoder decodeObjectForKey:kUrlKey]
-                               title:[aDecoder decodeObjectForKey:kTitleKey]
-                             author:[aDecoder decodeObjectForKey:kAuthorKey]
-                                date:[aDecoder decodeObjectForKey:kDateKey]];
+        case 1: {
+            Map *map = [self initWithURL:[aDecoder decodeObjectForKey:kUrlKey]];
+            if (map) {
+                map.title = [aDecoder decodeObjectForKey:kTitleKey];
+                map.author = [aDecoder decodeObjectForKey:kAuthorKey];
+                map.date = [aDecoder decodeObjectForKey:kDateKey];
+                map.description = [aDecoder decodeObjectForKey:kDescriptionKey];
+                map.byteCount = [aDecoder decodeIntegerForKey:kSizeKey];
+                map.thumbnailUrl = [aDecoder decodeObjectForKey:kThumbnailUrlKey];
+                map.extents = [[aDecoder decodeObjectForKey:kExtentsKey] CGRectValue];
+            }
+            return map;
+        }
         default:
             return nil;
     }
@@ -81,7 +119,14 @@
     [aCoder encodeObject:_title forKey:kTitleKey];
     [aCoder encodeObject:_author forKey:kAuthorKey];
     [aCoder encodeObject:_date forKey:kDateKey];
+    [aCoder encodeObject:_description forKey:kDescriptionKey];
+    [aCoder encodeInteger:_byteCount forKey:kSizeKey];
+    [aCoder encodeObject:_thumbnailUrl forKey:kThumbnailUrlKey];
+    [aCoder encodeObject:[NSValue valueWithCGRect:_extents] forKey:kExtentsKey];
 }
+
+#pragma mark - Lazy property initiallizers
+
 
 
 #pragma mark - FSTableViewItem
@@ -142,7 +187,8 @@
 {
     // need to be careful with null properties.
     // without the == check, two null properties will be not equal
-    return ((self.title == other.title) || [self.title isEqualToString:other.title]) &&
+    return
+    (self.byteCount == other.byteCount) &&
     ((self.author == other.author) || [self.author isEqual:other.author]) &&
     ((self.date == other.date) || [self.date isEqual:other.date]);
 }
@@ -220,7 +266,7 @@
     } else if (self.byteCount < 1024*1024*1024) {
         return [NSString stringWithFormat:@"%d MB", self.byteCount / 1024 / 1024];
     } else {
-        return [NSString stringWithFormat:@"%f2 GB", self.byteCount / 1024.0 / 1024 / 1024];
+        return [NSString stringWithFormat:@"%0.2f GB", self.byteCount / 1024.0 / 1024 / 1024];
     }
 }
 
@@ -237,7 +283,8 @@
 - (BOOL)loadThumbnail
 {
     self.thumbnailIsLoaded = YES;
-    _thumbnail = [[UIImage alloc] initWithContentsOfFile:[self.thumbnailUrl path]];
+    //_thumbnail = [[UIImage alloc] initWithContentsOfFile:[self.thumbnailUrl path]];
+    _thumbnail = [[UIImage alloc] initWithData:[NSData dataWithContentsOfURL:self.thumbnailUrl]];
     if (!_thumbnail)
         _thumbnail = [UIImage imageNamed:@"TilePackage"];
     return !_thumbnail;

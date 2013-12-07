@@ -38,8 +38,9 @@
 - (BOOL)isEqualtoMap:(Map *)Map;
 
 //designated initializer
-- (id)initWithURL:(NSURL *)url title:(id)title author:(id)author date:(id)date;
+//- (id) initWithURL:(id)url title:(id)title author:(id)author date:(id)date size:(id)size description:(id)description thumbnail:(id)thumbnail xmin:(id)xmin ymin:(id)ymin xmax:(id)xmax ymax:(id)ymax;
 - (id)initWithURL:(NSURL *)url;
+- (id)initWithDictionary:(NSDictionary *)dictionary;
 - (id) init __attribute__((unavailable("Must use initWithURL: instead.")));
 
 // download the Map from the remote URL to a local file...
