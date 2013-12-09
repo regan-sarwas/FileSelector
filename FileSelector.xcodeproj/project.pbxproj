@@ -48,6 +48,7 @@
 		3979BA6E1851600100F3F7EC /* MapDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3979BA6D1851600100F3F7EC /* MapDetailViewController.m */; };
 		3979BA71185163BF00F3F7EC /* MapTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3979BA70185163BF00F3F7EC /* MapTableViewCell.m */; };
 		3979BA741852405800F3F7EC /* RESdownloadView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3979BA731852405800F3F7EC /* RESdownloadView.m */; };
+		597BF1431854F71D00F6D9D0 /* NPDownloadOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 597BF1421854F71D00F6D9D0 /* NPDownloadOperation.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -132,6 +133,8 @@
 		3979BA70185163BF00F3F7EC /* MapTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapTableViewCell.m; sourceTree = "<group>"; };
 		3979BA721852405800F3F7EC /* RESdownloadView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RESdownloadView.h; sourceTree = "<group>"; };
 		3979BA731852405800F3F7EC /* RESdownloadView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RESdownloadView.m; sourceTree = "<group>"; };
+		597BF1411854F71D00F6D9D0 /* NPDownloadOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NPDownloadOperation.h; sourceTree = "<group>"; };
+		597BF1421854F71D00F6D9D0 /* NPDownloadOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NPDownloadOperation.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -219,6 +222,8 @@
 				3979BA471846D28700F3F7EC /* NSIndexSet+indexPath.h */,
 				3979BA481846D28700F3F7EC /* NSIndexSet+indexPath.m */,
 				3979BA681851551400F3F7EC /* CollectionChanged.h */,
+				597BF1411854F71D00F6D9D0 /* NPDownloadOperation.h */,
+				597BF1421854F71D00F6D9D0 /* NPDownloadOperation.m */,
 			);
 			path = FileSelector;
 			sourceTree = "<group>";
@@ -419,6 +424,7 @@
 				3965ED0D183E9B2A00701F8A /* ProtocolTableViewCell.m in Sources */,
 				3979BA6B1851570700F3F7EC /* Map.m in Sources */,
 				3903C79F18359D0000D82038 /* FSEntryCell.m in Sources */,
+				597BF1431854F71D00F6D9D0 /* NPDownloadOperation.m in Sources */,
 				3979BA55184EABA100F3F7EC /* SurveyCollection.m in Sources */,
 				3903C76A18344ED000D82038 /* FSDetailViewController.m in Sources */,
 				3903C75E18344ED000D82038 /* FSAppDelegate.m in Sources */,
