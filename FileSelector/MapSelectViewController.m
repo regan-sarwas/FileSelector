@@ -297,20 +297,31 @@
 
 - (void) downloadItem:(NSIndexPath *)indexPath
 {
-    [self.items prepareToDownloadMapAtIndex:indexPath.row];
-    UITableView *tableView = self.tableView;
-    [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    [self.items downloadMapAtIndex:indexPath.row WithCompletionHandler:^(BOOL success) {
-        //on background thread
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (!success) {
-                [[[UIAlertView alloc] initWithTitle:@"Error" message:@"Can't download map" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil] show];
-                [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:YES];
-            } else {
-                // updates are done by delegate calls
-            }
-        });
-    }];
+    MapTableViewCell *cell = (MapTableViewCell *)[self.tableView cellForRowAtIndexPath:indexPath];
+    if (cell.downloadView.downloading) {
+        cell.downloadImageView.hidden = NO;
+        cell.downloadView.downloading = NO;
+        [self.items cancelDownloadMapAtIndex:indexPath.row];
+    } else {
+        [self.items prepareToDownloadMapAtIndex:indexPath.row];
+        cell.downloadImageView.hidden = YES;
+        cell.downloadView.downloading = YES;
+        //[tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        [self.items downloadMapAtIndex:indexPath.row WithCompletionHandler:^(BOOL success) {
+            //on background thread
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (!success) {
+                    [[[UIAlertView alloc] initWithTitle:@"Error" message:@"Can't download map" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil] show];
+                    //[self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:YES];
+                    cell.downloadView.downloading = NO;
+                    cell.downloadImageView.hidden = NO;
+                } else {
+                    // updates are done by delegate calls
+                    // the remote cell does not exist anymore (transfered to local), so nothing to update
+                }
+            });
+        }];
+    }
 }
 
 @end

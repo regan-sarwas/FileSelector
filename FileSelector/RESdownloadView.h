@@ -11,5 +11,6 @@
 @interface RESdownloadView : UIView
 
 @property (nonatomic) float percentComplete;
+@property (nonatomic) BOOL downloading;
 
 @end

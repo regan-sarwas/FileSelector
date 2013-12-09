@@ -20,6 +20,10 @@
 @property (nonatomic, readonly) NSUInteger byteCount;
 @property (nonatomic, readonly) CGRect extents;
 
+// Helpers for details view
+- (NSString *)byteSizeString;
+- (NSString *)arealSizeString;
+
 //YES if the Map is available locally, NO otherwise;
 - (BOOL)isLocal;
 

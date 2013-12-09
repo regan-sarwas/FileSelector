@@ -34,12 +34,22 @@
     [self setNeedsDisplay];
 }
 
+- (void)setDownloading:(BOOL)downloading
+{
+    if (downloading != _downloading) {
+        _downloading = downloading;
+        [self setNeedsDisplay];
+    }
+}
+
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.
 -(void)drawRect:(CGRect)rect
 {
-    //[self drawRect1:rect]; //scaled forany size view
-    [self drawRect2:rect]; //optimized for 
+    if (self.downloading) {
+        //[self drawRect1:rect]; //scaled forany size view
+        [self drawRect2:rect]; //optimized for 30x30
+    }
 }
 
 - (void)drawRect1:(CGRect)rect
