@@ -15,15 +15,18 @@
 #import "SurveyCollection.h"
 #import "MapCollection.h"
 #import "ProtocolCollection.h"
+#import "QuickDialog.h"
 
 @interface FSMainIpadViewController ()
 
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *barTitle;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *selectSurveyButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *selectMapButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *environmentBarButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *observationBarButton;
 @property (strong, nonatomic) SurveyCollection* surveys;
 @property (strong, nonatomic) MapCollection* maps;
-
+@property (strong, nonatomic) UIPopoverController *popover;
 @end
 
 @implementation FSMainIpadViewController
@@ -81,6 +84,7 @@
 
 - (void)updateView
 {
+    [self updateButtons];
     [self updateTitle];
 }
 
@@ -91,9 +95,17 @@
                            (self.maps.selectedLocalMap ? self.maps.selectedLocalMap.title : @"Select Map")];
 }
 
+-(void) updateButtons
+{
+    NSDictionary *dialogs = self.surveys.selectedSurvey.protocol.dialogs;
+    self.environmentBarButton.enabled = dialogs[@"MissionProperty"] != nil;
+    //TODO: support more than just one feature called "Observations"
+    self.observationBarButton.enabled = dialogs[@"Observation"] != nil;
+}
+
 - (void)setupNewSurvey
 {
-    [self updateTitle];
+    [self updateView];
 }
 
 - (void)didReceiveMemoryWarning
@@ -136,13 +148,6 @@
     }
 }
 
-// not called when popover is dismissed programatically - use callbacks instead
--(void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController
-{
-    [self updateTitle];
-}
-
-
 - (BOOL) openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
 {
     BOOL success = NO;
@@ -184,6 +189,77 @@
 
     return success;
 }
+
+- (IBAction)changeEnvironment:(UIBarButtonItem *)sender
+{
+    if (self.popover) {
+        return;
+    }
+    //create VC from QDialog json in protocol, add newController to popover, display popover
+    NSDictionary *dialog = self.surveys.selectedSurvey.protocol.dialogs[@"MissionProperty"];
+    QRootElement *root = [[QRootElement alloc] initWithJSON:dialog andData:nil];
+    QuickDialogController *viewController = [QuickDialogController controllerForRoot:root];
+    //UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
+    self.popover = [[UIPopoverController alloc] initWithContentViewController:viewController];
+    self.popover.delegate = self;
+    //self.popover.popoverContentSize = CGSizeMake(644, 425);
+    [self.popover presentPopoverFromBarButtonItem:sender permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+}
+
+- (IBAction)collectObservation:(UIBarButtonItem *)sender
+{
+    if (self.popover) {
+        return;
+    }
+    //create VC from QDialog json in protocol, add newController to popover, display popover
+    //TODO: support more than just one feature called Observations
+    NSDictionary *dialog = self.surveys.selectedSurvey.protocol.dialogs[@"Observation"];
+    QRootElement *root = [[QRootElement alloc] initWithJSON:dialog andData:nil];
+    QuickDialogController *viewController = [QuickDialogController controllerForRoot:root];
+
+    //MapDetailViewController *vc = [[MapDetailViewController alloc] init];
+    //vc.map = self.maps.selectedLocalMap;
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
+    self.popover = [[UIPopoverController alloc] initWithContentViewController:navigationController];
+    self.popover.delegate = self;
+    //self.popover.popoverContentSize = CGSizeMake(644, 425);
+    [self.popover presentPopoverFromBarButtonItem:sender permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+}
+
+// not called when popover is dismissed programatically - use callbacks instead
+-(void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController
+{
+    [self updateTitle];
+    if (popoverController == self.popover) {
+        self.popover = nil;
+        UIViewController * vc = popoverController.contentViewController;
+        QuickDialogController *qd;
+        if ([vc isKindOfClass:[QuickDialogController class]]) {
+            qd = (QuickDialogController *)vc;
+        }
+             if ([vc isKindOfClass:[UINavigationController class]]) {
+            UINavigationController *nav = (UINavigationController *)vc;
+                 if ([[nav.viewControllers firstObject] isKindOfClass:[QuickDialogController class]]) {
+                     qd = [nav.viewControllers firstObject];
+                 }
+        }
+        if (!qd) {
+            return;
+        }
+        NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+        [qd.root fetchValueUsingBindingsIntoObject:dict];
+
+        NSString *msg = @"Form Values:";
+        for (NSString *aKey in dict){
+            msg = [msg stringByAppendingFormat:@"\n %@ = %@", aKey, [dict valueForKey:aKey]];
+        }
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Testing Info"
+                                                        message:msg delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+
+    }
+}
+
 
 
 @end

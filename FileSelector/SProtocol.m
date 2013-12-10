@@ -254,4 +254,13 @@
     return results;
 }
 
+- (NSDictionary *)dialogs
+{
+    id jsonObj = self.values[@"dialogs"];
+    if ([jsonObj isKindOfClass:[NSDictionary class]]) {
+        return jsonObj;
+    }
+    return nil;
+}
+
 @end

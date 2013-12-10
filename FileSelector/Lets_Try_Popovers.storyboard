@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4514" systemVersion="13A2093" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="V6c-Py-5S7">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4514" systemVersion="13A603" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="V6c-Py-5S7">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3747"/>
     </dependencies>
@@ -27,14 +27,24 @@
                                             </segue>
                                         </connections>
                                     </barButtonItem>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="cBF-Va-ZYf"/>
-                                    <barButtonItem title="Title" style="plain" id="2WE-pm-JS0"/>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="SBf-jm-GF0"/>
                                     <barButtonItem title="Map" id="Jlz-PJ-sAu">
                                         <connections>
                                             <segue destination="cys-mP-ufV" kind="popover" identifier="Select Map" popoverAnchorBarButtonItem="Jlz-PJ-sAu" id="SjY-Ro-416">
                                                 <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
                                             </segue>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="cBF-Va-ZYf"/>
+                                    <barButtonItem title="Title" style="plain" id="2WE-pm-JS0"/>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="SBf-jm-GF0"/>
+                                    <barButtonItem title="Observation" id="LvG-XO-LpP">
+                                        <connections>
+                                            <action selector="collectObservation:" destination="V6c-Py-5S7" id="pza-9a-eRY"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem title="Environment" id="GuE-fE-7hJ">
+                                        <connections>
+                                            <action selector="changeEnvironment:" destination="V6c-Py-5S7" id="ilF-sQ-0M3"/>
                                         </connections>
                                     </barButtonItem>
                                 </items>
@@ -50,6 +60,8 @@
                     <connections>
                         <outlet property="SelectSurveyButton" destination="cS4-7B-oXQ" id="4mZ-6n-04u"/>
                         <outlet property="barTitle" destination="2WE-pm-JS0" id="TTl-V9-gKA"/>
+                        <outlet property="environmentBarButton" destination="GuE-fE-7hJ" id="ezr-qy-90d"/>
+                        <outlet property="observationBarButton" destination="LvG-XO-LpP" id="HOc-1e-Zni"/>
                         <outlet property="selectMapButton" destination="Jlz-PJ-sAu" id="e0O-xL-hy1"/>
                         <outlet property="selectSurveyButton" destination="cS4-7B-oXQ" id="3c5-FE-b3X"/>
                     </connections>

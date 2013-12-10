@@ -26,6 +26,8 @@
 // key:@"attributes" value:NSArray (types in array are not guaranteed)
 @property (nonatomic, strong, readonly) NSArray *features;
 
+@property (nonatomic, strong, readonly) NSDictionary *dialogs;
+
 //YES if the protocol is available locally, NO otherwise;
 - (BOOL)isLocal;
 

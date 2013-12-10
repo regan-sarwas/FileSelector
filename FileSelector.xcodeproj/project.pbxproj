@@ -48,6 +48,7 @@
 		3979BA6E1851600100F3F7EC /* MapDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3979BA6D1851600100F3F7EC /* MapDetailViewController.m */; };
 		3979BA71185163BF00F3F7EC /* MapTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3979BA70185163BF00F3F7EC /* MapTableViewCell.m */; };
 		3979BA741852405800F3F7EC /* RESdownloadView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3979BA731852405800F3F7EC /* RESdownloadView.m */; };
+		3979BA8118569F7800F3F7EC /* libQuickDialog.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3979BA8018569EFB00F3F7EC /* libQuickDialog.a */; };
 		597BF1431854F71D00F6D9D0 /* NPDownloadOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 597BF1421854F71D00F6D9D0 /* NPDownloadOperation.m */; };
 /* End PBXBuildFile section */
 
@@ -58,6 +59,20 @@
 			proxyType = 1;
 			remoteGlobalIDString = 3903C74918344ED000D82038;
 			remoteInfo = FileSelector;
+		};
+		3979BA7F18569EFB00F3F7EC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3979BA7B18569EFA00F3F7EC /* QuickDialog.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 2C542393145ADEBD0026A152;
+			remoteInfo = QuickDialog;
+		};
+		3979BA8218569FDA00F3F7EC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3979BA7B18569EFA00F3F7EC /* QuickDialog.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 2C542392145ADEBD0026A152;
+			remoteInfo = QuickDialog;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -133,6 +148,7 @@
 		3979BA70185163BF00F3F7EC /* MapTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapTableViewCell.m; sourceTree = "<group>"; };
 		3979BA721852405800F3F7EC /* RESdownloadView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RESdownloadView.h; sourceTree = "<group>"; };
 		3979BA731852405800F3F7EC /* RESdownloadView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RESdownloadView.m; sourceTree = "<group>"; };
+		3979BA7B18569EFA00F3F7EC /* QuickDialog.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = QuickDialog.xcodeproj; path = QuickDialog/QuickDialog.xcodeproj; sourceTree = "<group>"; };
 		597BF1411854F71D00F6D9D0 /* NPDownloadOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NPDownloadOperation.h; sourceTree = "<group>"; };
 		597BF1421854F71D00F6D9D0 /* NPDownloadOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NPDownloadOperation.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -142,6 +158,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3979BA8118569F7800F3F7EC /* libQuickDialog.a in Frameworks */,
 				3903C75018344ED000D82038 /* CoreGraphics.framework in Frameworks */,
 				3903C75218344ED000D82038 /* UIKit.framework in Frameworks */,
 				3903C74E18344ED000D82038 /* Foundation.framework in Frameworks */,
@@ -185,6 +202,7 @@
 		3903C74C18344ED000D82038 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3979BA7B18569EFA00F3F7EC /* QuickDialog.xcodeproj */,
 				3903C74D18344ED000D82038 /* Foundation.framework */,
 				3903C74F18344ED000D82038 /* CoreGraphics.framework */,
 				3903C75118344ED000D82038 /* UIKit.framework */,
@@ -312,6 +330,14 @@
 			name = Surveys;
 			sourceTree = "<group>";
 		};
+		3979BA7C18569EFA00F3F7EC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3979BA8018569EFB00F3F7EC /* libQuickDialog.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -326,6 +352,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				3979BA8318569FDA00F3F7EC /* PBXTargetDependency */,
 			);
 			name = FileSelector;
 			productName = FileSelector;
@@ -376,6 +403,12 @@
 			mainGroup = 3903C74118344ED000D82038;
 			productRefGroup = 3903C74B18344ED000D82038 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 3979BA7C18569EFA00F3F7EC /* Products */;
+					ProjectRef = 3979BA7B18569EFA00F3F7EC /* QuickDialog.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				3903C74918344ED000D82038 /* FileSelector */,
@@ -383,6 +416,16 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		3979BA8018569EFB00F3F7EC /* libQuickDialog.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libQuickDialog.a;
+			remoteRef = 3979BA7F18569EFB00F3F7EC /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		3903C74818344ED000D82038 /* Resources */ = {
@@ -460,6 +503,11 @@
 			target = 3903C74918344ED000D82038 /* FileSelector */;
 			targetProxy = 3903C77618344ED000D82038 /* PBXContainerItemProxy */;
 		};
+		3979BA8318569FDA00F3F7EC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = QuickDialog;
+			targetProxy = 3979BA8218569FDA00F3F7EC /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
@@ -493,7 +541,7 @@
 		3903C78018344ED000D82038 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -525,15 +573,17 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "-ObjC";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/QuickDialog\"/**";
 			};
 			name = Debug;
 		};
 		3903C78118344ED000D82038 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -558,8 +608,10 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				OTHER_LDFLAGS = "-ObjC";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/QuickDialog\"/**";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
