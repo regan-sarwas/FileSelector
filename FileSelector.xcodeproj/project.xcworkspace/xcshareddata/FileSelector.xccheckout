@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>F0F77B9B-21F4-4DC9-BB23-2AF129915EFD</string>
+	<key>IDESourceControlProjectName</key>
+	<string>FileSelector</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>07AF49A3-C783-44B7-A9C3-58F5AE0F8E5E</key>
+		<string>https://github.com/regan-sarwas/FileSelector.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>FileSelector.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>07AF49A3-C783-44B7-A9C3-58F5AE0F8E5E</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/regan-sarwas/FileSelector.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>07AF49A3-C783-44B7-A9C3-58F5AE0F8E5E</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>07AF49A3-C783-44B7-A9C3-58F5AE0F8E5E</string>
+			<key>IDESourceControlWCCName</key>
+			<string>FileSelector</string>
+		</dict>
+	</array>
+</dict>
+</plist>
