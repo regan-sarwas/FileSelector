@@ -291,35 +291,73 @@
     return @"get details from the tilecache";
 }
 
++ (NSString *)formatBytes:(long long)bytes
+{
+    static NSByteCountFormatter *formatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        formatter = [NSByteCountFormatter new];
+    });
+    return [formatter stringFromByteCount:bytes];
+}
+
 - (NSString *)byteSizeString
 {
-    if (self.byteCount == 0) {
-        return @"Unknown";
-    } else if (self.byteCount < 1024) {
-        return [NSString stringWithFormat:@"%d Bytes", self.byteCount];
-    } else if (self.byteCount < 1024*1024) {
-        return [NSString stringWithFormat:@"%d KB", self.byteCount / 1024];
-    } else if (self.byteCount < 1024*1024*1024) {
-        return [NSString stringWithFormat:@"%d MB", self.byteCount / 1024 / 1024];
-    } else {
-        return [NSString stringWithFormat:@"%0.2f GB", self.byteCount / 1024.0 / 1024 / 1024];
-    }
+    return [Map formatBytes:self.byteCount];
 }
+
++ (NSString *)formatArea:(double)area
+{
+    static NSNumberFormatter *formatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        formatter = [NSNumberFormatter new];
+        formatter.maximumSignificantDigits = 4;
+    });
+    return [formatter stringFromNumber:[NSNumber numberWithDouble:area]];
+}
+
 
 - (NSString *)arealSizeString
 {
     if (!self.extents) {
         return @"Unknown";
     }
+    
     double areakm = [[AGSGeometryEngine defaultGeometryEngine] shapePreservingAreaOfGeometry:self.extents inUnit:AGSAreaUnitsSquareKilometers];
-    double areami = areakm * 1200/3937 *1200/3937;
-    NSString *format = areami < 100 ? @"%0.2f sq. mi (%0.2f sq km)" : @"%0.0f sq. mi (%0.0f sq km)";
-    return [NSString stringWithFormat:format, areami, areakm];
+    //TODO: query settings for a metric/SI preference
+    if (YES) {
+        return [NSString stringWithFormat:@"%@ sq km", [Map formatArea:areakm]];
+    } else {
+        double areami = areakm * 0.386102;
+        return [NSString stringWithFormat:@"%@ sq mi", [Map formatArea:areami]];
+    }
+}
+
+- (NSString *)distanceToMap
+{
+    double distanceResult = [self distanceAndBearingToMap];
+    if (distance < 0) {
+        return @"Unknown";
+    }
+    if (distance == 0) {
+        return @"Encompasses current location"
+    }
+    NSString *direction = [self directionToMap];
+    //TODO: query settings for a metric/SI preference
+    if (YES) {
+        return [NSString stringWithFormat:@"%@ km %@", [Map formatArea:distance], direction];
+    } else {
+        double miles = distance * 0.621371;
+        return [NSString stringWithFormat:@"%@ mi %@", [Map formatArea:miles], direction];
+    }
 }
 
 - (BOOL)loadThumbnail
 {
     self.thumbnailIsLoaded = YES;
+    //TODO: if thumbnailUrl is not local, then download it, cache it, and update the url, let collection know the cache needs to be updated.
+    
     //_thumbnail = [[UIImage alloc] initWithContentsOfFile:[self.thumbnailUrl path]];
     _thumbnail = [[UIImage alloc] initWithData:[NSData dataWithContentsOfURL:self.thumbnailUrl]];
     if (!_thumbnail)
@@ -343,6 +381,22 @@
     }
     NSURL *thumb = [[[folder URLByAppendingPathComponent:name] URLByAppendingPathExtension:@"png"] URLByUniquingPath];
     return thumb;
+}
+
+- (double) distanceAndBearingToMap
+{
+    //TODO: if CLlocation not available return -1
+    AGSGeometryEngine *engine = [AGSGeometryEngine new];
+    AGSPoint *currentPoint = [[AGSPoint alloc] initWithX:xmin y:ymin spatialReference:[AGSSpatialReference wgs84SpatialReference]];
+    currentPoint = [engine projectGeometry:currentPoint toSpatialReference:self.extent]
+    if ([engine geometry:sel.extents containsGeometry:currentPoint]) {
+        return 0;
+    }
+    AGSProximityResult *proximity = [engine nearestCoordinateInGeometry:self.extents toPoint:currentPoint]
+    AGSPoint *closestPoint = proximity.point;
+    AGSGeodesicDistanceResult *distance = [engine geodesicDistanceBetweenPoint1:closestPoint point2:currentPoint inUnit:AGSSRUnitKilometer]
+    return distance.distance;
+    //TODO: return distance.azimuth1;
 }
 
 @end

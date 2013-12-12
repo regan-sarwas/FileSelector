@@ -27,6 +27,7 @@
 // Helpers for details view
 - (NSString *)byteSizeString;
 - (NSString *)arealSizeString;
+- (NSString *)distanceToMap;
 
 //YES if the Map is available locally, NO otherwise;
 - (BOOL)isLocal;
