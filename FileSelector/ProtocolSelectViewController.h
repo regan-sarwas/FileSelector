@@ -10,7 +10,7 @@
 #import "ProtocolDetailViewController.h"
 #import "ProtocolCollection.h"
 
-@interface ProtocolSelectViewController : UITableViewController <CollectionChanged>
+@interface ProtocolSelectViewController : UITableViewController <AKRCollectionChanged>
 
 @property (strong, nonatomic) ProtocolDetailViewController *detailViewController;
 @property (nonatomic, weak) ProtocolCollection *items;

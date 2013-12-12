@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "FSTableViewItemCollection.h"
+#import "AKRTableViewItemCollection.h"
 #import "ProtocolCollection.h"
 #import "SurveyCollection.h"
 

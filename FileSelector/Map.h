@@ -1,6 +1,6 @@
 //
 //  Map.h
-//  FileSelector
+//  Observer
 //
 //  Created by Regan Sarwas on 12/5/13.
 //  Copyright (c) 2013 GIS Team. All rights reserved.
@@ -8,12 +8,12 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "FSTableViewItemCollection.h"
+#import "AKRTableViewItemCollection.h"
 #import <ArcGIS/ArcGIS.h>
 
 #define MAP_EXT @"tpk"
 
-@interface Map : NSObject <NSCoding, FSTableViewItem>
+@interface Map : NSObject <NSCoding, AKRTableViewItem>
 
 @property (nonatomic, strong, readonly) NSURL *url;
 @property (nonatomic, strong, readonly) NSString *title;

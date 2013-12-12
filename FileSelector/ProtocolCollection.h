@@ -13,16 +13,16 @@
 //to update the UI, otherwise, I will get an internal inconsistency error
 
 #import <Foundation/Foundation.h>
-#import "FSTableViewItemCollection.h"
+#import "AKRTableViewItemCollection.h"
 #import "SProtocol.h"
-#import "CollectionChanged.h"
+#import "AKRCollectionChanged.h"
 
 #define PROTOCOL_EXT @"obsprot"
 #define PROTOCOL_DIR @"protocols"
 
 @interface ProtocolCollection : NSObject //<FSTableViewItemCollection>
 
-@property (nonatomic, weak) id<CollectionChanged> delegate;
+@property (nonatomic, weak) id<AKRCollectionChanged> delegate;
 
 // This is a singleton - actually a psuedo singleton, it is based on the honor system.
 // if you create your own instance with alloc/init then the behaviour is unspecified

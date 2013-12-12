@@ -1,19 +1,19 @@
 //
 //  MapCollection.h
-//  FileSelector
+//  Observer
 //
 //  Created by Regan Sarwas on 12/5/13.
 //  Copyright (c) 2013 GIS Team. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
-#import "FSTableViewItemCollection.h"
+#import "AKRTableViewItemCollection.h"
 #import "Map.h"
-#import "CollectionChanged.h"
+#import "AKRCollectionChanged.h"
 
 @interface MapCollection : NSObject
 
-@property (nonatomic, weak) id<CollectionChanged> delegate;
+@property (nonatomic, weak) id<AKRCollectionChanged> delegate;
 
 // This is a singleton - actually a psuedo singleton, it is based on the honor system.
 // if you create your own instance with alloc/init then the behaviour is unspecified

@@ -104,7 +104,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     FSEntryCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
-    id<FSTableViewItem> item = [self.items surveyAtIndex:indexPath.row];
+    id<AKRTableViewItem> item = [self.items surveyAtIndex:indexPath.row];
     cell.titleTextField.text = item.title;
     cell.detailsLabel.text = item.subtitle;
     cell.thumbnailImageView.image = item.thumbnail;
@@ -161,7 +161,7 @@
 {
     if ([[segue identifier] isEqualToString:@"Show Detail"]) {
         NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
-        id<FSTableViewItem> item = [self.items surveyAtIndex:indexPath.row];
+        id<AKRTableViewItem> item = [self.items surveyAtIndex:indexPath.row];
         [[segue destinationViewController] setDetailItem:item];
         //if we are in a popover, we want the new vc to stay the same size.
         [[segue destinationViewController] setPreferredContentSize:self.preferredContentSize];
@@ -169,7 +169,7 @@
     if ([[segue identifier] isEqualToString:@"Select Protocol"]) {
         ProtocolSelectViewController *vc = (ProtocolSelectViewController *)segue.destinationViewController;
         vc.title = segue.identifier;
-        vc.items = (id<FSTableViewItemCollection>)self.protocols;
+        vc.items = self.protocols;
         vc.rowSelectedCallback = ^(NSIndexPath *indexPath){
             [self newSurveyWithProtocol:[self.protocols localProtocolAtIndex:indexPath.row]];
         };

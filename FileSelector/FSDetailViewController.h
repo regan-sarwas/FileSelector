@@ -7,10 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "FSTableViewItemCollection.h"
+#import "AKRTableViewItemCollection.h"
 
 @interface FSDetailViewController : UIViewController <UISplitViewControllerDelegate>
 
-@property (strong, nonatomic) id<FSTableViewItem> detailItem;
+@property (strong, nonatomic) id<AKRTableViewItem> detailItem;
 
 @end

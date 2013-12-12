@@ -1,6 +1,6 @@
 //
 //  Map.m
-//  FileSelector
+//  Observer
 //
 //  Created by Regan Sarwas on 12/5/13.
 //  Copyright (c) 2013 GIS Team. All rights reserved.
@@ -306,23 +306,6 @@
     }
 }
 
-//- (NSString *)arealSizeString
-//{
-//    if (self.extents.size.height == 0 || self.extents.size.width == 0) {
-//        return @"Unknown";
-//    }
-//    double midLatitude = self.extents.origin.y + self.extents.size.height / 2;
-//    double widthScale = cos(midLatitude * M_PI / 180.0);
-//    double radius = 6371.0;
-//    double circumfrence = M_PI * 2 * radius;
-//    double width = circumfrence * self.extents.size.width / 360 * widthScale;
-//    double height = circumfrence * self.extents.size.height / 360;
-//    double areakm = height * width;
-//    double areami = areakm * 1200/3937 *1200/3937;
-//    NSString *format = areami < 100 ? @"%0.2f sq. mi (%0.2f sq km)" : @"%0.0f sq. mi (%0.0f sq km)";
-//    return [NSString stringWithFormat:format, areami, areakm];
-//}
-
 - (NSString *)arealSizeString
 {
     if (!self.extents) {
@@ -333,7 +316,6 @@
     NSString *format = areami < 100 ? @"%0.2f sq. mi (%0.2f sq km)" : @"%0.0f sq. mi (%0.0f sq km)";
     return [NSString stringWithFormat:format, areami, areakm];
 }
-
 
 - (BOOL)loadThumbnail
 {

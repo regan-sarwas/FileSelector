@@ -10,7 +10,7 @@
 #import "MapDetailViewController.h"
 #import "MapCollection.h"
 
-@interface MapSelectViewController : UITableViewController <CollectionChanged>
+@interface MapSelectViewController : UITableViewController <AKRCollectionChanged>
 
 @property (strong, nonatomic) MapDetailViewController *detailViewController;
 @property (nonatomic, weak) MapCollection *items;

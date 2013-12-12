@@ -1,5 +1,5 @@
 //
-//  CollectionChanged.h
+//  AKRCollectionChanged.h
 //  FileSelector
 //
 //  Created by Regan Sarwas on 12/5/13.
@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol CollectionChanged <NSObject>
+@protocol AKRCollectionChanged <NSObject>
 
 - (void) collection:(id)collection addedLocalItemsAtIndexes:(NSIndexSet *)indexSet;
 - (void) collection:(id)collection addedRemoteItemsAtIndexes:(NSIndexSet *)indexSet;

@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "FSTableViewItemCollection.h"
+#import "AKRTableViewItemCollection.h"
 #import "SProtocol.h"
 #import "Survey.h"
 
