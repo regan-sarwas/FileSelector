@@ -50,6 +50,7 @@
 		3979BA71185163BF00F3F7EC /* MapTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3979BA70185163BF00F3F7EC /* MapTableViewCell.m */; };
 		3979BA741852405800F3F7EC /* RESdownloadView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3979BA731852405800F3F7EC /* RESdownloadView.m */; };
 		3979BA8118569F7800F3F7EC /* libQuickDialog.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3979BA8018569EFB00F3F7EC /* libQuickDialog.a */; };
+		39A836C1185A2A43008BF4E3 /* AKRAngleDistance.m in Sources */ = {isa = PBXBuildFile; fileRef = 39A836C0185A2A43008BF4E3 /* AKRAngleDistance.m */; };
 		597BF1431854F71D00F6D9D0 /* NPDownloadOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 597BF1421854F71D00F6D9D0 /* NPDownloadOperation.m */; };
 /* End PBXBuildFile section */
 
@@ -151,6 +152,8 @@
 		3979BA721852405800F3F7EC /* RESdownloadView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RESdownloadView.h; sourceTree = "<group>"; };
 		3979BA731852405800F3F7EC /* RESdownloadView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RESdownloadView.m; sourceTree = "<group>"; };
 		3979BA7B18569EFA00F3F7EC /* QuickDialog.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = QuickDialog.xcodeproj; path = QuickDialog/QuickDialog.xcodeproj; sourceTree = "<group>"; };
+		39A836BF185A2A43008BF4E3 /* AKRAngleDistance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AKRAngleDistance.h; sourceTree = "<group>"; };
+		39A836C0185A2A43008BF4E3 /* AKRAngleDistance.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AKRAngleDistance.m; sourceTree = "<group>"; };
 		597BF1411854F71D00F6D9D0 /* NPDownloadOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NPDownloadOperation.h; sourceTree = "<group>"; };
 		597BF1421854F71D00F6D9D0 /* NPDownloadOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NPDownloadOperation.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -291,6 +294,8 @@
 				3979BA6D1851600100F3F7EC /* MapDetailViewController.m */,
 				3979BA6F185163BF00F3F7EC /* MapTableViewCell.h */,
 				3979BA70185163BF00F3F7EC /* MapTableViewCell.m */,
+				39A836BF185A2A43008BF4E3 /* AKRAngleDistance.h */,
+				39A836C0185A2A43008BF4E3 /* AKRAngleDistance.m */,
 			);
 			name = Maps;
 			sourceTree = "<group>";
@@ -482,6 +487,7 @@
 				3979BA741852405800F3F7EC /* RESdownloadView.m in Sources */,
 				3965ED01183C076A00701F8A /* NSArray+map.m in Sources */,
 				3979BA6E1851600100F3F7EC /* MapDetailViewController.m in Sources */,
+				39A836C1185A2A43008BF4E3 /* AKRAngleDistance.m in Sources */,
 				3979BA641851185800F3F7EC /* ObserverModel.xcdatamodeld in Sources */,
 				3965ED161845122D00701F8A /* MapSelectViewController.m in Sources */,
 				3979BA611850EF1400F3F7EC /* SurveyObjectModel.m in Sources */,

@@ -119,7 +119,9 @@
         CGFloat xmax = [item isKindOfClass:[NSNumber class]] ? [item floatValue] : 0.0;
         item =  dictionary[@"ymax"];
         CGFloat ymax = [item isKindOfClass:[NSNumber class]] ? [item floatValue] : 0.0;
-        map.extents = [[AGSEnvelope alloc] initWithXmin:xmin ymin:ymin xmax:xmax ymax:ymax spatialReference:[AGSSpatialReference wgs84SpatialReference]];
+        if (xmin != 0  || ymin != 0 || xmax != 0 || ymax != 0 ) {
+            map.extents = [[AGSEnvelope alloc] initWithXmin:xmin ymin:ymin xmax:xmax ymax:ymax spatialReference:[AGSSpatialReference wgs84SpatialReference]];
+        }
     }
     return map;
 }
@@ -268,7 +270,37 @@
 }
 
 
-#pragma mark - date formatters
+- (BOOL)loadThumbnail
+{
+    self.thumbnailIsLoaded = YES;
+    //TODO: if thumbnailUrl is not local, then download it, cache it, and update the url, let collection know the cache needs to be updated.
+
+    //_thumbnail = [[UIImage alloc] initWithContentsOfFile:[self.thumbnailUrl path]];
+    _thumbnail = [[UIImage alloc] initWithData:[NSData dataWithContentsOfURL:self.thumbnailUrl]];
+    if (!_thumbnail)
+        _thumbnail = [UIImage imageNamed:@"TilePackage"];
+    return !_thumbnail;
+}
+
+- (NSURL *)thumbnailUrlForMapName:(NSString *)name
+{
+    NSURL *library = [[NSFileManager defaultManager] URLsForDirectory:NSLibraryDirectory inDomains:NSUserDomainMask][0];
+    NSURL *folder = [library URLByAppendingPathComponent:@"mapthumbs" isDirectory:YES];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:[folder path]]) {
+        [[NSFileManager defaultManager] createDirectoryAtURL:folder withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    NSURL *thumb = [[[folder URLByAppendingPathComponent:name] URLByAppendingPathExtension:@"png"] URLByUniquingPath];
+    return thumb;
+}
+
+
+- (NSString *)details
+{
+    return @"get details from the tilecache";
+}
+
+
+#pragma mark - formatters
 
 //cached date formatters per xcdoc://ios/documentation/Cocoa/Conceptual/DataFormatting/Articles/dfDateFormatting10_4.html
 - (NSDate *) dateFromString:(NSString *)date
@@ -286,11 +318,6 @@
     return [dateFormatter dateFromString:date];
 }
 
-- (NSString *)details
-{
-    return @"get details from the tilecache";
-}
-
 + (NSString *)formatBytes:(long long)bytes
 {
     static NSByteCountFormatter *formatter = nil;
@@ -301,29 +328,37 @@
     return [formatter stringFromByteCount:bytes];
 }
 
-- (NSString *)byteSizeString
-{
-    return [Map formatBytes:self.byteCount];
-}
-
 + (NSString *)formatArea:(double)area
 {
     static NSNumberFormatter *formatter = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         formatter = [NSNumberFormatter new];
-        formatter.maximumSignificantDigits = 4;
+        formatter.maximumSignificantDigits = 3;
     });
     return [formatter stringFromNumber:[NSNumber numberWithDouble:area]];
 }
 
+- (NSString *)byteSizeString
+{
+    return [Map formatBytes:self.byteCount];
+}
+
+#pragma mark - tilecache (ESRI functionality)
+
+- (BOOL)loadTileCache
+{
+    self.tileCacheIsLoaded = YES;
+    _tileCache = [[AGSLocalTiledLayer alloc] initWithPath:[self.url path]];
+    return _tileCache != nil;
+}
 
 - (NSString *)arealSizeString
 {
-    if (!self.extents) {
+    if (!self.extents || self.extents.isEmpty) {
         return @"Unknown";
     }
-    
+
     double areakm = [[AGSGeometryEngine defaultGeometryEngine] shapePreservingAreaOfGeometry:self.extents inUnit:AGSAreaUnitsSquareKilometers];
     //TODO: query settings for a metric/SI preference
     if (YES) {
@@ -334,69 +369,10 @@
     }
 }
 
-- (NSString *)distanceToMap
-{
-    double distanceResult = [self distanceAndBearingToMap];
-    if (distance < 0) {
-        return @"Unknown";
-    }
-    if (distance == 0) {
-        return @"Encompasses current location"
-    }
-    NSString *direction = [self directionToMap];
-    //TODO: query settings for a metric/SI preference
-    if (YES) {
-        return [NSString stringWithFormat:@"%@ km %@", [Map formatArea:distance], direction];
-    } else {
-        double miles = distance * 0.621371;
-        return [NSString stringWithFormat:@"%@ mi %@", [Map formatArea:miles], direction];
-    }
-}
 
-- (BOOL)loadThumbnail
+- (AKRAngleDistance *)angleDistanceFromLocation:(CLLocation *)location
 {
-    self.thumbnailIsLoaded = YES;
-    //TODO: if thumbnailUrl is not local, then download it, cache it, and update the url, let collection know the cache needs to be updated.
-    
-    //_thumbnail = [[UIImage alloc] initWithContentsOfFile:[self.thumbnailUrl path]];
-    _thumbnail = [[UIImage alloc] initWithData:[NSData dataWithContentsOfURL:self.thumbnailUrl]];
-    if (!_thumbnail)
-        _thumbnail = [UIImage imageNamed:@"TilePackage"];
-    return !_thumbnail;
-}
-
-- (BOOL)loadTileCache
-{
-    self.tileCacheIsLoaded = YES;
-    _tileCache = [[AGSLocalTiledLayer alloc] initWithPath:[self.url path]];
-    return _tileCache != nil;
-}
-
-- (NSURL *)thumbnailUrlForMapName:(NSString *)name
-{
-    NSURL *library = [[NSFileManager defaultManager] URLsForDirectory:NSLibraryDirectory inDomains:NSUserDomainMask][0];
-    NSURL *folder = [library URLByAppendingPathComponent:@"mapthumbs" isDirectory:YES];
-    if (![[NSFileManager defaultManager] fileExistsAtPath:[folder path]]) {
-        [[NSFileManager defaultManager] createDirectoryAtURL:folder withIntermediateDirectories:YES attributes:nil error:nil];
-    }
-    NSURL *thumb = [[[folder URLByAppendingPathComponent:name] URLByAppendingPathExtension:@"png"] URLByUniquingPath];
-    return thumb;
-}
-
-- (double) distanceAndBearingToMap
-{
-    //TODO: if CLlocation not available return -1
-    AGSGeometryEngine *engine = [AGSGeometryEngine new];
-    AGSPoint *currentPoint = [[AGSPoint alloc] initWithX:xmin y:ymin spatialReference:[AGSSpatialReference wgs84SpatialReference]];
-    currentPoint = [engine projectGeometry:currentPoint toSpatialReference:self.extent]
-    if ([engine geometry:sel.extents containsGeometry:currentPoint]) {
-        return 0;
-    }
-    AGSProximityResult *proximity = [engine nearestCoordinateInGeometry:self.extents toPoint:currentPoint]
-    AGSPoint *closestPoint = proximity.point;
-    AGSGeodesicDistanceResult *distance = [engine geodesicDistanceBetweenPoint1:closestPoint point2:currentPoint inUnit:AGSSRUnitKilometer]
-    return distance.distance;
-    //TODO: return distance.azimuth1;
+    return [AKRAngleDistance angleDistanceFromLocation:location toGeometry:self.extents];
 }
 
 @end

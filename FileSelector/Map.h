@@ -10,6 +10,7 @@
 #import <UIKit/UIKit.h>
 #import "AKRTableViewItemCollection.h"
 #import <ArcGIS/ArcGIS.h>
+#import "AKRAngleDistance.h"
 
 #define MAP_EXT @"tpk"
 
@@ -27,7 +28,7 @@
 // Helpers for details view
 - (NSString *)byteSizeString;
 - (NSString *)arealSizeString;
-- (NSString *)distanceToMap;
+- (AKRAngleDistance *)angleDistanceFromLocation:(CLLocation *)location;
 
 //YES if the Map is available locally, NO otherwise;
 - (BOOL)isLocal;
